@@ -1,9 +1,44 @@
 <html>
     <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <style>
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  -ms-flex-align: center;
+  -ms-flex-pack: center;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+        </style>    
+    
     </head>
-    <body>
-        <h1>
-            Hello, World!
-        </h1>
+    <body class="text-center">
+        <div class="row">
+            <div class="col">
+                <form class="form-signin" action="/search" method="get">
+                    <h1 class="text-center">Café Database</h1>
+                    <input type="text" class="form-control" name="key" placeholder="Type street, name of a café, type of coffee..." required autofocus>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
+                </form>
+                
+                <div class="row" style="padding: 20px">
+                    <div class="col"><a href="signin"><button class="btn btn-lg btn-info" type="submit">Sign in</button></a></div>
+                    <div class="col"><a href="register"><button class="btn btn-lg btn-info" type="submit">Register</button></a></div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
