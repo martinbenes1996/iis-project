@@ -14,6 +14,9 @@ def register(request):
 def signin(request):
     return render(request, "signin.html", {})
 
+def search(request):
+    return render(request, "search.html", {})
+
 # add function with the name matching from urls.py
 # def function(request, parameters...):
 #       return render(request, file from template, dict())

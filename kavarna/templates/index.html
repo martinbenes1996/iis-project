@@ -1,42 +1,64 @@
 <html>
     <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
         <style>
-html,
-body {
-  height: 100%;
-}
+            html, body {
+                height: 100%;
+            }
 
-body {
-  display: -ms-flexbox;
-  display: -webkit-box;
-  display: flex;
-  -ms-flex-align: center;
-  -ms-flex-pack: center;
-  -webkit-box-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  justify-content: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #f5f5f5;
-}
+            body {
+                display: -ms-flexbox;
+                display: -webkit-box;
+                display: flex;
+                -ms-flex-align: center;
+                -ms-flex-pack: center;
+                -webkit-box-align: center;
+                align-items: center;
+                -webkit-box-pack: center;
+                justify-content: center;
+                padding-top: 40px;
+                padding-bottom: 40px;
+                background-color: #f5f5f5;
+            }
+
+            .stylish-input-group .input-group-addon{
+                background: white !important; 
+            }
+            .stylish-input-group .form-control{
+	            border-right:0; 
+	            box-shadow: 0 0 0; 
+	            border-color:#ccc;
+            }
+            .stylish-input-group button{
+                border: 0;
+                background: transparent;
+            }
 
         </style>    
-    
     </head>
+
     <body class="text-center">
         <div class="row">
             <div class="col">
-                <form class="form-signin" action="/search" method="get">
-                    <h1 class="text-center">Café Database</h1>
-                    <input type="text" class="form-control" name="key" placeholder="Type street, name of a café, type of coffee..." required autofocus>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
-                </form>
+                <h1 class="text-center">Café Database</h1>
+                <div id="custom-search-input">
+                    <form action="/search" method="get">
+                        <div class="input-group col-md-12">
+                            <input type="text" name="key" class="form-control input-lg" placeholder="Type a street, a café..." required autofocus />
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary btn-lg" type="submit">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
                 
-                <div class="row" style="padding: 20px">
-                    <div class="col"><a href="signin"><button class="btn btn-lg btn-info" type="submit">Sign in</button></a></div>
-                    <div class="col"><a href="register"><button class="btn btn-lg btn-info" type="submit">Register</button></a></div>
+                <div class="row">
+                    <a href="signin"><button class="btn btn-lg btn-info" type="submit">Sign in</button></a>
+                    <a href="register"><button class="btn btn-lg btn-info" type="submit">Register</button></a>
                 </div>
             </div>
         </div>
