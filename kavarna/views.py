@@ -1,12 +1,18 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template import Context, Template
 
-def hello(request):
-   text = "<h1>Hello, World!</h1>"
-   return HttpResponse(text)
+def getSearchBar(d):
+    with open('kavarna/templates/searchbar.html', 'r') as searchbar:
+        t = Template( searchbar.read() )
+        c = Context( d )
+    return t.render(c)
 
 def index(request):
-   return render(request, "index.html", {})
+    d = dict()
+    d['key'] = request.GET.get('key', '')
+    d['searchbar'] = getSearchBar(d)
+    return render(request, "index.html", d)
 
 def register(request):
     return render(request, "register.html", {})
@@ -15,7 +21,10 @@ def signin(request):
     return render(request, "signin.html", {})
 
 def search(request):
-    return render(request, "search.html", {})
+    d = dict()
+    d['key'] = request.GET.get('key', '')
+    d['searchbar'] = getSearchBar(d)
+    return render(request, "search.html", d)
 
 # add function with the name matching from urls.py
 # def function(request, parameters...):
