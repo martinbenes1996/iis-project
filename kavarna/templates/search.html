@@ -1,23 +1,65 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="col-lg-2 searchmenu">
-    Cafés<br>
-    Coffees<br>
-    Addresses<br>
+<div class="row text-center" style="padding-bottom: 20px">
+    Results for "{{key}}".
 </div>
-<div class="col-lg-8 searchlist">
 
-    {% for item in searchitems %}
-    <div class="row searchitem">
-        <div class="container-fluid" style="border: 1px solid black">
-            <div class="row text-center">
-                <h1>{{item.name|upper}}</h1>
-            </div>
+<div class="row">
+    <div class="col-lg-2 text-right">
+        <div class="row" style="padding-right: 30%">
+            <span style="position: fixed">
+                <a href="#caferesults">Cafés</a><br>
+                <a href="#coffeeresults">Coffees</a><br>
+                <a href="#placeresults">Places</a><br>
+            </span>
         </div>
     </div>
-    {% endfor %}
+    
+    <div class="col-lg-8 searchlist">
+        
+        <div id="caferesults">
+            <span class="category-header">Cafés</span> 
+            {% for item in caferesults %}
+            <div class="row searchitem">
+                <div class="container-fluid" style="border: 1px solid black">
+                    <div class="row text-center">
+                        <h1>{{item.name|upper}}</h1>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div> 
 
+        <div id="coffeeresults">
+            <span class="category-header">Coffees</span> 
+            {% for item in coffeeresults %}
+            <div class="row searchitem">
+                <div class="container-fluid" style="border: 1px solid black">
+                    <div class="row text-center">
+                        <h1>{{item.name|upper}}</h1>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div> 
+
+        <div id="placeresults">
+            <span class="category-header">Places</spab> 
+            {% for item in placeresults %}
+            <div class="row searchitem">
+                <div class="container-fluid" style="border: 1px solid black">
+                    <div class="row text-center">
+                        <h1>{{item.name|upper}}</h1>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div> 
+
+    </div>
+    
+    <div class="col-lg-2"></div>
 </div>
-<div class="col-lg-2"></div>
+
 {% endblock %}

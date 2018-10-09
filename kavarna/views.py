@@ -25,11 +25,24 @@ def search(request):
     d = dict()
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
-    d['searchitems'] = []
-    for n in range(1,5):
+    # cafe results
+    d['caferesults'] = []
+    for n in range(1,10):
         u = models.User()
         u.name=str(n)
-        d['searchitems'].append(u)
+        d['caferesults'].append(u)
+    # coffee results
+    d['coffeeresults'] = []
+    for n in range(10,20):
+        u = models.User()
+        u.name=str(n)
+        d['coffeeresults'].append(u)
+    # place results
+    d['placeresults'] = []
+    for n in range(20,30):
+        u = models.User()
+        u.name=str(n)
+        d['placeresults'].append(u)
     return render(request, "search.html", d)
 
 # add function with the name matching from urls.py

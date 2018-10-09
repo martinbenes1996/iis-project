@@ -44,11 +44,6 @@ input, .btn-warning, .btn-primary {
     margin: 5px;
 }
 
-.searchmenu {
-    text-align: right;
-    padding-right: 20px;
-}
-
 .searchlist {
     padding-left: 30px;
 }
@@ -57,5 +52,9 @@ input, .btn-warning, .btn-primary {
     border: 2px solid black;
     padding: 20px;
     margin-bottom: 10px;
+}
+
+.category_header {
+    font-size: 5em;
 }
 
