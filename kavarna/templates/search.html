@@ -1,36 +1,23 @@
-<html>
-    <head>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    
-        {% load static %}
-        <link rel = "stylesheet" type = "text/css" href = "{% static 'kavarna/styles.css' %}">
-    </head>
+{% extends "base.html" %}
 
-    <body class="backgrounder">
-        <div class="container">
-            
-            <div class="row hcentralize">
-                <div class="col" style="padding-top: 40px">
-                    {{searchbar|safe}}
-                </div>
-            </div>
+{% block content %}
+<div class="col-lg-2 searchmenu">
+    Cafés<br>
+    Coffees<br>
+    Addresses<br>
+</div>
+<div class="col-lg-8 searchlist">
 
-            <div class="row">
-                <div class="col">
-                    Cafés<br>
-                    Coffees<br>
-                    Addresses
-                </div>
-                <div class="col">
-                        Ahoj<br>
-                        Ahoj<br>
-                        Ahoj
-                </div>
-                <div class="col">Jsem tady!!</div>
+    {% for item in searchitems %}
+    <div class="row searchitem">
+        <div class="container-fluid" style="border: 1px solid black">
+            <div class="row text-center">
+                <h1>{{item.name|upper}}</h1>
             </div>
-        
         </div>
-    </body>
-</html>
+    </div>
+    {% endfor %}
+
+</div>
+<div class="col-lg-2"></div>
+{% endblock %}

@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, Template
+from kavarna import models
 
 def getSearchBar(d):
     with open('kavarna/templates/searchbar.html', 'r') as searchbar:
@@ -24,6 +25,11 @@ def search(request):
     d = dict()
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
+    d['searchitems'] = []
+    for n in range(1,5):
+        u = models.User()
+        u.name=str(n)
+        d['searchitems'].append(u)
     return render(request, "search.html", d)
 
 # add function with the name matching from urls.py

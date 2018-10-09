@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    
+        {% load static %}
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'kavarna/styles.css' %}">
+
+    </head>
+
+    <body class="backgrounder">
+        <div class="row hcentralize">
+            <div class="col" style="padding-top: 40px">
+                {{searchbar|safe}}
+            </div>
+        </div>
+        <div class="container-fluid" style="padding-top: 50px">
+            <div class="row text-center" style="padding-bottom: 20px">
+                Results for "{{key}}".
+            </div>
+
+            <div class="row">
+                <!-- content -->
+                {% block content %}
+                {% endblock %}
+                <!-- end of content -->
+            </div>
+        
+        </div>
+    </body>
+</html>
