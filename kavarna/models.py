@@ -1,5 +1,7 @@
 from django.db import models
 
+
+
 class CoffeePreparation(models.Model):
     """ Preparation of coffee. """
     name = models.CharField(max_length=64)
@@ -16,7 +18,7 @@ class Coffee(models.Model):
     """ Coffee served in some cafe. """
     name = models.CharField(max_length=64)
     preparation = CoffeePreparation()
-    beans = models.ManyToManyField(CoffeeBean, blank=True)  
+    beans = models.ManyToManyField(CoffeeBean, blank=True)
 
 class User(models.Model):
     """ User of the system. """
@@ -66,4 +68,3 @@ class Reaction(models.Model):
 
 
 
-    
