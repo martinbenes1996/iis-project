@@ -22,8 +22,15 @@ def signin(request):
     return render(request, "signin.html", {})
 
 def search(request):
-    # test = Cafe(name = "U Martina", street = "Martinovo namesti", housenumber = 47, city = "Brno", psc = 66600,
-    #             opensAt = "9:00", closesAt = "18:00", capacity = 50, description = "Very nice...", )
+
+    testOwner = models.Owner(name = "Jan", surname = "Honzik")
+    testOwner.save()
+
+    testC = models.Cafe(name = "U Martina", street = "Martinovo namesti", housenumber = 47, city = "Brno", psc = 66600,
+                opensAt = "9:00", closesAt = "18:00", capacity = 50, description = "Very nice...", owner = models.Owner.objects.first(),
+                )
+    testC.save()
+
     test = models.CoffeeBean(name = "zrnko", origin = "cze", aroma = "nevonne", acidity = 10)
     test.save()
     test2 = models.CoffeeBean(name = "africka namka", origin = "cze", aroma = "nevonne", acidity = 10)
@@ -37,26 +44,20 @@ def search(request):
     # cafe results
     objects = models.CoffeeBean.objects.all()
     d['caferesults'] = []
-    #d['caferesults'] = []
-    #for n in range(1,10):
     for bean in objects:
         d['caferesults'].append(bean)
-        #u = models.User()
-        #u.name=str(n)
-        #d['caferesults'].append(u)
     # coffee results
+    objects = models.Cafe.objects.all()
     d['coffeeresults'] = []
-    for n in range(10,20):
-        u = models.User()
-        u.name=str(n)
-        d['coffeeresults'].append(u)
+    for cafe in objects:
+        d['coffeeresults'].append(cafe)
     # coffeebeansresults results
 
     pom = render(request, "search.html", d)
 
     models.CoffeeBean.objects.all().delete()
-    #test.delete()
-    #test2.delete()
+    models.Cafe.objects.all().delete()
+    models.Owner.objects.all().delete()
     #test3.delete()
 
     return pom
