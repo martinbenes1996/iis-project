@@ -7,6 +7,9 @@ class CoffeePreparation(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField(blank=True)
 
+    def __str__(self):
+        return self.name
+
 class CoffeeBean(models.Model):
     """ Coffee bean type. """
     name = models.CharField(max_length=64)
@@ -14,8 +17,8 @@ class CoffeeBean(models.Model):
     aroma = models.CharField(max_length=64, blank=True)
     acidity = models.PositiveSmallIntegerField(blank=True)
 
-    #def __str__(self):
-    #   return self.name
+    def __str__(self):
+        return self.name
 
 class Coffee(models.Model):
     """ Coffee served in some cafe. """
@@ -23,13 +26,18 @@ class Coffee(models.Model):
     place_of_origin = models.CharField(max_length=64, blank=True)
     quality = models.CharField(max_length=64, blank=True)
     taste_description = models.TextField(blank=True)
-    preparation = CoffeePreparation()   # co to je, neda se to resit cizim klicem?
+    # my suggestion - dont change unless you are 100% sure:
+    preparation = models.ForeignKey(CoffeePreparation, blank=True, null=True, on_delete=models.SET_NULL)
+    #preparation = CoffeePreparation()   # co to je, neda se to resit cizim klicem?
     beans = models.ManyToManyField(CoffeeBean, through="CoffeeContainsBeans")
+
+    def __str__(self):
+        return self.name
 
 class CoffeeContainsBeans(models.Model):
     """ Coffee contains certain percentage of different beans. """
-    Coffee = models.ForeignKey(Coffee, on_delete=models.CASCADE)
-    CoffeeBean = models.ForeignKey(CoffeeBean, on_delete=models.CASCADE)
+    coffee = models.ForeignKey(Coffee, on_delete=models.CASCADE)
+    coffeeBean = models.ForeignKey(CoffeeBean, on_delete=models.CASCADE)
     percentage = models.PositiveIntegerField()
 
 """
@@ -54,6 +62,9 @@ class Owner(models.Model):
     surname = models.CharField(max_length=64)
     # picture = models.         # fotka majitele
 
+    def __str__(self):
+        return self.name
+
 class Cafe(models.Model):
     """ Cafe. """
     name = models.CharField(max_length=64)
@@ -69,6 +80,9 @@ class Cafe(models.Model):
     offers_coffee = models.ManyToManyField(Coffee)
     #employees = models.ManyToManyField(User)       - vubec bych to neresil, nemusime vypisovat vsechny zamestnance kavaren
 
+    def __str__(self):
+        return self.name
+
 class User(models.Model):
     """ User of the system. """
     nick = models.CharField(max_length=64, primary_key=True)
@@ -80,6 +94,9 @@ class User(models.Model):
     fav_preparation = models.ManyToManyField(CoffeePreparation)
     likes_cafe = models.ManyToManyField(Cafe)
 
+    def __str__(self):
+        return self.name
+
 class Event(models.Model):
     """ Event. """
     name = models.CharField(max_length=64)
@@ -89,10 +106,16 @@ class Event(models.Model):
     Coffee_list = models.ManyToManyField(Coffee)
     place = models.ForeignKey(Cafe, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 class Evaluation(models.Model):
     """ Evaluation. """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     value = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.user + str(value)
 
 class Reaction(models.Model):
     """ Comment. """
@@ -103,6 +126,9 @@ class Reaction(models.Model):
     text = models.TextField(blank=True)
     date = models.DateTimeField()
     evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.author
 
 
 

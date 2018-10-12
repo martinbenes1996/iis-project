@@ -6,6 +6,29 @@
 
 from kavarna import models
 
+test = models.CoffeeBean(name = "zrnko", origin = "cze", aroma = "nevonne", acidity = 10)
+test.save()
+test2 = models.CoffeeBean(name = "africka namka", origin = "cze", aroma = "nevonne", acidity = 10)
+test2.save()
+test3 = models.CoffeeBean(name = "moje kavicka", origin = "cze", aroma = "nevonne", acidity = 10)
+test3.save()
+
+preparation1 = models.CoffeePreparation(name = "zasterchat")
+preparation1.save()
+
+coffee1 = models.Coffee(name = "Ondrovo prekvapeni", preparation = models.CoffeePreparation.objects.first())
+coffee1.save()
+#coffee1 = models.Coffee(name = "Ondrovo prekvapeni", preparation = models.CoffeePreparation.objects.get(name = "zasterchat"))
+coffee2 = models.Coffee(name = "Pivni kava")
+coffee2.save()
+
+coffeecontainsbeans = models.CoffeeContainsBeans(coffee = coffee1, coffeeBean = models.CoffeeBean.objects.first(),
+                                                percentage = 100)
+coffeecontainsbeans.save()
+coffeecontainsbeans2 = models.CoffeeContainsBeans(coffee = coffee2, coffeeBean = models.CoffeeBean.objects.first(),
+                                                percentage = 100)
+coffeecontainsbeans2.save()
+
 testOwner = models.Owner(name = "Jan", surname = "Honzik")
 testOwner.save()
 
@@ -14,12 +37,7 @@ testC = models.Cafe(name = "U Martina", street = "Martinovo namesti", housenumbe
                 )
 testC.save()
 
-test = models.CoffeeBean(name = "zrnko", origin = "cze", aroma = "nevonne", acidity = 10)
-test.save()
-test2 = models.CoffeeBean(name = "africka namka", origin = "cze", aroma = "nevonne", acidity = 10)
-test2.save()
-test3 = models.CoffeeBean(name = "moje kavicka", origin = "cze", aroma = "nevonne", acidity = 10)
-test3.save()
+
 
 
 
