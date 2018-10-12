@@ -24,7 +24,14 @@ class Coffee(models.Model):
     quality = models.CharField(max_length=64, blank=True)
     taste_description = models.TextField(blank=True)
     preparation = CoffeePreparation()   # co to je, neda se to resit cizim klicem?
-    beans = models.ManyToManyField(CoffeeBean, blank=True)  # !!! pridat atribut kava_obs_zrna
+    beans = models.ManyToManyField(CoffeeBean, through="CoffeeContainsBeans")
+
+class CoffeeContainsBeans(models.Model):
+    """ Coffee contains certain percentage of different beans. """
+    Coffee = models.ForeignKey(Coffee, on_delete=models.CASCADE)
+    CoffeeBean = models.ForeignKey(CoffeeBean, on_delete=models.CASCADE)
+    percentage = models.PositiveIntegerField()
+
 """
 class User(models.Model):
 

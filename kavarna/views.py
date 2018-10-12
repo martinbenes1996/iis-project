@@ -1,8 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, Template
-from . import models
-from .models import CoffeeBean
+from kavarna import models
 
 def getSearchBar(d):
     with open('kavarna/templates/searchbar.html', 'r') as searchbar:
@@ -25,18 +24,18 @@ def signin(request):
 def search(request):
     # test = Cafe(name = "U Martina", street = "Martinovo namesti", housenumber = 47, city = "Brno", psc = 66600,
     #             opensAt = "9:00", closesAt = "18:00", capacity = 50, description = "Very nice...", )
-    test = CoffeeBean(name = "zrnko", origin = "cze", aroma = "nevonne", acidity = 10)
+    test = models.CoffeeBean(name = "zrnko", origin = "cze", aroma = "nevonne", acidity = 10)
     test.save()
-    test2 = CoffeeBean(name = "africka namka", origin = "cze", aroma = "nevonne", acidity = 10)
+    test2 = models.CoffeeBean(name = "africka namka", origin = "cze", aroma = "nevonne", acidity = 10)
     test2.save()
-    test3 = CoffeeBean(name = "moje kavicka", origin = "cze", aroma = "nevonne", acidity = 10)
+    test3 = models.CoffeeBean(name = "moje kavicka", origin = "cze", aroma = "nevonne", acidity = 10)
     test3.save()
 
     d = dict()
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
     # cafe results
-    objects = CoffeeBean.objects.all()
+    objects = models.CoffeeBean.objects.all()
     d['caferesults'] = []
     #d['caferesults'] = []
     #for n in range(1,10):
@@ -53,12 +52,9 @@ def search(request):
         d['coffeeresults'].append(u)
     # coffeebeansresults results
 
-
-
-
     pom = render(request, "search.html", d)
 
-    CoffeeBean.objects.all().delete()
+    models.CoffeeBean.objects.all().delete()
     #test.delete()
     #test2.delete()
     #test3.delete()
