@@ -37,11 +37,11 @@ def search(request):
     d['searchbar'] = getSearchBar(d)
     # cafe results
     objects = CoffeeBean.objects.all()
-    d['coffeebeansresults'] = []
+    d['caferesults'] = []
     #d['caferesults'] = []
     #for n in range(1,10):
     for bean in objects:
-        d['coffeebeansresults'].append(bean)
+        d['caferesults'].append(bean)
         #u = models.User()
         #u.name=str(n)
         #d['caferesults'].append(u)
@@ -58,9 +58,10 @@ def search(request):
 
     pom = render(request, "search.html", d)
 
-    test.delete()
-    test2.delete()
-    test3.delete()
+    CoffeeBean.objects.all().delete()
+    #test.delete()
+    #test2.delete()
+    #test3.delete()
 
     return pom
 
