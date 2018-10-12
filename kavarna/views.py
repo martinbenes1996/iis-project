@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, Template
-from kavarna import models
+from . import models
+from .models import CoffeeBean
 
 def getSearchBar(d):
     with open('kavarna/templates/searchbar.html', 'r') as searchbar:
@@ -22,28 +23,46 @@ def signin(request):
     return render(request, "signin.html", {})
 
 def search(request):
+    # test = Cafe(name = "U Martina", street = "Martinovo namesti", housenumber = 47, city = "Brno", psc = 66600,
+    #             opensAt = "9:00", closesAt = "18:00", capacity = 50, description = "Very nice...", )
+    test = CoffeeBean(name = "zrnko", origin = "cze", aroma = "nevonne", acidity = 10)
+    test.save()
+    test2 = CoffeeBean(name = "africka namka", origin = "cze", aroma = "nevonne", acidity = 10)
+    test2.save()
+    test3 = CoffeeBean(name = "moje kavicka", origin = "cze", aroma = "nevonne", acidity = 10)
+    test3.save()
+
     d = dict()
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
     # cafe results
-    d['caferesults'] = []
-    for n in range(1,10):
-        u = models.User()
-        u.name=str(n)
-        d['caferesults'].append(u)
+    objects = CoffeeBean.objects.all()
+    d['coffeebeansresults'] = []
+    #d['caferesults'] = []
+    #for n in range(1,10):
+    for bean in objects:
+        d['coffeebeansresults'].append(bean)
+        #u = models.User()
+        #u.name=str(n)
+        #d['caferesults'].append(u)
     # coffee results
     d['coffeeresults'] = []
     for n in range(10,20):
         u = models.User()
         u.name=str(n)
         d['coffeeresults'].append(u)
-    # place results
-    d['placeresults'] = []
-    for n in range(20,30):
-        u = models.User()
-        u.name=str(n)
-        d['placeresults'].append(u)
-    return render(request, "search.html", d)
+    # coffeebeansresults results
+
+
+
+
+    pom = render(request, "search.html", d)
+
+    test.delete()
+    test2.delete()
+    test3.delete()
+
+    return pom
 
 # add function with the name matching from urls.py
 # def function(request, parameters...):
