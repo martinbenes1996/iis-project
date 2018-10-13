@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name=''),
     path('register/', views.register, name='register'),
-    path('signin/', views.signin, name='signin'),
+    path('<>signin/', views.signin, name='signin'),
+    #path('<int:question_id>/vote/', views.vote, name='vote'),
     path('search/', views.search, name='search')
 ]
