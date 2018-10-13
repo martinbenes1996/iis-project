@@ -103,7 +103,7 @@ class Event(models.Model):
     price = models.IntegerField()
     capacity = models.IntegerField()
     participants = models.ManyToManyField(User)
-    Coffee_list = models.ManyToManyField(Coffee)
+    coffee_list = models.ManyToManyField(Coffee)
     place = models.ForeignKey(Cafe, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -119,12 +119,12 @@ class Evaluation(models.Model):
 
 class Reaction(models.Model):
     """ Comment. """
-    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    comment = models.ForeignKey('self', on_delete=models.CASCADE)
+    cafe = models.ForeignKey(Cafe, blank=True, null=True, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, blank=True, null=True, on_delete=models.CASCADE)
+    comment = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField(blank=True)
-    date = models.DateTimeField()
+    text = models.TextField(blank=True, null=True)
+    date = models.DateTimeField(blank=True, null=True)     # remove blank!!
     evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
 
     def __str__(self):
