@@ -1,24 +1,11 @@
-<html>
-    <head>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% extends "formpage.html" %}
 
-        {% load static %}
-        <link rel = "stylesheet" type = "text/css" href = "{% static 'kavarna/styles.css' %}">
-    </head>
+{% block content %}
+<a href="{% url '' %}"><h1 class="text-center">Café Database</h1></a>
+{{searchbar|safe}}
 
-    <body class="backgrounder hcentralize vcentralize">
-        <div class="row">
-            <div class="col">
-                <h1 class="text-center">Café Database</h1>
-                {{searchbar|safe}}
-                
-                <div class="row hcentralize">
-                    <a href="signin"><button class="btn btn-lg btn-info" type="submit">Sign in</button></a>
-                    <a href="register"><button class="btn btn-lg btn-info" type="submit">Register</button></a>
-                </div>
-            </div>
-        </div>
-    </body>
-</html>
+<div class="row hcentralize">
+    <a href="register"><button class="btn btn-lg btn-info" type="submit">Register</button></a>
+    <a href="signin"><button class="btn btn-lg btn-info" type="submit">Sign in</button></a>
+</div>
+{% endblock %}
