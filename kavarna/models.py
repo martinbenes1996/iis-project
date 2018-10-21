@@ -83,12 +83,11 @@ class Cafe(models.Model):
     def __str__(self):
         return self.name
 
-class User(models.Model):
+class Drinker(models.Model):
     """ User of the system. """
     email = models.EmailField()
     name = models.CharField(max_length=64)
     surname = models.CharField(max_length=64)
-    password = models.CharField(max_length=64)
     fav_coffee = models.ManyToManyField(Coffee)
     fav_preparation = models.ManyToManyField(CoffeePreparation)
     likes_cafe = models.ManyToManyField(Cafe)
@@ -101,7 +100,7 @@ class Event(models.Model):
     name = models.CharField(max_length=64)
     price = models.IntegerField()
     capacity = models.IntegerField()
-    participants = models.ManyToManyField(User)
+    participants = models.ManyToManyField(Drinker)
     coffee_list = models.ManyToManyField(Coffee)
     place = models.ForeignKey(Cafe, on_delete=models.CASCADE)
 
@@ -110,21 +109,21 @@ class Event(models.Model):
 
 class Evaluation(models.Model):
     """ Evaluation. """
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    drinker = models.ForeignKey(Drinker, on_delete=models.CASCADE, null=True)
     value = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        return self.user + str(value)
+        return self.drinker + str(value)
 
 class Reaction(models.Model):
     """ Comment. """
     cafe = models.ForeignKey(Cafe, blank=True, null=True, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, blank=True, null=True, on_delete=models.CASCADE)
     comment = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(Drinker, on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)     # remove blank!!
-    evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
+    evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE, blank=False)
 
     def __str__(self):
         return self.author

@@ -4,8 +4,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, Template
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+
 from kavarna import models
 
 def getSearchBar(d):
@@ -14,10 +16,37 @@ def getSearchBar(d):
         c = Context( d )
     return t.render(c)
 
+def getDrinkerData(email):
+    u = models.Drinker.objects.get(email=email)
+    if u != None:
+        return {'email' : email, 'name' : u.name, 'surname' : u.surname, 
+                'fav_coffee' : u.fav_coffee, 'fav_prep' : u.fav_preparation,
+                'likes_cafe' : u.likes_cafe}
+    else:
+        return {}
+
+def userExists(email):
+    return u.models.Drinker.objects.get(email=email) != None
+
+def mergeDicts(d1, d2):
+    return {**d1, **d2}
+
 def index(request):
     d = dict()
+    try:
+        email = request.COOKIES['user'] 
+        if userExists(email):
+            d = mergeDicts( d, getDrinkerData(email) )
+        else:
+            d['message'] = 'Unknown user'
+    except:
+        pass
+
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
+
+    d['users_list'] = models.Drinker.objects.all()
+    
     return render(request, "index.html", d)
 
 def register(request):
@@ -27,30 +56,24 @@ def register(request):
         # parse form
         v['name'] = request.POST.get("name", "")
         v['surname'] = request.POST.get("surname", "")
-        v['username'] = request.POST.get("username", "")
+        v['email'] = request.POST.get("email", "")
         v['password'] = request.POST.get("password", "")
 
-        # not matchning passwords
+        # not matching passwords
         if v['password'] != request.POST.get("password2", ""):
             v['warning'] = '<div class="alert alert-warning" role="alert">Passwords not matching.</div>'
             return render(request, "register.html", v)
         # invalid email
-        if re.match(r'.+@.+\..+', v['username']) is None:
+        if re.match(r'.+@.+\..+', v['email']) is None:
             v['warning'] = '<div class="alert alert-warning" role="alert">Invalid email.</div>'
             return render(request, "register.html", v)
-        # user with the email already exists
-        #u = models.User.objects.filter(email=v['username'])
-        #if models.User.objects.get(email=v['username']) != None:
-        #    v['warning'] = '<div class="alert alert-warning" role="alert">User with the email already exists.</div>'
-        #    return render(request, "register.html", v)
-        
-        #u = models.User(email=v['username'],
-        #                name=v['name'],
-        #                surname=v['surname'],
-        #                password=['password'])
-        #u.save()
 
         # go to home
+        user = User(username=v['email'], password=v['password'])
+        drinker = models.Drinker(email=v['email'], name=v['name'],
+                    surname=v['surname'])
+        user.save()
+        drinker.save()
         return redirect('')
     else:
         return render(request, "register.html", v)
@@ -60,15 +83,23 @@ def signin(request):
     v['type'] = 'Signin'
     if request.method == 'POST':
         # parse form
-        v['username'] = request.POST.get("username", "")
+        v['email'] = request.POST.get("email", "")
         v['password'] = request.POST.get("password", "")
 
         # invalid email
-        if re.match(r'.+@.+\..+', v['username']) == None:
+        if re.match(r'.+@.+\..+', v['email']) == None:
             v['warning'] = '<div class="alert alert-warning" role="alert">Invalid email.</div>'
             return render(request, "signin.html", v)
 
         # go to home
+        user = authenticate(username=v['email'], password=v['password'])
+        if user is not None:
+            response = redirect('')
+            response.set_cookie('user', v['email'], max_age=7200)
+            return response
+        else:
+            v['message'] = 'No user with given email'
+
         return redirect('')
     else:
         return render(request, "signin.html", v)

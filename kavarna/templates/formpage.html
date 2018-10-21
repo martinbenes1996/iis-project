@@ -10,15 +10,39 @@
     </head>
 
     <body class="backgrounder hcentralize">
-        <div class="container-fluid hcentralize vcentralize">
+        <div class="container-fluid vcentralize">
             <div class="row">
                 <div class="col">
-            
+                    {% if email %}<div class="">Logged: {{ name }} {{ surname }}</div>{% endif %}
+
                     <!-- content -->
                     {% block content %}
                     {% endblock %}
                     <!-- end of content -->
                            
+                
+            
+
+        <table>
+            <tr>
+                <th>Jméno</th>
+                <th>E-mail</th>
+                <th>Odstranit</th>
+            </tr>
+    
+            {% for a in users_list %}
+            <tr>
+                <th>{{a.name}} {{a.surname}}</th>
+                <th>{{a.email}}</th>
+                <th>
+                    <form method="post" action="">{% csrf_token %}
+                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
+                        <button type="Submit">Odstranit</button>
+                    </form>
+                </th>
+            </tr>
+            {% endfor %}
+        </table>
                 </div>
             </div>
         </div>
