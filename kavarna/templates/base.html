@@ -10,9 +10,22 @@
     </head>
 
     <body class="backgrounder">
-        <div class="row hcentralize">
-            <div class="col" style="padding-top: 40px">
-                {{searchbar|safe}}
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="pull-right" style="margin-top: 0;">
+                        {% block profile %}
+                            <a href="{% url 'profile' %}">{{ name }} {{ surname }}</a>
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="hcentralize" >
+                    {{searchbar|safe}}
+                </div>
             </div>
         </div>
         <div class="container-fluid" style="padding-top: 50px">

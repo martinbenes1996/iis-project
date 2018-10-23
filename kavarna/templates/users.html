@@ -1,0 +1,28 @@
+{% extends "formpage.html" %}
+
+{% block content %}
+<table>
+    <tr>
+        <th>Jméno</th>
+        <th>E-mail</th>
+        <th>Odstranit</th>
+    </tr>
+    
+    {% for a in users_list %}
+    <tr>
+        <th>{{a.first_name}} {{a.last_name}}</th>
+        <th>{{a.email}}</th>
+        <th>
+            <form method="post" action="">{% csrf_token %}
+                <input name="pk" type="hidden" value="{{ a.pk }}" required />
+                <button type="Submit">Odstranit</button>
+            </form>
+        </th>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="row hcentralize">
+    <a href="{% url '' %}"><button class="btn btn-lg btn-info" type="submit">Go Home</button></a>
+</div>
+{% endblock %}

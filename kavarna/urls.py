@@ -23,4 +23,8 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('signin/', views.signin, name='signin'),
     path('search/', views.search, name='search'),
+    path('users/', views.users, name='users'),
+    path('profile/', views.profile, name='profile'),
+    path('addcafe/', views.addcafe, name='addcafe'),
+    path('logout/', views.logout, name='logout'),
 ]

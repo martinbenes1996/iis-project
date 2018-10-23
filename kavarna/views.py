@@ -1,12 +1,13 @@
 import re
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.template import Context, Template
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.db import IntegrityError
 
 from kavarna import models
 
@@ -17,135 +18,181 @@ def getSearchBar(d):
     return t.render(c)
 
 def getDrinkerData(email):
-    u = models.Drinker.objects.get(email=email)
+    u = User.objects.get(email=email)
     if u != None:
-        return {'email' : email, 'name' : u.name, 'surname' : u.surname, 
-                'fav_coffee' : u.fav_coffee, 'fav_prep' : u.fav_preparation,
-                'likes_cafe' : u.likes_cafe}
+        d = models.Drinker.objects.get(key=u.pk)
+        return {'email' : u.email, 'name' : u.first_name, 'surname' : u.last_name,
+                'pk' : u.pk,
+                'fav_coffee' : d.fav_coffee, 'fav_prep' : d.fav_preparation,
+                'likes_cafe' : d.likes_cafe}
     else:
         return {}
 
 def userExists(email):
-    return u.models.Drinker.objects.get(email=email) != None
+    return User.objects.get(email=email) != None
 
-def mergeDicts(d1, d2):
-    return {**d1, **d2}
+def logout(request=None):
+    response = redirect('')
+    response.delete_cookie('user')
+    return response
+def errLogout(request, d):
+    response = render(request, 'index.html', d)
+    response.delete_cookie('user')
+    return response
+
+def generateDict(request):
+    try:
+        email = request.COOKIES['user']
+        if userExists(email):
+            return getDrinkerData(email)
+        else:
+            return {'message' : 'Unknown user'}
+    except:
+        print('Logged: nobody')
+        return dict()
 
 def index(request):
-    d = dict()
-    try:
-        email = request.COOKIES['user'] 
-        if userExists(email):
-            d = mergeDicts( d, getDrinkerData(email) )
-        else:
-            d['message'] = 'Unknown user'
-    except:
-        pass
+    #models.Drinker.objects.all().delete()
+    #User.objects.all().delete()
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
 
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
-
-    d['users_list'] = models.Drinker.objects.all()
-    
     return render(request, "index.html", d)
+    
 
 def register(request):
-    v = dict()
-    v['type'] = 'Register'
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    d['type'] = 'Register'
     if request.method == 'POST':
         # parse form
-        v['name'] = request.POST.get("name", "")
-        v['surname'] = request.POST.get("surname", "")
-        v['email'] = request.POST.get("email", "")
-        v['password'] = request.POST.get("password", "")
+        d['register_first_name'] = request.POST.get("first_name", "")
+        d['register_last_name'] = request.POST.get("last_name", "")
+        d['register_email'] = request.POST.get("email", "")
+        d['password'] = request.POST.get("password", "")
 
         # not matching passwords
-        if v['password'] != request.POST.get("password2", ""):
-            v['warning'] = '<div class="alert alert-warning" role="alert">Passwords not matching.</div>'
-            return render(request, "register.html", v)
+        if d['password'] != request.POST.get("password2", ""):
+            d['warning'] = '<div class="alert alert-warning" role="alert">Passwords not matching.</div>'
+            return render(request, "register.html", d)
         # invalid email
-        if re.match(r'.+@.+\..+', v['email']) is None:
-            v['warning'] = '<div class="alert alert-warning" role="alert">Invalid email.</div>'
-            return render(request, "register.html", v)
-
-        # go to home
-        user = User(username=v['email'], password=v['password'])
-        drinker = models.Drinker(email=v['email'], name=v['name'],
-                    surname=v['surname'])
+        #if re.match(r'.+@.+\..+', d['email']) is None:
+        #    d['warning'] = '<div class="alert alert-warning" role="alert">Invalid email.</div>'
+        #    return render(request, "register.html", d)
+        try:
+            user = User.objects.create_user(d['register_email'], password=d['password'])
+        except IntegrityError:
+            return render(request, "register.html", d)
+        user.email = d['register_email']
+        user.first_name = d['register_first_name']
+        user.last_name = d['register_last_name']
         user.save()
+        drinker = models.Drinker(key=user.pk)
         drinker.save()
         return redirect('')
+
     else:
-        return render(request, "register.html", v)
+        return render(request, "register.html", d)
 
 def signin(request):
-    v = dict()
-    v['type'] = 'Signin'
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    d['type'] = 'Signin'
     if request.method == 'POST':
         # parse form
-        v['email'] = request.POST.get("email", "")
-        v['password'] = request.POST.get("password", "")
+        d['email'] = request.POST.get("email", "")
+        d['password'] = request.POST.get("password", "")
 
         # invalid email
-        if re.match(r'.+@.+\..+', v['email']) == None:
-            v['warning'] = '<div class="alert alert-warning" role="alert">Invalid email.</div>'
-            return render(request, "signin.html", v)
+        #if re.match(r'.+@.+\..+', v['email']) == None:
+        #    v['warning'] = '<div class="alert alert-warning" role="alert">Invalid email.</div>'
+        #    return render(request, "signin.html", v)
 
         # go to home
-        user = authenticate(username=v['email'], password=v['password'])
+        user = authenticate(username=d['email'], password=d['password'])
         if user is not None:
             response = redirect('')
-            response.set_cookie('user', v['email'], max_age=7200)
+            response.set_cookie('user', d['email'], max_age=7200)
             return response
         else:
-            v['message'] = 'No user with given email'
-
-        return redirect('')
-    else:
-        return render(request, "signin.html", v)
+            d['message'] = 'No user with given email'
+    
+    return render(request, "signin.html", d)
 
 def search(request):
 
-    testOwner = models.Owner(name = "Jan", surname = "Honzik")
-    testOwner.save()
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
 
-    testC = models.Cafe(name = "U Martina", street = "Martinovo namesti", housenumber = 47, city = "Brno", psc = 66600,
-                opensAt = "9:00", closesAt = "18:00", capacity = 50, description = "Very nice...", owner = models.Owner.objects.first(),
-                )
-    testC.save()
-
-    test = models.CoffeeBean(name = "zrnko", origin = "cze", aroma = "nevonne", acidity = 10)
-    test.save()
-    test2 = models.CoffeeBean(name = "africka namka", origin = "cze", aroma = "nevonne", acidity = 10)
-    test2.save()
-    test3 = models.CoffeeBean(name = "moje kavicka", origin = "cze", aroma = "nevonne", acidity = 10)
-    test3.save()
-
-    d = dict()
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
+    
     # cafe results
-    objects = models.CoffeeBean.objects.all()
-    d['caferesults'] = []
-    for bean in objects:
-        d['caferesults'].append(bean)
+    try:
+        d['caferesults'] = models.CoffeeBean.objects.filter(name=d['key']).values()
+    except:
+        pass
+    # ...
+
     # coffee results
-    objects = models.Cafe.objects.all()
-    d['coffeeresults'] = []
-    for cafe in objects:
-        d['coffeeresults'].append(cafe)
+    try:
+        d['coffeeresults'] = models.Cafe.objects.filter(name=d['key']).values()
+    except:
+        pass
+    #...
+    
     # coffeebeansresults results
+    # ...
 
-    pom = render(request, "search.html", d)
+    return render(request, "search.html", d)
 
-    models.CoffeeBean.objects.all().delete()
-    models.Cafe.objects.all().delete()
-    models.Owner.objects.all().delete()
-    #test3.delete()
+def addcafe(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    d['key'] = request.GET.get('key', '')
+    d['searchbar'] = getSearchBar(d)
 
-    return pom
+    if request.method == 'POST':
+        d['cafe_name'] = request.POST.get('name', '')
+        c = models.Cafe(name=d['cafe_name'], owner=d['pk'])
+        c.save()
+    else:
+        d['message'] = 'Unexpected link.'
+    return render(request, "profile.html", d)
 
-# add function with the name matching from urls.py
-# def function(request, parameters...):
-#       return render(request, file from template, dict())
-# watch documentation for more information
+def profile(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    d['key'] = request.GET.get('key', '')
+    d['searchbar'] = getSearchBar(d)
+
+    if request.method == 'POST':
+        return addcafe(request)
+
+    return render(request, "profile.html", d)
+
+def users(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'POST':
+        pk = request.POST.get('pk')
+        User.objects.get(pk=pk).delete()
+        models.Drinker.objects.get(key=pk).delete()
+        return HttpResponseRedirect('')
+    
+    d['users_list'] = User.objects.all()
+    return render(request, "users.html", d)
+    
+

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # null? default?
 
@@ -51,32 +52,19 @@ class User(models.Model):
     fav_coffee = models.ManyToManyField(Coffee)
     fav_preparation = models.ManyToManyField(CoffeePreparation)
 """
-    # je moznost oddelit tabulku uzivatel a zamestnanec. Zamestnanec se vztahuje k dane kavarne, ne k nasemu systemu.
-    # My delame system mapujici kavarny a ne is jednotlivych kavaren -> nepotrebujeme vubec znat zamestnance
-    # jednotlivych kavaren a zamestnavatel neni automaticky uzivatel registrovany v nasem is. Toto je muj navrh:
-
-class Owner(models.Model):
-    """ Owner of a cafe. """
-    name = models.CharField(max_length=64)
-    email = models.EmailField(blank=True)
-    surname = models.CharField(max_length=64)
-    # picture = models.         # fotka majitele
-
-    def __str__(self):
-        return self.name
 
 class Cafe(models.Model):
     """ Cafe. """
     name = models.CharField(max_length=64)
-    street = models.CharField(max_length=64)
-    housenumber = models.PositiveIntegerField(blank=True)
-    city = models.CharField(max_length=64)
-    psc = models.PositiveIntegerField(blank=True)
-    opensAt = models.TimeField()
-    closesAt = models.TimeField()
-    capacity = models.PositiveSmallIntegerField(blank=True)
-    description = models.TextField(blank=True)
-    owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    street = models.CharField(max_length=64, blank=True, null=True)
+    housenumber = models.PositiveIntegerField(blank=True, null=True)
+    city = models.CharField(max_length=64, blank=True, null=True)
+    psc = models.PositiveIntegerField(blank=True, null=True)
+    opensAt = models.TimeField(blank=True, null=True)
+    closesAt = models.TimeField(blank=True, null=True)
+    capacity = models.PositiveSmallIntegerField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    owner = models.PositiveIntegerField(default='0')
     offers_coffee = models.ManyToManyField(Coffee)
     #employees = models.ManyToManyField(User)       - vubec bych to neresil, nemusime vypisovat vsechny zamestnance kavaren
 
@@ -85,15 +73,10 @@ class Cafe(models.Model):
 
 class Drinker(models.Model):
     """ User of the system. """
-    email = models.EmailField()
-    name = models.CharField(max_length=64)
-    surname = models.CharField(max_length=64)
+    key = models.PositiveIntegerField(default='0')
     fav_coffee = models.ManyToManyField(Coffee)
     fav_preparation = models.ManyToManyField(CoffeePreparation)
     likes_cafe = models.ManyToManyField(Cafe)
-
-    def __str__(self):
-        return self.name
 
 class Event(models.Model):
     """ Event. """

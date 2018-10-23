@@ -9,43 +9,32 @@
         <link rel = "stylesheet" type = "text/css" href = "{% static 'kavarna/styles.css' %}">
     </head>
 
-    <body class="backgrounder hcentralize">
-        <div class="container-fluid vcentralize">
+    <body class="backgrounder">
+        <div class="panel-body">
             <div class="row">
-                <div class="col">
-                    {% if email %}<div class="">Logged: {{ name }} {{ surname }}</div>{% endif %}
-
-                    <!-- content -->
-                    {% block content %}
-                    {% endblock %}
-                    <!-- end of content -->
-                           
-                
-            
-
-        <table>
-            <tr>
-                <th>Jméno</th>
-                <th>E-mail</th>
-                <th>Odstranit</th>
-            </tr>
-    
-            {% for a in users_list %}
-            <tr>
-                <th>{{a.name}} {{a.surname}}</th>
-                <th>{{a.email}}</th>
-                <th>
-                    <form method="post" action="">{% csrf_token %}
-                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
-                        <button type="Submit">Odstranit</button>
-                    </form>
-                </th>
-            </tr>
-            {% endfor %}
-        </table>
+                <div class="col-xs-12">
+                    <div class="pull-right" style="margin-top: 0;">
+                        <a href="{% url 'profile' %}">{{ name }} {{ surname }}</a>
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <div class="vertical-center">
+            <div class="container-fluid">
+                <div class="row hcentralize vcentralize">
+                    <div class="col">
+            
+                        <!-- content -->
+                        {% block content %}
+                        {% endblock %}
+                        <!-- end of content -->
+                                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         
 
     </body>
