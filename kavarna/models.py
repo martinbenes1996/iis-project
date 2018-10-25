@@ -59,7 +59,7 @@ class Cafe(models.Model):
     
     @classmethod
     def getData(cls, pk, prefix=''):
-        return models.Drinker.objects.get(pk=pk)
+        return Cafe.objects.get(pk=pk)
 
 class Drinker(models.Model):
     """ User of the system. """

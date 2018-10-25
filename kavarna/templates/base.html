@@ -18,7 +18,7 @@
                         {% block enterprofile %}
                         <form action="/profile" method="get">
                             <input name="user" type="hidden" value="{{ loggeduser.pk }}" required />
-                            <button type="Submit">{{ loggeduser.first_name }} {{ loggeduser.last_name }}</button>
+                            <button class="btn btn-link" type="Submit">{{ loggeduser.first_name }} {{ loggeduser.last_name }}</button>
                         </form>
                         {% endblock %}
                         {% endif %}
