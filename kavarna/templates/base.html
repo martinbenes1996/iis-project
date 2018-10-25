@@ -14,11 +14,11 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="pull-right" style="margin-top: 0;">
-                        {% if pk %}
+                        {% if loggeduser %}
                         {% block enterprofile %}
                         <form action="/profile" method="get">
-                            <input name="pk" type="hidden" value="{{ pk }}" required />
-                            <button type="Submit">{{ name }} {{ surname }}</button>
+                            <input name="user" type="hidden" value="{{ loggeduser.pk }}" required />
+                            <button type="Submit">{{ loggeduser.first_name }} {{ loggeduser.last_name }}</button>
                         </form>
                         {% endblock %}
                         {% endif %}

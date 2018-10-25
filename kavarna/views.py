@@ -11,25 +11,17 @@ from django.db import IntegrityError
 
 from kavarna import models
 
-def getSearchBar(d):
-    with open('kavarna/templates/searchbar.html', 'r') as searchbar:
-        t = Template( searchbar.read() )
+def getExternalCode(name, d):
+    with open(name, 'r') as f:
+        t = Template( f.read() )
         c = Context( d )
     return t.render(c)
-
-def getDrinkerData(email):
-    u = User.objects.get(email=email)
-    if u != None:
-        d = models.Drinker.objects.get(key=u.pk)
-        return {'email' : u.email, 'name' : u.first_name, 'surname' : u.last_name,
-                'pk' : u.pk,
-                'fav_coffee' : d.fav_coffee, 'fav_prep' : d.fav_preparation,
-                'likes_cafe' : d.likes_cafe}
-    else:
-        return {}
-
-def userExists(email):
-    return User.objects.get(email=email) != None
+def getSearchBar(d):
+    return getExternalCode('kavarna/templates/searchbar.html', d)
+def getAlertBox(d):
+    return getExternalCode('kavarna/templates/alertbox.html', d)
+def generateAlert(msg):
+    return getAlertBox( {'message' : msg} )
 
 def logout(request=None):
     response = redirect('')
@@ -43,22 +35,26 @@ def errLogout(request, d):
 def generateDict(request):
     try:
         email = request.COOKIES['user']
-        if userExists(email):
-            return getDrinkerData(email)
+        if User.objects.get(email=email) != None:
+            d = {'loggeduser'    : User.objects.get(email=email),
+                 'loggeddrinker' : models.Drinker.getData(email) }
         else:
-            return {'message' : 'Unknown user'}
+            d = {'message'   : 'Unknown user'}
+            d['alertbox'] = getAlertBox(d)
     except:
-        print('Logged: nobody')
-        return dict()
+        d = {}
+    d['key'] = request.GET.get('key', '')
+    d['searchbar'] = getSearchBar(d)
+
+    return d
+
 
 def index(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    print(d['pk'])
-
-    d['key'] = request.GET.get('key', '')
-    d['searchbar'] = getSearchBar(d)
+    
+    print(d.keys())
     return render(request, "index.html", d)
 
 
@@ -67,7 +63,6 @@ def register(request):
     if 'message' in d:
         return errLogout(request, d)
 
-    d['type'] = 'Register'
     if request.method == 'POST':
         # parse form
         d['register_first_name'] = request.POST.get("first_name", "")
@@ -77,7 +72,7 @@ def register(request):
 
         # not matching passwords
         if d['password'] != request.POST.get("password2", ""):
-            d['warning'] = '<div class="alert alert-warning" role="alert">Passwords not matching.</div>'
+            d['alertbox'] = generateAlert('Not matching passwords.')
             return render(request, "register.html", d)
         # invalid email
         #if re.match(r'.+@.+\..+', d['email']) is None:
@@ -86,6 +81,7 @@ def register(request):
         try:
             user = User.objects.create_user(d['register_email'], password=d['password'])
         except IntegrityError:
+            d['alertbox'] = generateAlert('Invalid data.')
             return render(request, "register.html", d)
         user.email = d['register_email']
         user.first_name = d['register_first_name']
@@ -103,7 +99,6 @@ def signin(request):
     if 'message' in d:
         return errLogout(request, d)
 
-    d['type'] = 'Signin'
     if request.method == 'POST':
         # parse form
         d['email'] = request.POST.get("email", "")
@@ -115,13 +110,20 @@ def signin(request):
         #    return render(request, "signin.html", v)
 
         # go to home
+        try:
+            u = User.objects.get(username = d['email'])
+        except:
+            d['alertbox'] = generateAlert('No user with given email')
+            return render(request, "signin.html", d)
+
         user = authenticate(username=d['email'], password=d['password'])
         if user is not None:
             response = redirect('')
             response.set_cookie('user', d['email'], max_age=7200)
             return response
         else:
-            d['message'] = 'No user with given email'
+            d['alertbox'] = generateAlert('Incorrect password')
+            return render(request, "signin.html", d)
 
     return render(request, "signin.html", d)
 
@@ -130,9 +132,6 @@ def search(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-
-    d['key'] = request.GET.get('key', '')
-    d['searchbar'] = getSearchBar(d)
 
     # cafe results
     try:
@@ -157,30 +156,74 @@ def addcafe(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    d['key'] = request.GET.get('key', '')
-    d['searchbar'] = getSearchBar(d)
 
     if request.method == 'POST':
-        d['cafe_name'] = request.POST.get('name', '')
-        c = models.Cafe(name=d['cafe_name'], owner=d['pk'])
+        if 'loggeduser' not in d:
+            d['alertbox'] = generateAlert('You must login before creating cafe') 
+        d['cafe_name'] = request.POST['name']
+        d['cafe_street'] = request.POST.get('street')
+        d['cafe_housenumber'] = request.POST.get('housenumber')
+        d['cafe_city'] = request.POST.get('city')
+        d['cafe_psc'] = request.POST.get('psc')
+        d['cafe_opensat'] = request.POST.get('opensat')
+        d['cafe_closesat'] = request.POST.get('closesat')
+        d['cafe_capacity'] = request.POST.get('capacity')
+        d['cafe_description'] = request.POST.get('description')
+        #for k,v in d.items():
+        #    if v == '':
+        #        d[k] = None
+       # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
+            
+        print(d)
+        c = models.Cafe(name=d['cafe_name'],
+                        #street=d['cafe_street'],
+                        #housenumber=d['cafe_housenumber'],
+                        #city=d['cafe_city'],
+                        #psc=d['cafe_psc'],
+                        #opensAt=d['cafe_opensat'],
+                        #closesAt=d['cafe_closesat'],
+                        #capacity=d['cafe_capacity'],
+                        #description=d['cafe_description'],
+                        owner=d['loggeduser'])
         c.save()
+        return redirect('cafes')
     else:
-        d['message'] = 'Unexpected link.'
-    return render(request, "profile.html", d)
+        d['alertbox'] = generateAlert('Unexpected link.')
+    return render(request, "addcafe.html", d)
 
 def profile(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    d['key'] = request.GET.get('key', '')
-    d['searchbar'] = getSearchBar(d)
+
     # change to requested user profile number
-    d['user_id'] = User.objects.first()
+    if request.method == 'GET':
+        d['user_id'] = request.GET.get('user', '')
+    else:
+        d['user_id'] = User.objects.first()
+
+    if request.method == 'POST':
+        return addcafe(request)
+    
+    print(d)
+
+    return render(request, "profile-info.html", d)
+
+def profileCafe(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    # change to requested user profile number
+    if request.method == 'GET':
+        d['user_id'] = request.GET.get('id', '')
+    else:
+        d['user_id'] = User.objects.first()
 
     if request.method == 'POST':
         return addcafe(request)
 
-    return render(request, "profile.html", d)
+    return render(request, "profile-cafe.html", d)
 
 def users(request):
     d = generateDict(request)
@@ -195,5 +238,31 @@ def users(request):
 
     d['users_list'] = User.objects.all()
     return render(request, "users.html", d)
+
+def cafes(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    
+    if request.method == 'POST':
+        pk = request.POST.get('pk')
+        models.Cafe.objects.get(pk=pk).delete()
+        return HttpResponseRedirect('')
+    
+    d['cafes_list'] = models.Cafe.objects.all()
+    d['users_list'] = User.objects.all()
+    d['drinkers_list'] = models.Drinker.objects.all()
+    return render(request, "cafes.html", d)
+
+def cafe(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    
+    if request.method == 'GET':
+        cafeid = request.GET['id']
+        d['cafe'] = models.Cafe.getData(cafeid)
+
+        return render(request, "cafe.html", d)
 
 
