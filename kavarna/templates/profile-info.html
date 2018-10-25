@@ -1,0 +1,24 @@
+{% extends "profile.html" %}
+
+{% block profile-content %}
+
+<div class="row hcentralize">
+    <div class="col-lg">
+	<ul>	
+	    <div>
+	        User id: {{ user_id.pk }}
+	    </div>
+	    <div>
+		User e-mail: {{ user_id.email }}
+	    </div>
+	    <div>
+	        User name: {{ user_id.first_name }}
+	    </div>
+	    <div>
+		User surname: {{ user_id.last_name }}
+	    </div>	
+	</ul>
+    </div>
+</div>
+
+{% endblock %}

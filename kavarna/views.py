@@ -176,12 +176,32 @@ def profile(request):
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
     # change to requested user profile number
-    d['user_id'] = User.objects.first()
+    if request.method == 'GET':
+        d['user_id'] = request.GET.get('id', '')
+    else:
+        d['user_id'] = User.objects.first()
 
     if request.method == 'POST':
         return addcafe(request)
 
-    return render(request, "profile.html", d)
+    return render(request, "profile-info.html", d)
+
+def profileCafe(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    d['key'] = request.GET.get('key', '')
+    d['searchbar'] = getSearchBar(d)
+    # change to requested user profile number
+    if request.method == 'GET':
+        d['user_id'] = request.GET.get('id', '')
+    else:
+        d['user_id'] = User.objects.first()
+
+    if request.method == 'POST':
+        return addcafe(request)
+
+    return render(request, "profile-cafe.html", d)
 
 def users(request):
     d = generateDict(request)

@@ -11,64 +11,30 @@
 <div class="row hcentralize">
     <div class="col-lg-2">
 	<div>
-	    <h3>information</h3>
+	    <!--<h3>information</h3>-->
+	    <form method="get" action="{% url 'profile' %}">{% csrf_token %}
+                <input name="id" type="hidden" value="{{ user_id.pk }}" required />
+                <button type="Submit">information</button>
+            </form>
 	</div>
     </div>
     <div class="col-lg-2">
 	<div>
-	    <h3>Cafe</h3>
+	    <!--<h3>Cafe</h3>-->
+	    <form method="get" action="{% url 'profile' %}">{% csrf_token %}
+                <input name="id" type="hidden" value="{{ user_id.pk }}" required />
+                <button type="Submit">cafe</button>
+            </form>
 	</div>
     </div>
 </div>
 
-<div class="row hcentralize">
-    <div class="col-lg">
-	<ul>	
-	    <div>
-	        User id: {{ user_id.pk }}
-	    </div>
-	    <div>
-		User e-mail: {{ user_id.email }}
-	    </div>
-	    <div>
-	        User name: {{ user_id.first_name }}
-	    </div>
-	    <div>
-		User surname: {{ user_id.last_name }}
-	    </div>	
-	</ul>
-    </div>
-</div>
+{% block profile-content %}
+{% endblock %}
 
-<div class="row">
-    <div class="col-lg-6">
-        <h2>Kavárny</h2>
-        <table>
-            <tr>
-                <th>Jméno</th>
-                <th>Odstranit</th>
-            </tr>
-            {% for a in cafe_list %}
-            <tr>
-                <th>{{a.name}}</th>
-                <th>
-                    <form method="post" action="">{% csrf_token %}
-                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
-                        <button type="Submit">Odstranit</button>
-                    </form>
-                </tr>
-                {% endfor %}
-            </table>
-    </div>
-    <div class="col-lg-3">
-        <h2>Založit Kavárnu</h2>
-        <form action="" method="post">{% csrf_token %}
-            <input type="" name="name" placeholder="Name" required />
-            <button class="btn btn-info" type="submit">Create</button>
-        </form>
-    </div>
 
-</div>
+
+
 {% endblock %}
 
 {% block profile %}

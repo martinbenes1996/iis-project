@@ -25,6 +25,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('users/', views.users, name='users'),
     path('profile/', views.profile, name='profile'),
+    path('profile/cafe', views.profileCafe, name='profileCafe'),
     path('addcafe/', views.addcafe, name='addcafe'),
     path('logout/', views.logout, name='logout'),
 ]
