@@ -231,7 +231,7 @@ def profile_cafe(request):
         d['user_profile'] = User.objects.first()
 
     #d['user_cafes_list'] = models.Cafe.objects.all()
-    d['user_cafes_list'] = models.Cafe.objects.filter(owner=d['user_profile']).values()
+    d['user_cafes_list'] = models.Cafe.objects.filter(owner=d['user_profile'])#.values()
 
     #if request.method == 'POST':
     #    return addcafe(request)
