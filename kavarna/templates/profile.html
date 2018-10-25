@@ -2,10 +2,47 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-lg-3">
+    <div class="col">
+	<div class="hcentralize vcentralize">
+	    <h2>{{ user_id.first_name }} {{ user_id.last_name }}</h2>
+	</div>
     </div>
+</div>
+<div class="row hcentralize">
+    <div class="col-lg-2">
+	<div>
+	    <h3>information</h3>
+	</div>
+    </div>
+    <div class="col-lg-2">
+	<div>
+	    <h3>Cafe</h3>
+	</div>
+    </div>
+</div>
+
+<div class="row hcentralize">
+    <div class="col-lg">
+	<ul>	
+	    <div>
+	        User id: {{ user_id.pk }}
+	    </div>
+	    <div>
+		User e-mail: {{ user_id.email }}
+	    </div>
+	    <div>
+	        User name: {{ user_id.first_name }}
+	    </div>
+	    <div>
+		User surname: {{ user_id.last_name }}
+	    </div>	
+	</ul>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-lg-6">
-        <!--<h2>Kavárny</h2>
+        <h2>Kavárny</h2>
         <table>
             <tr>
                 <th>Jméno</th>
@@ -21,7 +58,7 @@
                     </form>
                 </tr>
                 {% endfor %}
-            </table>-->
+            </table>
     </div>
     <div class="col-lg-3">
         <h2>Založit Kavárnu</h2>

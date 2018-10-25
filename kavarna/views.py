@@ -61,7 +61,7 @@ def index(request):
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
     return render(request, "index.html", d)
-    
+
 
 def register(request):
     d = generateDict(request)
@@ -123,7 +123,7 @@ def signin(request):
             return response
         else:
             d['message'] = 'No user with given email'
-    
+
     return render(request, "signin.html", d)
 
 def search(request):
@@ -134,7 +134,7 @@ def search(request):
 
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
-    
+
     # cafe results
     try:
         d['caferesults'] = models.CoffeeBean.objects.filter(name=d['key']).values()
@@ -148,7 +148,7 @@ def search(request):
     except:
         pass
     #...
-    
+
     # coffeebeansresults results
     # ...
 
@@ -175,6 +175,8 @@ def profile(request):
         return errLogout(request, d)
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)
+    # change to requested user profile number
+    d['user_id'] = User.objects.first()
 
     if request.method == 'POST':
         return addcafe(request)
@@ -191,8 +193,8 @@ def users(request):
         User.objects.get(pk=pk).delete()
         models.Drinker.objects.get(key=pk).delete()
         return HttpResponseRedirect('')
-    
+
     d['users_list'] = User.objects.all()
     return render(request, "users.html", d)
-    
+
 
