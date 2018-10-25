@@ -27,6 +27,7 @@ urlpatterns = [
     path('cafes/', views.cafes, name='cafes'),
     path('profile/', views.profile, name='profile'),
     path('profile_cafe/', views.profile_cafe, name='profile_cafe'),
+    path('deletecafe/', views.deletecafe, name='deletecafe'),
     path('addcafe/', views.addcafe, name='addcafe'),
     path('logout/', views.logout, name='logout'),
     path('cafe/', views.cafe, name='cafe')

@@ -13,7 +13,7 @@
 	<div>
 	    <!--<h3>information</h3>-->
 	    <form method="get" action="{% url 'profile' %}">{% csrf_token %}
-                <input name="id" type="hidden" value="{{ user_profile.pk }}" required />
+                <input name="user" type="hidden" value="{{ user_profile.pk }}" required />
                 <button type="Submit">information</button>
             </form>
 	</div>
@@ -22,7 +22,7 @@
 	<div>
 	    <!--<h3>Cafe</h3>-->
 	    <form method="get" action="{% url 'profile_cafe' %}">{% csrf_token %}
-                <input name="id" type="hidden" value="{{ user_profile.pk }}" required />
+                <input name="user" type="hidden" value="{{ user_profile.pk }}" required />
                 <button type="Submit">cafe</button>
             </form>
 	</div>
