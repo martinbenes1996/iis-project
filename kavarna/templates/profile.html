@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col">
 	<div class="hcentralize vcentralize">
-	    <h2>{{ user_id.first_name }} {{ user_id.last_name }}</h2>
+	    <h2>{{ user_profile.first_name }} {{ user_profile.last_name }}</h2>
 	</div>
     </div>
 </div>
@@ -13,7 +13,7 @@
 	<div>
 	    <!--<h3>information</h3>-->
 	    <form method="get" action="{% url 'profile' %}">{% csrf_token %}
-                <input name="id" type="hidden" value="{{ user_id.pk }}" required />
+                <input name="id" type="hidden" value="{{ user_profile.pk }}" required />
                 <button type="Submit">information</button>
             </form>
 	</div>
@@ -21,8 +21,8 @@
     <div class="col-lg-2">
 	<div>
 	    <!--<h3>Cafe</h3>-->
-	    <form method="get" action="{% url 'profile' %}">{% csrf_token %}
-                <input name="id" type="hidden" value="{{ user_id.pk }}" required />
+	    <form method="get" action="{% url 'profile_cafe' %}">{% csrf_token %}
+                <input name="id" type="hidden" value="{{ user_profile.pk }}" required />
                 <button type="Submit">cafe</button>
             </form>
 	</div>

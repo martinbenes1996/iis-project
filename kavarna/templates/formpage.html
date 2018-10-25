@@ -14,7 +14,11 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="pull-right" style="margin-top: 0;">
-                        <a href="{% url 'profile' %}">{{ name }} {{ surname }}</a>
+			<form method="get" action="{% url 'profile' %}">{% csrf_token %}
+			    <input name="id" type="hidden" value="{{ pk }}" required />
+			    <button type="Submit">{{ name }} {{ surname }}</button>
+			</form><!--
+                        <a href="{% url 'profile' %}">{{ name }} {{ surname }}</a>-->
                     </div>
                 </div>
             </div>

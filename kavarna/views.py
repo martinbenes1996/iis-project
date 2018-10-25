@@ -167,7 +167,7 @@ def addcafe(request):
         c.save()
     else:
         d['message'] = 'Unexpected link.'
-    return render(request, "profile.html", d)
+    return render(request, "profile-cafe.html", d)
 
 def profile(request):
     d = generateDict(request)
@@ -177,16 +177,14 @@ def profile(request):
     d['searchbar'] = getSearchBar(d)
     # change to requested user profile number
     if request.method == 'GET':
-        d['user_id'] = request.GET.get('id', '')
+        user_id = request.GET.get('id', '')
+        d['user_profile'] = User.objects.get(pk=user_id)
     else:
-        d['user_id'] = User.objects.first()
-
-    if request.method == 'POST':
-        return addcafe(request)
+        d['user_profile'] = User.objects.first()
 
     return render(request, "profile-info.html", d)
 
-def profileCafe(request):
+def profile_cafe(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
@@ -194,9 +192,10 @@ def profileCafe(request):
     d['searchbar'] = getSearchBar(d)
     # change to requested user profile number
     if request.method == 'GET':
-        d['user_id'] = request.GET.get('id', '')
+        user_id = request.GET.get('id', '')
+        d['user_profile'] = User.objects.get(pk=user_id)
     else:
-        d['user_id'] = User.objects.first()
+        d['user_profile'] = User.objects.first()
 
     if request.method == 'POST':
         return addcafe(request)
