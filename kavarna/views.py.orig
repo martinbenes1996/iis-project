@@ -50,8 +50,6 @@ def generateDict(request):
 
 
 def index(request):
-    #models.Drinker.objects.all().delete()
-    #User.objects.all().delete()
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
@@ -65,7 +63,6 @@ def register(request):
     if 'message' in d:
         return errLogout(request, d)
 
-    d['type'] = 'Register'
     if request.method == 'POST':
         # parse form
         d['register_first_name'] = request.POST.get("first_name", "")
@@ -102,7 +99,6 @@ def signin(request):
     if 'message' in d:
         return errLogout(request, d)
 
-    d['type'] = 'Signin'
     if request.method == 'POST':
         # parse form
         d['email'] = request.POST.get("email", "")
@@ -137,9 +133,6 @@ def search(request):
     if 'message' in d:
         return errLogout(request, d)
 
-    d['key'] = request.GET.get('key', '')
-    d['searchbar'] = getSearchBar(d)
-
     # cafe results
     try:
         d['caferesults'] = models.CoffeeBean.objects.filter(name=d['key']).values()
@@ -163,8 +156,6 @@ def addcafe(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    d['key'] = request.GET.get('key', '')
-    d['searchbar'] = getSearchBar(d)
 
     if request.method == 'POST':
         if 'loggeduser' not in d:
@@ -197,21 +188,36 @@ def addcafe(request):
         c.save()
         return redirect('cafes')
     else:
+<<<<<<< HEAD
+        d['message'] = 'Unexpected link.'
+    return render(request, "profile-cafe.html", d)
+=======
         d['alertbox'] = generateAlert('Unexpected link.')
     return render(request, "addcafe.html", d)
+>>>>>>> 625d055549a9be6277dd9ed18a064d4ff6e8af28
 
 def profile(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    d['key'] = request.GET.get('key', '')
-    d['searchbar'] = getSearchBar(d)
+
     # change to requested user profile number
     if request.method == 'GET':
+<<<<<<< HEAD
         user_id = request.GET.get('id', '')
         d['user_profile'] = User.objects.get(pk=user_id)
     else:
         d['user_profile'] = User.objects.first()
+=======
+        d['user_id'] = request.GET.get('user', '')
+    else:
+        d['user_id'] = User.objects.first()
+
+    if request.method == 'POST':
+        return addcafe(request)
+    
+    print(d)
+>>>>>>> 625d055549a9be6277dd9ed18a064d4ff6e8af28
 
     return render(request, "profile-info.html", d)
 
@@ -219,8 +225,7 @@ def profile_cafe(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    d['key'] = request.GET.get('key', '')
-    d['searchbar'] = getSearchBar(d)
+
     # change to requested user profile number
     if request.method == 'GET':
         user_id = request.GET.get('id', '')

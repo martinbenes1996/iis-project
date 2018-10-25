@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# null? default?
 
 class CoffeePreparation(models.Model):
     """ Preparation of coffee. """
@@ -41,17 +40,6 @@ class CoffeeContainsBeans(models.Model):
     coffeeBean = models.ForeignKey(CoffeeBean, on_delete=models.CASCADE)
     percentage = models.PositiveIntegerField()
 
-"""
-class User(models.Model):
-
-    nick = models.CharField(max_length=64, primary_key=True)
-    name = models.CharField(max_length=64)
-    email = models.EmailField()
-    surname = models.CharField(max_length=64)
-    password = models.CharField(max_length=64)
-    fav_coffee = models.ManyToManyField(Coffee)
-    fav_preparation = models.ManyToManyField(CoffeePreparation)
-"""
 
 class Cafe(models.Model):
     """ Cafe. """
@@ -59,17 +47,19 @@ class Cafe(models.Model):
     street = models.CharField(max_length=64, blank=True, null=True)
     housenumber = models.PositiveIntegerField(blank=True, null=True)
     city = models.CharField(max_length=64, blank=True, null=True)
-    psc = models.PositiveIntegerField(blank=True, null=True)
-    opensAt = models.TimeField(blank=True, null=True)
-    closesAt = models.TimeField(blank=True, null=True)
-    capacity = models.PositiveSmallIntegerField(blank=True, null=True)
+    psc = models.CharField(max_length=64, blank=True, null=True)
+    #opensAt = models.TimeField(blank=True, null=True)
+    #closesAt = models.TimeField(blank=True, null=True)
+    opensAt = models.CharField(max_length=64, blank=True, null=True)
+    closesAt = models.CharField(max_length=64, blank=True, null=True)
+    capacity = models.PositiveSmallIntegerField(blank=True, null=True, default=0)
     description = models.TextField(blank=True, null=True)
-    owner = models.PositiveIntegerField(default='0')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     offers_coffee = models.ManyToManyField(Coffee)
-    #employees = models.ManyToManyField(User)       - vubec bych to neresil, nemusime vypisovat vsechny zamestnance kavaren
-
-    def __str__(self):
-        return self.name
+    
+    @classmethod
+    def getData(cls, pk, prefix=''):
+        return models.Drinker.objects.get(pk=pk)
 
 class Drinker(models.Model):
     """ User of the system. """
@@ -77,6 +67,12 @@ class Drinker(models.Model):
     fav_coffee = models.ManyToManyField(Coffee)
     fav_preparation = models.ManyToManyField(CoffeePreparation)
     likes_cafe = models.ManyToManyField(Cafe)
+
+    @classmethod
+    def getData(cls, email):
+        u = User.objects.get(email=email)
+        if u != None:
+            return cls.objects.get(key=u.pk)
 
 class Event(models.Model):
     """ Event. """

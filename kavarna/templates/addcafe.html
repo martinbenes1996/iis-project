@@ -1,0 +1,22 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addcafe/" method="post">{% csrf_token %}
+    <h3 class="text-center">Add Café</h3>
+    {{warning|safe}}
+    <input type="" class="form-control" name="name" value="{{cafe_name}}" placeholder="Cafe Name" required>
+    <input type="" class="form-control" name="street" value="{{cafe_street}}" placeholder="Street">
+    <input type="" class="form-control" name="housenumber" value="{{cafe_housenumber}}" placeholder="House Number">
+    <input type="" class="form-control" name="city" value="{{cafe_city}}" placeholder="City">
+    <input type="" class="form-control" name="psc" value="{{cafe_psc}}" placeholder="PSC">
+    <input type="" class="form-control" name="opensat" value="{{cafe_opensat}}" placeholder="Opening Time">
+    <input type="" class="form-control" name="closesat" value="{{cafe_closesat}}" placeholder="Closing Time">
+    <input type="" class="form-control" name="capacity" value="{{cafe_capacity}}" placeholder="Capacity">
+    <input type="" class="form-control" name="description" value="{{cafe_description}}" placeholder="Description">
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add new cafe</button>
+</form>
+
+<div class="row hcentralize">
+    <a href="{% url '' %}"><button class="btn btn-lg btn-info" type="submit">Go Home</button></a>
+</div>
+{% endblock %}

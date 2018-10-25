@@ -14,12 +14,21 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="pull-right" style="margin-top: 0;">
+<<<<<<< HEAD
+                        {% block profile %}
+			    <form method="get" action="{% url 'profile' %}">{% csrf_token %}
+				    <input name="id" type="hidden" value="{{ a.pk }}" required />
+				    <button type="Submit">{{ name }} {{ surname }}</button>
+			    </form>
+                            <a href="{% url 'profile' %}">{{ name }} {{ surname }}aa</a>
+=======
                         {% if loggeduser %}
                         {% block enterprofile %}
                         <form action="/profile" method="get">
                             <input name="user" type="hidden" value="{{ loggeduser.pk }}" required />
                             <button type="Submit">{{ loggeduser.first_name }} {{ loggeduser.last_name }}</button>
                         </form>
+>>>>>>> 625d055549a9be6277dd9ed18a064d4ff6e8af28
                         {% endblock %}
                         {% endif %}
                     </div>
@@ -31,12 +40,6 @@
             {% block maincontent %}
             {% endblock %}
         </div>
-        <div class="container-fluid" style="padding-top: 50px">
-            
-                <!-- content -->
-                {% block content %}
-                {% endblock %}
-                <!-- end of content -->
         
     
     </body>

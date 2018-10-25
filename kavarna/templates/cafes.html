@@ -1,0 +1,39 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<table>
+    <tr>
+        <th>Jméno</th>
+        <th>Adresa</th>
+        <th>Otvírací doba</th>
+        <th>Kapacita</th>
+        <th>Popis</th>
+        <th>Majitel</th>
+        <th>Odstranit</th>
+    </tr>
+    
+    {% for a in cafes_list %}
+    <tr>
+        <th>{{a.name}}</th>
+        <th>{{a.street|default:""}} {{a.housenumber|default:""}} {{a.psc|default:""}} {{a.city|default:""}}</th>
+        <th>{{a.opensAt|default:"???"}} - {{a.closesAt|default:"???"}}</th>
+        <th>{{a.capacity|default:""}}</th>
+        <th>{{a.description|default:""}}</th>
+        <th>{{a.owner.first_name}} {{a.owner.last_name}}</th>
+        <th>
+            <form method="post" action="">{% csrf_token %}
+                <input name="pk" type="hidden" value="{{ a.pk }}" required />
+                <button type="Submit">Odstranit</button>
+            </form>
+        </th>
+    </tr>
+    {% endfor %}
+</table>
+<div class="row hcentralize">
+    <a href="{% url 'addcafe' %}"><button class="btn btn-lg btn-warning" type="submit">Add café</button></a>
+</div>
+
+<div class="row hcentralize">
+    <a href="{% url '' %}"><button class="btn btn-lg btn-info" type="submit">Go Home</button></a>
+</div>
+{% endblock %}

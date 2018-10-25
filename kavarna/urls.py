@@ -24,8 +24,10 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('search/', views.search, name='search'),
     path('users/', views.users, name='users'),
+    path('cafes/', views.cafes, name='cafes'),
     path('profile/', views.profile, name='profile'),
     path('profile_cafe/', views.profile_cafe, name='profile_cafe'),
     path('addcafe/', views.addcafe, name='addcafe'),
     path('logout/', views.logout, name='logout'),
+    path('cafe/', views.cafe, name='cafe')
 ]
