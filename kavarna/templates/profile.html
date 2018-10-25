@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "page.html" %}
 
 {% block content %}
 <div class="row">
@@ -71,6 +71,7 @@
 </div>
 {% endblock %}
 
-{% block profile %}
+{% block enterprofile %}
     <a href="{% url 'logout' %}">Logout</a>
 {% endblock %}
+

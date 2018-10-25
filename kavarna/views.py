@@ -52,11 +52,10 @@ def generateDict(request):
         return dict()
 
 def index(request):
-    #models.Drinker.objects.all().delete()
-    #User.objects.all().delete()
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
+    print(d['pk'])
 
     d['key'] = request.GET.get('key', '')
     d['searchbar'] = getSearchBar(d)

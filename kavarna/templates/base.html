@@ -14,32 +14,24 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="pull-right" style="margin-top: 0;">
-                        {% block profile %}
-			    <!--<form action="/profile" method="get">
-				<div class="input-group col-md-12">
-				    
-				</div>
-			    </form>-->
-                            <a href="{% url 'profile' %}">{{ name }} {{ surname }}</a>
+                        {% if pk %}
+                        {% block enterprofile %}
+                        <form action="/profile" method="get">
+                            <input name="pk" type="hidden" value="{{ pk }}" required />
+                            <button type="Submit">{{ name }} {{ surname }}</button>
+                        </form>
                         {% endblock %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="hcentralize" >
-                    {{searchbar|safe}}
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid" style="padding-top: 50px">
-            
-                <!-- content -->
-                {% block content %}
-                {% endblock %}
-                <!-- end of content -->
         
+        <div class="container-fluid">
+            {% block maincontent %}
+            {% endblock %}
         </div>
+        
+    
     </body>
 </html>

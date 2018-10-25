@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block maincontent %}
+
+<!-- Top search bar -->
+<div class="row">
+    <div class="hcentralize">{{searchbar|safe}}</div>
+</div>
+
+<div class="container-fluid" style="padding-top: 50px">
+   
+    <!-- content -->
+    {% block content %}
+    {% endblock %}
+    <!-- end of content -->
+        
+</div>
+{% endblock %}
