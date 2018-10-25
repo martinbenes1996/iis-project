@@ -55,7 +55,7 @@ def index(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    
+
     print(d.keys())
     return render(request, "index.html", d)
 
@@ -168,7 +168,7 @@ def addcafe(request):
 
     if request.method == 'POST':
         if 'loggeduser' not in d:
-            d['alertbox'] = generateAlert('You must login before creating cafe') 
+            d['alertbox'] = generateAlert('You must login before creating cafe')
         d['cafe_name'] = request.POST['name']
         d['cafe_street'] = request.POST.get('street')
         d['cafe_housenumber'] = request.POST.get('housenumber')
@@ -182,7 +182,7 @@ def addcafe(request):
         #    if v == '':
         #        d[k] = None
        # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
-            
+
         print(d)
         c = models.Cafe(name=d['cafe_name'],
                         #street=d['cafe_street'],
@@ -208,7 +208,7 @@ def profile(request):
     d['searchbar'] = getSearchBar(d)
     # change to requested user profile number
     if request.method == 'GET':
-        user_id = request.GET.get('id', '')
+        user_id = request.GET.get('user', '')
         d['user_profile'] = User.objects.get(pk=user_id)
     else:
         d['user_profile'] = User.objects.first()
@@ -223,15 +223,30 @@ def profile_cafe(request):
     d['searchbar'] = getSearchBar(d)
     # change to requested user profile number
     if request.method == 'GET':
-        user_id = request.GET.get('id', '')
+        user_id = request.GET.get('user', User.objects.get(email=d['loggeduser']).pk)
         d['user_profile'] = User.objects.get(pk=user_id)
     else:
         d['user_profile'] = User.objects.first()
 
-    if request.method == 'POST':
-        return addcafe(request)
+    #d['user_cafes_list'] = models.Cafe.objects.all()
+    d['user_cafes_list'] = models.Cafe.objects.filter(owner=d['user_profile']).values()
+
+    #if request.method == 'POST':
+    #    return addcafe(request)
 
     return render(request, "profile-cafe.html", d)
+
+def deletecafe(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        next_url = request.GET.get('request_path', '/')
+        pk_cafe = request.GET.get('pk')
+        models.Cafe.objects.get(pk=pk_cafe).delete()
+
+    return redirect(next_url, permanent=True)
 
 def users(request):
     d = generateDict(request)
@@ -251,12 +266,12 @@ def cafes(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    
+
     if request.method == 'POST':
         pk = request.POST.get('pk')
         models.Cafe.objects.get(pk=pk).delete()
         return HttpResponseRedirect('')
-    
+
     d['cafes_list'] = models.Cafe.objects.all()
     d['users_list'] = User.objects.all()
     d['drinkers_list'] = models.Drinker.objects.all()
@@ -266,7 +281,7 @@ def cafe(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    
+
     if request.method == 'GET':
         cafeid = request.GET['id']
         d['cafe'] = models.Cafe.getData(cafeid)

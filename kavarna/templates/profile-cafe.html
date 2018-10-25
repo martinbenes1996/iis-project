@@ -1,32 +1,41 @@
 {% extends "profile.html" %}
 
 {% block profile-content %}
-<div class="row">
+<div class="row hcentralize">
     <div class="col-lg-6">
         <h2>Kavárny</h2>
         <table>
-            <tr>
+            <!--<tr>
                 <th>Jméno</th>
                 <th>Odstranit</th>
-            </tr>
-            {% for a in cafe_list %}
+            </tr>-->
+            {% for a in user_cafes_list %}
             <tr>
                 <th>{{a.name}}</th>
                 <th>
-                    <form method="post" action="">{% csrf_token %}
+                    <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
+			<input name="request_path" type="hidden" value="/profile_cafe" required />
                         <button type="Submit">Odstranit</button>
                     </form>
-                </tr>
-                {% endfor %}
-            </table>
+             </tr>
+             {% endfor %}
+         </table>
     </div>
+</div>
+
+<br>
+
+<div class="row hcentralize">
     <div class="col-lg-3">
-        <h2>Založit Kavárnu</h2>
-        <form action="" method="post">{% csrf_token %}
-            <input type="" name="name" placeholder="Name" required />
-            <button class="btn btn-info" type="submit">Create</button>
-        </form>
+        <!--<h3>Založit Kavárnu</h3>
+        <form action="{% url 'addcafe' %}" method="post">{% csrf_token %}
+	    <input name="pk" type="hidden" value="{{ user_profile.pk }}" required />
+            <button class="btn btn-info" type="submit">Založit Kavárnu</button>
+        </form>-->
+	<div class="row hcentralize">
+    	    <a href="{% url 'addcafe' %}"><button class="btn btn-lg btn-warning" type="submit">Add café</button></a>
+	</div>
     </div>
 
 </div>
