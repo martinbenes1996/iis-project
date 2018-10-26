@@ -12,12 +12,22 @@
             {% for a in user_cafes_list %}
             <tr>
                 <th>{{a.name}}</th>
+		{% if user_profile == loggeduser %}
                 <th>
                     <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
 			<input name="request_path" type="hidden" value="/profile_cafe" required />
-                        <button type="Submit">Odstranit</button>
+                        <button type="Submit">Delete</button>
                     </form>
+		</th>
+		<th>
+		    <form method="get" action="{% url 'modifycafe' %}">{% csrf_token %}
+                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
+			<input name="request_path" type="hidden" value="/profile_cafe" required />
+                        <button type="Submit">Modify</button>
+                    </form>
+		</th>
+		{% endif %}
              </tr>
              {% endfor %}
          </table>

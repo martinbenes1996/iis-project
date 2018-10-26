@@ -181,6 +181,55 @@ def addcafe(request):
         d['message'] = 'Unexpected link.'
     return render(request, "addcafe.html", d)
 
+def modifycafe(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'POST':
+        if 'loggeduser' not in d:
+            d['message'] = 'You must login before modifying cafe'
+
+        d['cafe_name'] = request.POST['name']
+        d['cafe_street'] = request.POST.get('street')
+        d['cafe_housenumber'] = request.POST.get('housenumber')
+        d['cafe_city'] = request.POST.get('city')
+        d['cafe_psc'] = request.POST.get('psc')
+        d['cafe_opensat'] = request.POST.get('opensat')
+        d['cafe_closesat'] = request.POST.get('closesat')
+        d['cafe_capacity'] = request.POST.get('capacity')
+        d['cafe_description'] = request.POST.get('description')
+        next_url = request.POST.get('next_url')
+        cafe = models.Cafe.objects.get(pk=request.POST.get('cafe'))
+        #cafe = request.POST.get('cafe')
+        #for k,v in d.items():
+        #    if v == '':
+        #        d[k] = None
+        # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
+
+        print(d)
+        cafe.name=d['cafe_name']
+        cafe.street=d['cafe_street']
+        cafe.housenumber=d['cafe_housenumber']
+        cafe.city=d['cafe_city']
+        cafe.psc=d['cafe_psc']
+        cafe.opensAt=d['cafe_opensat']
+        cafe.closesAt=d['cafe_closesat']
+        cafe.capacity=d['cafe_capacity']
+        cafe.description=d['cafe_description']
+        cafe.save()
+
+        return redirect(next_url, permanent=True)
+    elif request.method == 'GET':
+        cafe_id = request.GET.get('pk')
+        d['cafe'] = models.Cafe.objects.get(pk=cafe_id)
+        d['next_url'] = request.GET.get('request_path', '/')
+    else:
+        d['message'] = 'Unexpected link.'
+
+    return render(request, "modifycafe.html", d)
+
+
 def profile(request):
     d = generateDict(request)
     if 'message' in d:
@@ -202,16 +251,13 @@ def profile_cafe(request):
 
     # change to requested user profile number
     if request.method == 'GET':
-        user_id = request.GET.get('user', User.objects.get(email=d['loggeduser']).pk)
+        user_id = request.GET.get('user', d['loggeduser'].pk) #User.objects.get(email=d['loggeduser']).pk)
         d['user_profile'] = User.objects.get(pk=user_id)
     else:
         d['user_profile'] = User.objects.first()
 
     #d['user_cafes_list'] = models.Cafe.objects.all()
     d['user_cafes_list'] = models.Cafe.objects.filter(owner=d['user_profile'])#.values()
-
-    #if request.method == 'POST':
-    #    return addcafe(request)
 
     return render(request, "profile-cafe.html", d)
 
