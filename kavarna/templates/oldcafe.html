@@ -1,14 +1,11 @@
-{% extends "subpage.html" %}
+{% extends "page.html" %}
 
-{% block header %}
+{% block content %}
+<div class="row hcentralize">
+    <div class="col">
         <h1>{{cafe.name}}</h1>
-{% endblock %}
-
-{% block menu %}
-	<h2>future menu</h2>
-{% endblock %}
-
-{% block data %}
+    </div>
+</div>
 <div class="row" style="margin-top: 20px">
     <div class="col-lg-4 text-center">
         {{cafe.street}} {{cafe.housenumber}}<br>
