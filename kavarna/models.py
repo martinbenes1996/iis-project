@@ -58,8 +58,8 @@ class Cafe(models.Model):
     offers_coffee = models.ManyToManyField(Coffee)
     
     @classmethod
-    def getData(cls, pk, prefix=''):
-        return Cafe.objects.get(pk=pk)
+    def getData(cls, pk):
+        return cls.objects.get(pk=pk)
 
 class Drinker(models.Model):
     """ User of the system. """

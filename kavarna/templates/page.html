@@ -4,10 +4,12 @@
 
 <!-- Top search bar -->
 <div class="row">
-    <div class="hcentralize">{{searchbar|safe}}</div>
+    <div class="hcentralize">
+        {% include 'snippets/searchbar.html' %} 
+    </div>
 </div>
 
-<div class="container-fluid" style="padding-top: 50px">
+<div class="container" style="padding-top: 30px">
    
     <!-- content -->
     {% block content %}

@@ -6,7 +6,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-2 text-right">
+    <div class="col-lg-1 text-right">
         <div class="row" style="padding-right: 30%">
             <span style="position: fixed">
                 <a href="#caferesults">Cafés</a><br>
@@ -15,51 +15,18 @@
             </span>
         </div>
     </div>
+
     
-    <div class="col-lg-8 searchlist">
+    
+    <div class="col-lg-10 searchlist" style="margin-left: 40px">
         
-        <div id="caferesults">
-            <span class="category-header">Cafés</span> 
-            {% for item in caferesults %}
-            <div class="row searchitem">
-                <div class="container-fluid" style="border: 1px solid black">
-                    <div class="row text-center">
-                        <h1>{{item.name|upper}}</h1>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div> 
-
-        <div id="coffeeresults">
-            <span class="category-header">Coffees</span> 
-            {% for item in coffeeresults %}
-            <div class="row searchitem">
-                <div class="container-fluid" style="border: 1px solid black">
-                    <div class="row text-center">
-                        <h1>{{item.name|upper}}</h1>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div> 
-
-        <div id="placeresults">
-            <span class="category-header">Places</spab> 
-            {% for item in placeresults %}
-            <div class="row searchitem">
-                <div class="container-fluid" style="border: 1px solid black">
-                    <div class="row text-center">
-                        <h1>{{item.name|upper}}</h1>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div> 
+        {% include 'snippets/searchresult.html' with list=caferesults resultgroupid="caferesults" blockheader="Café" %}
+        {% include 'snippets/searchresult.html' with list=coffeeresults resultgroupid="coffeeresults" blockheader="Coffee" %}
+        {% include 'snippets/searchresult.html' with list=placeresults resultgroupid="placeresults" blockheader="Place" %}
 
     </div>
     
-    <div class="col-lg-2"></div>
+    <div class="col-lg-1"></div>
 </div>
 
 {% endblock %}

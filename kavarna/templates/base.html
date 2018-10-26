@@ -23,6 +23,11 @@
                         {% endblock %}
                         {% endif %}
                     </div>
+                    {% block homelink %}
+                        <div class="pull-left" style="margin-top: 0;">
+                            <a href="{% url '' %}">Home</a>
+                        </div>
+                    {% endblock %}
                 </div>
             </div>
         </div>

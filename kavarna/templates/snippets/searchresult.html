@@ -1,0 +1,18 @@
+<div id={{resultgroupid}}>
+    <span class="category-header">{{blockheader}}</span> 
+    {% if list %}
+    {% for item in list %}
+    <div class="row searchitem">
+        <div class="container-fluid" style="border: 1px solid black">
+            <div class="row text-center">
+                <form action="/cafe" method="get">
+                    <input name="id" type="hidden" value="{{ item.id }}" required />
+                    <h1><button class="btn btn-link" type="Submit">{{item.name|upper}}</button></h1>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>

@@ -4,7 +4,7 @@
 
 
 <a href="{% url '' %}"><h1 class="text-center">Café Database</h1></a>
-{{searchbar|safe}}
+{% include 'snippets/searchbar.html' %} 
 
 <div class="row hcentralize">
     <a href="register"><button class="btn btn-lg btn-info" type="submit">Register</button></a>
@@ -16,3 +16,6 @@
     <a href="cafes"><button class="btn btn-lg btn-warning" type="submit">DEBUG CafesList</button></a>
 </div>
 {% endblock %}
+
+{% block homelink %}
+{% endblock%}

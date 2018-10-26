@@ -9,7 +9,7 @@
     <h3 class="text-center">Signin Form</h3>
     <input type="email" class="form-control" name="email" value="{{email}}" placeholder="Email" required>
     <input type="password" class="form-control" name="password" placeholder="Password" required>
-    {{alertbox|safe}}
+    {% include 'snippets/alertbox.html' %}
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
 </form>
 
