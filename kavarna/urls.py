@@ -33,6 +33,7 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('cafe/', views.cafe, name='cafe'),
     path('cafe_coffee/', views.cafe_coffee, name='cafe_coffee'),
+    path('cafe_event/', views.cafe_event, name='cafe_event'),
     path('addcoffee/', views.addcoffee, name='addcoffee'),
     path('modifycoffee/', views.modifycoffee, name='modifycoffee'),
     path('deletecoffee/', views.deletecoffee, name='deletecoffee')

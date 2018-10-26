@@ -492,3 +492,16 @@ def deletecoffee(request):
         models.Coffee.objects.get(pk=pk_coffee).delete()
 
     return redirect(next_url, permanent=True)
+
+def cafe_event(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        cafeid = request.GET['id']
+        d['cafe'] = models.Cafe.getData(cafeid)
+        d['owner'] = d['cafe'].owner    # returns object User
+
+        d['cafe_event_list'] = d['cafe'].event_set.all()    # returns all events in cafe - hopefully
+        return render(request, "cafe-event.html", d)

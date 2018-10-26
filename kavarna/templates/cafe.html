@@ -6,7 +6,7 @@
 
 {% block menu %}
 <div class="row hcentralize">
-    <div class="col-lg-2">
+    <div class="col-lg-3">
 	<div>
 	    <form method="get" action="{% url 'cafe' %}">{% csrf_token %}
                 <input name="id" type="hidden" value="{{ cafe.pk }}" required />
@@ -14,11 +14,19 @@
             </form>
 	</div>
     </div>
-    <div class="col-lg-2">
+    <div class="col-lg-3">
 	<div>
 	    <form method="get" action="{% url 'cafe_coffee' %}">{% csrf_token %}
                 <input name="id" type="hidden" value="{{ cafe.pk }}" required />
                 <button type="Submit">coffee</button>
+            </form>
+	</div>
+    </div>
+    <div class="col-lg-3">
+	<div>
+	    <form method="get" action="{% url 'cafe_event' %}">{% csrf_token %}
+                <input name="id" type="hidden" value="{{ cafe.pk }}" required />
+                <button type="Submit">cupping events</button>
             </form>
 	</div>
     </div>
