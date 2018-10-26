@@ -11,7 +11,12 @@
             </tr>-->
             {% for a in user_cafes_list %}
             <tr>
-                <th>{{a.name}}</th>
+                <th>
+		    <form method="get" action="/cafe">
+                	<input name="id" type="hidden" value={{a.pk}} required />
+                	<button class="btn btn-link" type="Submit">{{a.name}}</button>
+            	    </form>
+		</th>
 		{% if user_profile == loggeduser %}
                 <th>
                     <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
@@ -35,7 +40,7 @@
 </div>
 
 <br>
-
+{% if user_profile == loggeduser %}
 <div class="row hcentralize">
     <div class="col-lg-3">
         <!--<h3>Založit Kavárnu</h3>
@@ -49,4 +54,5 @@
     </div>
 
 </div>
+{% endif %}
 {% endblock %}
