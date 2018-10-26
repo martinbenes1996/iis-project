@@ -346,9 +346,12 @@ def addcoffee(request):
         if 'loggeduser' not in d:
             d['message'] = 'You must login before creating cafe'
         d['coffee_name'] = request.POST['name']
-        d['coffee_placeoforigin'] = request.POST.get('placeoforigin')
-        d['coffee_quality'] = request.POST.get('quality')
-        d['coffee_taste'] = request.POST.get('taste')
+        d['coffee_placeoforigin'] = request.POST.get('placeoforigin', None)
+        d['coffee_quality'] = request.POST.get('quality', None)
+        d['coffee_taste'] = request.POST.get('taste', None)
+        d['coffee_preparation'] = request.POST.get('preparation', None)
+        d['coffee_bean'] = request.POST.get('bean', None)
+        d['coffee_bean_perc'] = request.POST.get('beanperc', None)
         cafeid = request.POST['cafeid']
         d['cafe'] = models.Cafe.getData(cafeid)
         #for k,v in d.items():
@@ -357,16 +360,43 @@ def addcoffee(request):
        # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
 
         print(d)
-        c = models.Coffee(name=d['coffee_name'],
-                          place_of_origin=d['coffee_placeoforigin'],
-                          quality=d['coffee_quality'],
-                          taste_description=d['coffee_taste'])
+
+        c = models.Coffee()
+        c.name=d['coffee_name']
+        #if d['coffee_placeoforigin'] != None:
+        c.place_of_origin=d['coffee_placeoforigin']
+        #if d['coffee_quality'] != None:
+        c.quality=d['coffee_quality']
+        #if d['coffee_taste'] != None:
+        c.taste_description=d['coffee_taste']
+        c.preparation=models.CoffeePreparation.objects.get(pk=d['coffee_preparation'])
         c.save()
+
         d['cafe'].offers_coffee.add(c)  # add coffee to cafe
+        contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+        contains.coffee = c
+        contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean'])
+        contains.percentage = d['coffee_bean_perc']
+        contains.save()
+
         return redirect('/profile/')
     elif request.method == 'GET':
         cafeid = request.GET['cafeid']
         d['cafe'] = models.Cafe.getData(cafeid)
+        d['preparations'] = models.CoffeePreparation.objects.all()
+        d['beans'] = models.CoffeeBean.objects.all()
     else:
         d['message'] = 'Unexpected link.'
     return render(request, "addcoffee.html", d)
+
+def deletecoffee(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        next_url = request.GET.get('request_path', '/')
+        pk_coffee = request.GET.get('pk')
+        models.Coffee.objects.get(pk=pk_coffee).delete()
+
+    return redirect(next_url, permanent=True)

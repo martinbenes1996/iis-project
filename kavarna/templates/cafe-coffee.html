@@ -13,15 +13,15 @@
                 	<input name="id" type="hidden" value={{a.pk}} required />
                 	<button class="btn btn-link" type="Submit">{{a.name}}</button>
             	    </form>-->
-		</th><!--
+		</th>
 		{% if owner == loggeduser %}
                 <th>
-                    <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
+                    <form method="get" action="{% url 'deletecoffee' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
-			<input name="request_path" type="hidden" value="/profile_cafe" required />
+			<input name="request_path" type="hidden" value="/profile" required />
                         <button type="Submit">Delete</button>
                     </form>
-		</th>
+		</th><!--
 		<th>
 		    <form method="get" action="{% url 'modifycafe' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
@@ -40,8 +40,7 @@
 {% if owner == loggeduser %}
 <div class="row hcentralize">
     <div class="col-lg">
-	<div class="row hcentralize"><!--
-    	    <a href="{% url 'addcoffee' %}"><button class="btn btn-lg btn-warning" type="submit">Add coffee</button></a>-->
+	<div class="row hcentralize">
 	    <form method="get" action="{% url 'addcoffee' %}">
                	<input name="cafeid" type="hidden" value={{cafe.pk}} required />
                 <button class="btn btn-lg btn-warning" type="Submit">Add coffee</button>
