@@ -21,15 +21,16 @@
 			<input name="request_path" type="hidden" value="/profile" required />
                         <button type="Submit">Delete</button>
                     </form>
-		</th><!--
+		</th>
 		<th>
-		    <form method="get" action="{% url 'modifycafe' %}">{% csrf_token %}
-                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
-			<input name="request_path" type="hidden" value="/profile_cafe" required />
+		    <form method="get" action="{% url 'modifycoffee' %}">{% csrf_token %}
+			<input name="pk" type="hidden" value="{{ cafe.pk }}" required />
+                        <input name="coffeeid" type="hidden" value="{{ a.pk }}" required />
+			<input name="request_path" type="hidden" value="/profile" required />
                         <button type="Submit">Modify</button>
                     </form>
 		</th>
-		{% endif %}-->
+		{% endif %}
              </tr>
              {% endfor %}
          </table>

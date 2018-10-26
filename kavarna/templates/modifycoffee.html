@@ -1,14 +1,16 @@
 {% extends "titlepage.html" %}
 
 {% block content %}
-<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addcoffee/" method="post">{% csrf_token %}
-    <h3 class="text-center">Add Coffee</h3>
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/modifycoffee/" method="post">{% csrf_token %}
+    <h3 class="text-center">Modify Coffee</h3>
     {{warning|safe}}
     <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
-    <input type="" class="form-control" name="name" placeholder="Coffee Name" required>
-    <input type="" class="form-control" name="placeoforigin" placeholder="Place of origin">
-    <input type="" class="form-control" name="quality" placeholder="Quality (awful-average-great)">
-    <input type="" class="form-control" name="taste" placeholder="Taste description">
+    <input name="coffeeid" type="hidden" value="{{ coffee.pk }}" required />
+    <input name="next_url" type="hidden" value="{{ next_url }}" required />
+    <input type="" class="form-control" name="name" value="{{ coffee.name }}" required>
+    <input type="" class="form-control" name="placeoforigin" value="{{ coffee.place_of_origin }}">
+    <input type="" class="form-control" name="quality" value="{{ coffee.quality }}">
+    <input type="" class="form-control" name="taste" value="{{ coffee.taste_description }}">
     <table>
     	<tr><td>
     	Preparation:</td><td>
@@ -18,7 +20,7 @@
 	    {% endfor %}
     	</select></td>
     	</tr><tr>
-	
+
 	<td>
     	Bean (%):</td><td>
     	<select name="bean">
@@ -49,10 +51,10 @@
 
     </tr>
     </table>
-    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add new coffee</button>
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Modify coffee</button>
 </form>
 
 <div class="row hcentralize">
-    <a href="{% url '' %}"><button class="btn btn-lg btn-info" type="submit">Go Home</button></a>
+    <a href="{{ next_url }}"><button class="btn btn-lg btn-info" type="submit">Go back</button></a>
 </div>
 {% endblock %}

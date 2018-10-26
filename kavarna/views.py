@@ -352,6 +352,10 @@ def addcoffee(request):
         d['coffee_preparation'] = request.POST.get('preparation', None)
         d['coffee_bean'] = request.POST.get('bean', None)
         d['coffee_bean_perc'] = request.POST.get('beanperc', None)
+        d['coffee_bean2'] = request.POST.get('bean2', None)
+        d['coffee_bean_perc2'] = request.POST.get('beanperc2', None)
+        d['coffee_bean3'] = request.POST.get('bean3', None)
+        d['coffee_bean_perc3'] = request.POST.get('beanperc3', None)
         cafeid = request.POST['cafeid']
         d['cafe'] = models.Cafe.getData(cafeid)
         #for k,v in d.items():
@@ -373,11 +377,24 @@ def addcoffee(request):
         c.save()
 
         d['cafe'].offers_coffee.add(c)  # add coffee to cafe
-        contains = models.CoffeeContainsBeans() # add percentage of coffee beans
-        contains.coffee = c
-        contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean'])
-        contains.percentage = d['coffee_bean_perc']
-        contains.save()
+        if d['coffee_bean_perc'] != '' and d['coffee_bean_perc'] != None:
+            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+            contains.coffee = c
+            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean'])
+            contains.percentage = d['coffee_bean_perc']
+            contains.save()
+        if d['coffee_bean_perc2'] != '' and d['coffee_bean_perc2'] != None:
+            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+            contains.coffee = c
+            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean2'])
+            contains.percentage = d['coffee_bean_perc2']
+            contains.save()
+        if d['coffee_bean_perc3'] != '' and d['coffee_bean_perc3'] != None:
+            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+            contains.coffee = c
+            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean3'])
+            contains.percentage = d['coffee_bean_perc3']
+            contains.save()
 
         return redirect('/profile/')
     elif request.method == 'GET':
@@ -388,6 +405,81 @@ def addcoffee(request):
     else:
         d['message'] = 'Unexpected link.'
     return render(request, "addcoffee.html", d)
+
+def modifycoffee(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'POST':
+        if 'loggeduser' not in d:
+            d['message'] = 'You must login before creating cafe'
+        d['coffee_name'] = request.POST['name']
+        d['coffee_placeoforigin'] = request.POST.get('placeoforigin', None)
+        d['coffee_quality'] = request.POST.get('quality', None)
+        d['coffee_taste'] = request.POST.get('taste', None)
+        d['coffee_preparation'] = request.POST.get('preparation', None)
+        d['coffee_bean'] = request.POST.get('bean', None)
+        d['coffee_bean_perc'] = request.POST.get('beanperc', None)
+        d['coffee_bean2'] = request.POST.get('bean2', None)
+        d['coffee_bean_perc2'] = request.POST.get('beanperc2', None)
+        d['coffee_bean3'] = request.POST.get('bean3', None)
+        d['coffee_bean_perc3'] = request.POST.get('beanperc3', None)
+        cafeid = request.POST['cafeid']
+        d['cafe'] = models.Cafe.getData(cafeid)
+        coffee = models.Coffee.objects.get(pk=request.POST.get('coffeeid', None))
+        next_url = request.POST.get('next_url', '/')
+        #for k,v in d.items():
+        #    if v == '':
+        #        d[k] = None
+       # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
+
+        print(d)
+
+        coffee.name=d['coffee_name']
+        coffee.place_of_origin=d['coffee_placeoforigin']
+        coffee.quality=d['coffee_quality']
+        coffee.taste_description=d['coffee_taste']
+        coffee.preparation=models.CoffeePreparation.objects.get(pk=d['coffee_preparation'])
+        coffee.save()
+
+        # delete all relations between coffee and beans
+        for beancontain in models.CoffeeContainsBeans.objects.filter(coffee=coffee):
+            beancontain.delete()
+
+        # recreate relations
+        if d['coffee_bean_perc'] != '' and d['coffee_bean_perc'] != None:
+            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+            contains.coffee = coffee
+            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean'])
+            contains.percentage = d['coffee_bean_perc']
+            contains.save()
+        if d['coffee_bean_perc2'] != '' and d['coffee_bean_perc2'] != None:
+            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+            contains.coffee = coffee
+            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean2'])
+            contains.percentage = d['coffee_bean_perc2']
+            contains.save()
+        if d['coffee_bean_perc3'] != '' and d['coffee_bean_perc3'] != None:
+            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+            contains.coffee = coffee
+            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean3'])
+            contains.percentage = d['coffee_bean_perc3']
+            contains.save()
+
+        return redirect(next_url, permanent=True)
+    elif request.method == 'GET':
+        cafe_id = request.GET.get('pk')
+        d['cafe'] = models.Cafe.objects.get(pk=cafe_id)
+        d['next_url'] = request.GET.get('request_path', '/')
+        coffee_id = request.GET.get('coffeeid', None)
+        d['coffee'] = models.Coffee.objects.get(pk=coffee_id)
+        d['preparations'] = models.CoffeePreparation.objects.all()
+        d['beans'] = models.CoffeeBean.objects.all()
+    else:
+        d['message'] = 'Unexpected link.'
+
+    return render(request, "modifycoffee.html", d)
 
 def deletecoffee(request):
     d = generateDict(request)
