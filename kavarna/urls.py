@@ -31,5 +31,7 @@ urlpatterns = [
     path('modifycafe/', views.modifycafe, name='modifycafe'),
     path('addcafe/', views.addcafe, name='addcafe'),
     path('logout/', views.logout, name='logout'),
-    path('cafe/', views.cafe, name='cafe')
+    path('cafe/', views.cafe, name='cafe'),
+    path('cafe_coffee/', views.cafe_coffee, name='cafe_coffee'),
+    path('addcoffee/', views.addcoffee, name='addcoffee')
 ]

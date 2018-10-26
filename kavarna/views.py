@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
+from django.http import Http404
 
 from kavarna import models
 
@@ -237,7 +238,7 @@ def profile(request):
 
     # change to requested user profile number
     if request.method == 'GET':
-        user_id = request.GET.get('user', '')
+        user_id = request.GET.get('user', d['loggeduser'].pk)
         d['user_profile'] = User.objects.get(pk=user_id)
     else:
         d['user_profile'] = User.objects.first()
@@ -312,6 +313,60 @@ def cafe(request):
         print(cafeid)
         d['cafe'] = models.Cafe.getData(cafeid)
 
-        return render(request, "cafe.html", d)
+        return render(request, "cafe-info.html", d)
+
+def cafe_coffee(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        cafeid = request.GET['id']
+        print(cafeid)
+        d['cafe'] = models.Cafe.getData(cafeid)
+        d['owner'] = d['cafe'].owner    # returns object User
+
+        print(d['cafe'].offers_coffee.all())    # asi
+        d['cafe_coffee_list'] = d['cafe'].offers_coffee.all()
+        return render(request, "cafe-coffee.html", d)
+    #raise Http404("Massive internal error!!")
 
 
+    #d['user_cafes_list'] = models.Cafe.objects.all()
+    #d['cafe_coffee_list'] = models.Coffee.objects.filter(owner=d['user_profile'])#.values()
+
+    #return render(request, "profile-cafe.html", d)
+
+def addcoffee(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'POST':
+        if 'loggeduser' not in d:
+            d['message'] = 'You must login before creating cafe'
+        d['coffee_name'] = request.POST['name']
+        d['coffee_placeoforigin'] = request.POST.get('placeoforigin')
+        d['coffee_quality'] = request.POST.get('quality')
+        d['coffee_taste'] = request.POST.get('taste')
+        cafeid = request.POST['cafeid']
+        d['cafe'] = models.Cafe.getData(cafeid)
+        #for k,v in d.items():
+        #    if v == '':
+        #        d[k] = None
+       # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
+
+        print(d)
+        c = models.Coffee(name=d['coffee_name'],
+                          place_of_origin=d['coffee_placeoforigin'],
+                          quality=d['coffee_quality'],
+                          taste_description=d['coffee_taste'])
+        c.save()
+        d['cafe'].offers_coffee.add(c)  # add coffee to cafe
+        return redirect('/profile/')
+    elif request.method == 'GET':
+        cafeid = request.GET['cafeid']
+        d['cafe'] = models.Cafe.getData(cafeid)
+    else:
+        d['message'] = 'Unexpected link.'
+    return render(request, "addcoffee.html", d)
