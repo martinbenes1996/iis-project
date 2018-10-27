@@ -312,6 +312,7 @@ def cafe(request):
         cafeid = request.GET['id']
         print(cafeid)
         d['cafe'] = models.Cafe.getData(cafeid)
+        d['is_liking'] = True if d['cafe'] in d['loggeddrinker'].likes_cafe.all() else False
 
         return render(request, "cafe-info.html", d)
 
@@ -396,7 +397,8 @@ def addcoffee(request):
             contains.percentage = d['coffee_bean_perc3']
             contains.save()
 
-        return redirect('/profile/')
+        return render(request, "ok_messages/addcoffee-ok.html", d)
+        #return redirect('/profile/')
     elif request.method == 'GET':
         cafeid = request.GET['cafeid']
         d['cafe'] = models.Cafe.getData(cafeid)
@@ -467,7 +469,8 @@ def modifycoffee(request):
             contains.percentage = d['coffee_bean_perc3']
             contains.save()
 
-        return redirect(next_url, permanent=True)
+        return render(request, "ok_messages/addcoffee-ok.html", d)
+        #return redirect(next_url, permanent=True)
     elif request.method == 'GET':
         cafe_id = request.GET.get('pk')
         d['cafe'] = models.Cafe.objects.get(pk=cafe_id)
@@ -489,9 +492,12 @@ def deletecoffee(request):
     if request.method == 'GET':
         next_url = request.GET.get('request_path', '/')
         pk_coffee = request.GET.get('pk')
+        pk_cafe = request.GET.get('pk_cafe')
+        d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
         models.Coffee.objects.get(pk=pk_coffee).delete()
 
-    return redirect(next_url, permanent=True)
+    return render(request, "ok_messages/addcoffee-ok.html", d)
+    #return redirect(next_url, permanent=True)
 
 def coffee(request):
     d = generateDict(request)
@@ -515,8 +521,11 @@ def event(request):
         eventid = request.GET['id']
         d['event'] = models.Event.objects.get(pk=eventid)
         d['participants'] = [User.objects.get(pk=partic.key) for partic in d['event'].participants.all()]
+        d['is_participant'] = True if d['loggeduser'] in d['participants'] else False
+
         print(d)
         d['coffee'] = d['event'].coffee_list.all()
+        d['all_coffee'] = models.Coffee.objects.all()
 
         return render(request, "event.html", d)
 
@@ -578,3 +587,79 @@ def deleteevent(request):
 
     return render(request, "ok_messages/addevent-ok.html", d)
     #return redirect(next_url, permanent=True)
+
+def participateevent(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        pk_event = request.GET.get('pk')
+        d['event'] = models.Event.objects.get(pk=pk_event)
+        d['event'].participants.add(d['loggeddrinker'])
+
+    return render(request, "ok_messages/participateevent-ok.html", d)
+
+def deleteparticipateevent(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        pk_event = request.GET.get('pk')
+        d['event'] = models.Event.objects.get(pk=pk_event)
+        d['event'].participants.remove(d['loggeddrinker'])
+
+    return render(request, "ok_messages/participateevent-ok.html", d)
+
+def addcoffeeevent(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        pk_event = request.GET.get('pk')
+        d['event'] = models.Event.objects.get(pk=pk_event)
+        d['coffee'] = models.Coffee.objects.get(pk=request.GET.get('coffee', None))
+
+        d['event'].coffee_list.add(d['coffee'])
+
+    return render(request, "ok_messages/participateevent-ok.html", d)
+
+def deletecoffeeevent(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        pk_event = request.GET.get('pk_event', None)
+        d['event'] = models.Event.objects.get(pk=pk_event)
+        d['coffee'] = models.Coffee.objects.get(pk=request.GET.get('pk_coffee', None))
+
+        d['event'].coffee_list.remove(d['coffee'])
+
+    return render(request, "ok_messages/participateevent-ok.html", d)
+
+def likecafe(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        pk_cafe = request.GET.get('pk')
+        d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
+        d['loggeddrinker'].likes_cafe.add(d['cafe'])
+
+    return render(request, "ok_messages/likecafe-ok.html", d)
+
+def deletelikecafe(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        pk_cafe = request.GET.get('pk')
+        d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
+        d['loggeddrinker'].likes_cafe.remove(d['cafe'])
+
+    return render(request, "ok_messages/likecafe-ok.html", d)

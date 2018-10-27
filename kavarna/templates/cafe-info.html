@@ -26,4 +26,27 @@
         </form>
     </div>
 </div>
+
+
+{% if is_liking %}
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center"> 
+	<form method="get" action="/deletelikecafe/">
+            <input name="pk" type="hidden" value="{{ cafe.pk }}" required />
+            <button class="btn btn-lg btn-warning" type="Submit">Stop liking</button>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center"> 
+	<form method="get" action="/likecafe/">
+            <input name="pk" type="hidden" value="{{ cafe.pk }}" required />
+            <button class="btn btn-lg btn-warning" type="Submit">Like</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+
 {% endblock %}

@@ -56,7 +56,7 @@ class Cafe(models.Model):
     description = models.TextField(blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     offers_coffee = models.ManyToManyField(Coffee)
-    
+
     @classmethod
     def getData(cls, pk):
         return cls.objects.get(pk=pk)
@@ -64,6 +64,8 @@ class Cafe(models.Model):
 class Drinker(models.Model):
     """ User of the system. """
     key = models.PositiveIntegerField(default='0')
+    # navrhuju nasledujici dve polozky udelat pouze stylem "vyber si jedno do sveho profilu"
+    # za pouziti foreign key. At je to jednodussi. Docela by to i davalo smysl.
     fav_coffee = models.ManyToManyField(Coffee)
     fav_preparation = models.ManyToManyField(CoffeePreparation)
     likes_cafe = models.ManyToManyField(Cafe)

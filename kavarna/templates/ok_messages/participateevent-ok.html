@@ -4,7 +4,7 @@
     </div>
 </div>
 
-<form method="get" action="{% url 'cafe_event' %}">{% csrf_token %}
-	<input name="id" type="hidden" value="{{ cafe.pk }}" required />
+<form method="get" action="{% url 'event' %}">{% csrf_token %}
+	<input name="id" type="hidden" value="{{ event.pk }}" required />
 	<button type="Submit">OK</button>
 </form>

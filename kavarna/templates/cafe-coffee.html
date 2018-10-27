@@ -16,6 +16,7 @@
 		{% if owner == loggeduser %}
                 <th>
                     <form method="get" action="{% url 'deletecoffee' %}">{% csrf_token %}
+			<input name="pk_cafe" type="hidden" value="{{ cafe.pk }}" required />
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
 			<input name="request_path" type="hidden" value="/profile" required />
                         <button type="Submit">Delete</button>
