@@ -506,6 +506,20 @@ def coffee(request):
 
         return render(request, "coffee.html", d)
 
+def event(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        eventid = request.GET['id']
+        d['event'] = models.Event.objects.get(pk=eventid)
+        d['participants'] = [User.objects.get(pk=partic.key) for partic in d['event'].participants.all()]
+        print(d)
+        d['coffee'] = d['event'].coffee_list.all()
+
+        return render(request, "event.html", d)
+
 def cafe_event(request):
     d = generateDict(request)
     if 'message' in d:

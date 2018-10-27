@@ -7,12 +7,11 @@
         <table>
             {% for a in cafe_event_list %}
             <tr>
-                <th>{{ a.name }}
-			<!--
-		    <form method="get" action="/cafe">
+                <th>
+		    <form method="get" action="/event/">
                 	<input name="id" type="hidden" value={{a.pk}} required />
                 	<button class="btn btn-link" type="Submit">{{a.name}}</button>
-            	    </form>-->
+            	    </form>
 		</th>
 		{% if owner == loggeduser %}
                 <th>

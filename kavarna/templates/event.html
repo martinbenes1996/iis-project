@@ -1,0 +1,71 @@
+{% extends "page.html" %}
+
+{% block content %}
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        <h1>{{event.name}}</h1>
+    </div>
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        Cafe: 
+	<form method="get" action="/cafe/">
+            <input name="id" type="hidden" value="{{ event.place.pk }}" required />
+            <button class="btn btn-link" type="Submit">{{event.place.name}}</button>
+        </form>
+    </div>
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        Price: {{event.price}}
+    </div>
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        Capacity: {{event.capacity}}
+    </div>
+</div>
+
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        <h3>Participants</h3>
+    </div>
+</div>
+{% for participant in participants %}
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+	<form method="get" action="/profile/">
+            <input name="user" type="hidden" value="{{ participant.pk }}" required />
+            <button class="btn btn-link" type="Submit">{{participant.first_name}} {{participant.last_name}}</button>
+        </form>
+    </div>
+</div>
+{% endfor %}
+
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        <h3>Coffee</h3>
+    </div>
+</div>
+{% for cofe in coffee %}
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+	<form method="get" action="/coffee/">
+            <input name="id" type="hidden" value="{{ cofe.pk }}" required />
+            <button class="btn btn-link" type="Submit">{{cofe.name}}</button>
+        </form>
+    </div>
+</div>
+{% endfor %}
+
+
+<!--
+<div class="row text-center" style="margin-top: 20px">
+    <div class="col">
+        <form method="get" action="/cafe_coffee/">
+            <input name="id" type="hidden" value="{{ cafe.pk }}" required />
+            <button class="btn btn-link" type="Submit">BACK</button>
+        </form>
+    </div>
+</div>-->
+{% endblock %}
