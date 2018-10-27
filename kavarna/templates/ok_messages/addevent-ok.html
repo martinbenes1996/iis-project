@@ -1,0 +1,6 @@
+Everything ok.
+
+<form method="get" action="{% url 'cafe_event' %}">{% csrf_token %}
+	<input name="id" type="hidden" value="{{ cafe.pk }}" required />
+	<button type="Submit">OK</button>
+</form>

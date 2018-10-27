@@ -34,7 +34,10 @@ urlpatterns = [
     path('cafe/', views.cafe, name='cafe'),
     path('cafe_coffee/', views.cafe_coffee, name='cafe_coffee'),
     path('cafe_event/', views.cafe_event, name='cafe_event'),
+    path('coffee/', views.coffee, name='coffee'),
     path('addcoffee/', views.addcoffee, name='addcoffee'),
     path('modifycoffee/', views.modifycoffee, name='modifycoffee'),
-    path('deletecoffee/', views.deletecoffee, name='deletecoffee')
+    path('deletecoffee/', views.deletecoffee, name='deletecoffee'),
+    path('addevent/', views.addevent, name='addevent'),
+    path('deleteevent/', views.deleteevent, name='deleteevent')
 ]

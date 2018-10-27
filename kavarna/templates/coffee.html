@@ -1,0 +1,79 @@
+{% extends "page.html" %}
+
+{% block content %}
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        <h1>{{coffee.name}}</h1>
+    </div>
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        Place of origin: {{coffee.place_of_origin}}
+    </div>
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        Quality: {{coffee.quality}}
+    </div>
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        Description of taste:
+    </div>
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        <p>{{coffee.taste_description}}</p>
+    </div>
+</div>
+
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        <h3>Preparation: {{coffee.preparation.name}}</h3>
+    </div>
+    <div class="col-lg text-center">
+        {{coffee.preparation.description}}
+    </div>
+</div>
+
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        <h3>Beans:</h3>
+    </div>
+</div>
+{% for bean in beans %}
+<div class="row" style="margin-top: 20px">
+    {% for a in memb %}
+    {% if a.coffeeBean == bean %}
+    <div class="col-lg text-center">
+        Name: {{bean.name}}, {{a.percentage}}%
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        Origin: {{bean.origin}}
+    </div>
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        Aroma: {{bean.aroma}}
+    </div>
+</div>
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+        Acidity: {{bean.acidity}}
+    </div>
+</div>
+{% endfor %}
+<!--
+<div class="row text-center" style="margin-top: 20px">
+    <div class="col">
+        <form method="get" action="/cafe_coffee/">
+            <input name="id" type="hidden" value="{{ cafe.pk }}" required />
+            <button class="btn btn-link" type="Submit">BACK</button>
+        </form>
+    </div>
+</div>-->
+{% endblock %}

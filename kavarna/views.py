@@ -493,6 +493,19 @@ def deletecoffee(request):
 
     return redirect(next_url, permanent=True)
 
+def coffee(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        coffeeid = request.GET['id']
+        d['coffee'] = models.Coffee.objects.get(pk=coffeeid)
+        d['beans'] = d['coffee'].beans.all()
+        d['memb'] = models.CoffeeContainsBeans.objects.filter(coffee=d['coffee'])
+
+        return render(request, "coffee.html", d)
+
 def cafe_event(request):
     d = generateDict(request)
     if 'message' in d:
@@ -505,3 +518,49 @@ def cafe_event(request):
 
         d['cafe_event_list'] = d['cafe'].event_set.all()    # returns all events in cafe - hopefully
         return render(request, "cafe-event.html", d)
+
+def addevent(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'POST':
+        if 'loggeduser' not in d:
+            d['message'] = 'You must login before creating cafe'
+        d['event_name'] = request.POST['name']
+        d['event_price'] = request.POST.get('price', None)
+        d['event_capacity'] = request.POST.get('capacity', None)
+        cafeid = request.POST['cafeid']
+        d['cafe'] = models.Cafe.getData(cafeid)
+
+        print(d)
+
+        c = models.Event()
+        c.name=d['event_name']
+        c.price=d['event_price']
+        c.capacity=d['event_capacity']
+        c.place=d['cafe']
+        c.save()
+
+        #return redirect('/profile/')
+        return render(request, "ok_messages/addevent-ok.html", d)
+    elif request.method == 'GET':
+        cafeid = request.GET['cafeid']
+        d['cafe'] = models.Cafe.getData(cafeid)
+    else:
+        d['message'] = 'Unexpected link.'
+    return render(request, "addevent.html", d)
+
+def deleteevent(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if request.method == 'GET':
+        next_url = request.GET.get('request_path', '/')
+        pk_event = request.GET.get('pk')
+        d['cafe'] = models.Event.objects.get(pk=pk_event).place
+        models.Event.objects.get(pk=pk_event).delete()
+
+    return render(request, "ok_messages/addevent-ok.html", d)
+    #return redirect(next_url, permanent=True)

@@ -14,14 +14,14 @@
                 	<button class="btn btn-link" type="Submit">{{a.name}}</button>
             	    </form>-->
 		</th>
-		{% if owner == loggeduser %}<!--
+		{% if owner == loggeduser %}
                 <th>
-                    <form method="get" action="{% url 'deletecoffee' %}">{% csrf_token %}
+                    <form method="get" action="{% url 'deleteevent' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
 			<input name="request_path" type="hidden" value="/profile" required />
                         <button type="Submit">Delete</button>
                     </form>
-		</th>
+		</th><!--
 		<th>
 		    <form method="get" action="{% url 'modifycoffee' %}">{% csrf_token %}
 			<input name="pk" type="hidden" value="{{ cafe.pk }}" required />
@@ -38,17 +38,17 @@
 </div>
 
 <br>
-{% if owner == loggeduser %}<!--
+{% if owner == loggeduser %}
 <div class="row hcentralize">
     <div class="col-lg">
 	<div class="row hcentralize">
-	    <form method="get" action="{% url 'addcoffee' %}">
+	    <form method="get" action="{% url 'addevent' %}">
                	<input name="cafeid" type="hidden" value={{cafe.pk}} required />
-                <button class="btn btn-lg btn-warning" type="Submit">Add coffee</button>
+                <button class="btn btn-lg btn-warning" type="Submit">Add event</button>
             </form>
 	</div>
     </div>
 
-</div>-->
+</div>
 {% endif %}
 {% endblock %}
