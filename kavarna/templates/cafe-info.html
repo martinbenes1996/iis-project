@@ -10,7 +10,9 @@
         {{cafe.opensAt}} - {{cafe.closesAt}}
     </div>
     <div class="col-lg-4 text-center">
-        Hodnocení
+        <h3>Hodnocení: {{ cafe_score }}</h3>
+        <h3>Ohodnot si sam:</h3>
+        {% include 'snippets/scorebar.html' with pk_subject=cafe.pk reactingto="Cafe" %}
     </div>
 </div>
 <div class="row" style="margin-top: 30px">

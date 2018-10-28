@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class CoffeePreparation(models.Model):
@@ -81,33 +82,30 @@ class Event(models.Model):
     name = models.CharField(max_length=64)
     price = models.IntegerField()
     capacity = models.IntegerField()
-    participants = models.ManyToManyField(Drinker)
+    participants = models.ManyToManyField(User)
     coffee_list = models.ManyToManyField(Coffee)
     place = models.ForeignKey(Cafe, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
-class Evaluation(models.Model):
-    """ Evaluation. """
-    drinker = models.ForeignKey(Drinker, on_delete=models.CASCADE, null=True)
-    value = models.PositiveSmallIntegerField()
-
-    def __str__(self):
-        return self.drinker + str(value)
-
 class Reaction(models.Model):
     """ Comment. """
-    cafe = models.ForeignKey(Cafe, blank=True, null=True, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, blank=True, null=True, on_delete=models.CASCADE)
-    comment = models.ForeignKey('self', blank=True, null=True, on_delete=models.CASCADE)
-    author = models.ForeignKey(Drinker, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
-    date = models.DateTimeField(blank=True, null=True)     # remove blank!!
-    evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE, blank=False)
-
+    date = models.DateTimeField(default=timezone.now, blank=True)
+    score = models.PositiveSmallIntegerField(default=5)
     def __str__(self):
         return self.author
+
+class ReactionCafe(Reaction):
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE)
+
+class ReactionEvent(Reaction):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+class ReactionReaction(Reaction):
+    reaction = models.ForeignKey("Reaction", on_delete=models.CASCADE, related_name="reactionref")
 
 
 

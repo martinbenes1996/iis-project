@@ -13,10 +13,8 @@
         <th>{{a.first_name}} {{a.last_name}}</th>
         <th>{{a.email}}</th>
         <th>
-            <form method="post" action="">{% csrf_token %}
-                <input name="pk" type="hidden" value="{{ a.pk }}" required />
-                <button type="Submit">Odstranit</button>
-            </form>
+            {% include 'snippets/postbutton.html' with linkuser=a %}
+            
         </th>
     </tr>
     {% endfor %}

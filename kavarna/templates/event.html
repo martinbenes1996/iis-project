@@ -34,35 +34,31 @@
 {% for participant in participants %}
 <div class="row" style="margin-top: 20px">
     <div class="col-lg text-center">
-	<form method="get" action="/profile/">
-            <input name="user" type="hidden" value="{{ participant.pk }}" required />
-            <button class="btn btn-link" type="Submit">{{participant.first_name}} {{participant.last_name}}</button>
-        </form>
+        {% include 'snippets/getbutton.html' with linkuser=participant %}
     </div>
 </div>
+
 {% endfor %}
 
-
-{% if is_participant %}
 <div class="row" style="margin-top: 20px">
     <div class="col-lg text-center"> 
-	<form method="get" action="/deleteparticipateevent/">
-            <input name="pk" type="hidden" value="{{ event.pk }}" required />
-            <button class="btn btn-lg btn-warning" type="Submit">Stop participating</button>
-        </form>
+        {% if loggeduser %}
+        {% if is_participant %}
+            <form method="get" action="/deleteparticipateevent/">
+                <input name="pk" type="hidden" value="{{ event.pk }}" required />
+                <button class="btn btn-lg btn-warning" type="Submit">Stop participating</button>
+            </form>
+        {% else %}
+            <form method="get" action="/participateevent/">
+                <input name="pk" type="hidden" value="{{ event.pk }}" required />
+                <button class="btn btn-lg btn-warning" type="Submit">Participate</button>
+            </form>
+        {% endif %}
+        {% else %}
+            You must <a href="{% url 'signin' %}">sign in</a> in order to participate.
+        {% endif %}
     </div>
-</div>
-{% else %}
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center"> 
-	<form method="get" action="/participateevent/">
-            <input name="pk" type="hidden" value="{{ event.pk }}" required />
-            <button class="btn btn-lg btn-warning" type="Submit">Participate</button>
-        </form>
-    </div>
-</div>
-{% endif %}
-
+</div>    
 
 <div class="row" style="margin-top: 20px">
     <div class="col-lg text-center">

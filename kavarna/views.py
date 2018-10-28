@@ -9,8 +9,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.http import Http404
-
-from kavarna import models
+from kavarna import models, core
+from kavarna.core import generateDict
 
 def logout(request=None):
     response = redirect('')
@@ -21,20 +21,6 @@ def errLogout(request, d):
     response.delete_cookie('user')
     return response
 
-def generateDict(request):
-    try:
-        email = request.COOKIES['user']
-        if User.objects.get(email=email) != None:
-            d = {'loggeduser'    : User.objects.get(email=email),
-                 'loggeddrinker' : models.Drinker.getData(email) }
-        else:
-            d = {'message'   : 'Unknown user'}
-    except:
-        d = {}
-    d['key'] = request.GET.get('key', '')
-
-    return d
-
 
 def index(request):
     #models.Drinker.objects.all().delete()
@@ -43,7 +29,6 @@ def index(request):
     if 'message' in d:
         return errLogout(request, d)
 
-    print(d.keys())
     return render(request, "index.html", d)
 
 
@@ -307,14 +292,21 @@ def cafe(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
+    
+    if request.method == 'POST':
+        core.processScore(request)
+        return HttpResponseRedirect('')
 
     if request.method == 'GET':
         cafeid = request.GET['id']
-        print(cafeid)
-        d['cafe'] = models.Cafe.getData(cafeid)
-        d['is_liking'] = True if d['cafe'] in d['loggeddrinker'].likes_cafe.all() else False
+        d['cafe'] = models.Cafe.objects.get(pk=cafeid)
+        d['cafe_score'] = core.getCafeScore( d['cafe'] )
+        try:
+            d['is_liking'] = True if d['cafe'] in d['loggeddrinker'].likes_cafe.all() else False
+        except:
+            pass
 
-        return render(request, "cafe-info.html", d)
+    return render(request, "cafe-info.html", d)
 
 def cafe_coffee(request):
     d = generateDict(request)
@@ -521,7 +513,10 @@ def event(request):
         eventid = request.GET['id']
         d['event'] = models.Event.objects.get(pk=eventid)
         d['participants'] = [User.objects.get(pk=partic.key) for partic in d['event'].participants.all()]
-        d['is_participant'] = True if d['loggeduser'] in d['participants'] else False
+        try:
+            d['is_participant'] = True if d['loggeduser'] in d['participants'] else False
+        except:
+            pass
 
         print(d)
         d['coffee'] = d['event'].coffee_list.all()
