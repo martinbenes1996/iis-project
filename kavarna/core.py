@@ -16,10 +16,15 @@ def generateDict(request):
 
     return d
 
+def getScore(l):
+    if len(l) == 0: return 0
+    return mean(l)
 def getCafeScore(c):
-    reactions = models.ReactionCafe.objects.all()
-    if len(reactions) == 0: return 0
-    return mean( [r.score for r in reactions] )
+    return getScore( [r.score for r in models.ReactionCafe.objects.all().filter(cafe=c)] )
+def getEventScore(e):
+    return getScore( [r.score for r in models.ReactionEvent.objects.all().filter(event=e)] )
+def getReactionScore(rr):
+    return getScore( [r.score for r in models.ReactionReaction.objects.all().filter(reaction=rr)] )
 
 def processScore(request):
     d = generateDict(request)

@@ -9,6 +9,7 @@
         <th>Kapacita</th>
         <th>Popis</th>
         <th>Majitel</th>
+        <th>Hodnocení</th>
         <th>Odstranit</th>
     </tr>
     
@@ -25,6 +26,7 @@
         <th>{{a.capacity|default:""}}</th>
         <th>{{a.description|default:""|truncatechars:20}}</th>
         <th>{{a.owner.first_name}} {{a.owner.last_name}}</th>
+        <th>???</th>
         <th>
             <form method="post" action="">{% csrf_token %}
                 <input name="pk" type="hidden" value="{{ a.pk }}" required />
