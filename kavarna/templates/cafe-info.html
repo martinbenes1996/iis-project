@@ -4,7 +4,9 @@
 <div class="row" style="margin-top: 20px">
     <div class="col-lg-4 text-center">
         {{cafe.street}} {{cafe.housenumber}}<br>
-        {{cafe.city}}
+        {{cafe.city}}<br>
+	PSC: {{cafe.psc}}<br>
+	Capacity: {{cafe.capacity}}
     </div>
     <div class="col-lg-4 text-center">
         {{cafe.opensAt}} - {{cafe.closesAt}}
@@ -39,7 +41,7 @@
         </form>
     </div>
 </div>
-{% else %}
+{% elif loggeduser %}
 <div class="row" style="margin-top: 20px">
     <div class="col-lg text-center"> 
 	<form method="get" action="/likecafe/">
