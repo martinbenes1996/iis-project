@@ -137,16 +137,25 @@
 {% block tab3header %}Děje se u nás{% endblock %}
 {% block tab3 %}
 <div class="row">
-    <div class="col">
+    <div class="col-lg-2"></div>
+    <div class="col-lg-8">
         <table>
-            {% for a in cafe_event_list %}
+            {% for a in event_list %}
             <tr>
                 <th>
 		            <form method="get" action="/event/">
                 	    <input name="id" type="hidden" value={{a.pk}} required />
                 	    <button class="btn btn-link" type="Submit">{{a.name}}</button>
             	    </form>
-		        </th>
+                </th>
+                <th> {{ a.price }} </th>
+                <th> {{ a.capacity }} </th>
+                <th>
+                    <form method="get" action="/cafe/">
+                        <input name="id" type="hidden" value={{a.place.pk}} required />
+                        <button class="btn btn-link" type="Submit">{{a.place.name}}</button>
+                    </form>
+                </th>
                 
                 {% if owner == loggeduser %}
                 <th>
@@ -165,24 +174,52 @@
                         </form>
 		            </th>-->
 		        {% endif %}
+            </tr>
+            {% endfor %}
+            <span id="append"></span>
+            {% if owner == loggeduser %}
+            <tr>
+                <form id="NewEventCafeForm" data-toggle="validator" role="form"
+                    class="form-signin" action="/addevent/" method="post"
+                    style="display: inline">{% csrf_token %}
+                    <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
+                    <tr>
+                    <th><input type="" class="form-control" name="name" placeholder="Event Name" required></th>
+                    <th><input type="" class="form-control" name="price" placeholder="Price"></th>
+                    <th><input type="" class="form-control" name="capacity" placeholder="Capacity"></th>
+                    <th><button class="btn btn-warning btn-block" type="submit">Add new event</button></th>
+                    <th></th>
+                    </tr>
+                </form>
+                <script>
+                    $("#NewEventCafeForm").submit(function(e) {
+                        var form = $(this);
+                        var url = form.attr('action');
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: form.serialize(), // serializes the form's elements.
+                            success: function(data) {
+                                window.location.reload();
+                                //alert('Form OK!');
+                                //alert(data); // show response from the php script.
+                            },
+                            error: function(rs, e) {
+                                //alert('Chyba!')
+                                //alert(rs);
+                            }
+                        });
+                        e.preventDefault(); // avoid to execute the actual submit of the form.
+                    });
+                </script>
+                {{warning|safe}}
              </tr>
-             {% endfor %}
+             {% endif %}
          </table>
     </div>
+    <div class="col-lg-2"></div>
 </div>
 
-{% if owner == loggeduser %}
-<div class="row hcentralize">
-    <div class="col-lg">
-	<div class="row hcentralize">
-	    <form method="get" action="{% url 'addevent' %}">
-               	<input name="cafeid" type="hidden" value={{cafe.pk}} required />
-                <button class="btn btn-lg btn-warning" type="Submit">Add event</button>
-            </form>
-	</div>
-    </div>
-</div>
-{% endif %}
 {% endblock %}
 
 

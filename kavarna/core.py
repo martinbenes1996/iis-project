@@ -69,5 +69,21 @@ def processCafeLike(request):
         else:
             d['loggeddrinker'].likes_cafe.add(d['cafe'])
             return True
-            
+
+def processEventParticipate(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    
+    if request.method == 'POST':
+        pk_event = request.POST['pk']
+        d['event'] = models.Event.objects.get(pk=pk_event)
+        if d['loggeduser'] in d['event'].participants.all():
+            d['event'].participants.remove(d['loggeduser'])
+            return False
+        else:
+            d['event'].participants.add(d['loggeduser'])
+            return True
+    
+
     

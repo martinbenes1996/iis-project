@@ -1,70 +1,73 @@
-{% extends "page.html" %}
+{% extends "subpage.html" %}
 
-{% block content %}
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        <h1>{{event.name}}</h1>
-    </div>
-</div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        Cafe: 
-	<form method="get" action="/cafe/">
-            <input name="id" type="hidden" value="{{ event.place.pk }}" required />
-            <button class="btn btn-link" type="Submit">{{event.place.name}}</button>
-        </form>
-    </div>
-</div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        Price: {{event.price}}
-    </div>
-</div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        Capacity: {{event.capacity}}
-    </div>
-</div>
+{% block header %}{{event.name}}{% endblock %}
 
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        <h3>Participants</h3>
-    </div>
-</div>
-{% for participant in participants %}
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        {% include 'snippets/getbutton.html' with linkuser=participant %}
-    </div>
-</div>
-
-{% endfor %}
-
-<div class="row" style="margin-top: 20px">
+{% block score %}
+<div class="row" style="margin: 20px">
     <div class="col-lg text-center"> 
+        <!-- LIKE/STOP LIKING tlacitko -->
         {% if loggeduser %}
-        {% if is_participant %}
-            <form method="get" action="/deleteparticipateevent/">
-                <input name="pk" type="hidden" value="{{ event.pk }}" required />
-                <button class="btn btn-lg btn-warning" type="Submit">Stop participating</button>
-            </form>
+        <input type="button" id="participate" class="btn btn-lg btn-warning" name="{{ likebutton }}" value=
+        {% if participating %}
+            "Stop Participating"
         {% else %}
-            <form method="get" action="/participateevent/">
-                <input name="pk" type="hidden" value="{{ event.pk }}" required />
-                <button class="btn btn-lg btn-warning" type="Submit">Participate</button>
-            </form>
+            "Participate"
         {% endif %}
+        />
+        <script>
+        // click -> sends async request
+        $('#participate').click(function(){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'event' %}",
+                data: {'pk': '{{ event.pk }}',
+                       'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                dataType: "json",
+                // on success changes 
+                success: function(response) {
+                    $('#participate').prop('value', response.participatevalue)
+                },
+                // on error nothing :(
+                error: function(rs, e) {
+                }
+            }); 
+        })
+        </script>
         {% else %}
-            You must <a href="{% url 'signin' %}">sign in</a> in order to participate.
+        <a href="{% url 'signin' %}">Sign in</a> to participate.
         {% endif %}
-    </div>
-</div>    
-
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        <h3>Coffee</h3>
     </div>
 </div>
+{% endblock %}
+
+{% block tab1title %}Základní informace{% endblock %}
+{% block tab2title %}Co nabízíme?{% endblock %}
+{% block tab3title %}Kdo se účastní?{% endblock %}
+{% block tab4title %}Vaše názory{% endblock %}
+
+
+
+{% block tab1header%}Základní informace{% endblock %}
+{% block tab1 %}
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg-4 text-right">
+        <b>Místo konání: </b><br>
+        <a href="{% url 'cafe' %}?id={{event.place.pk}}">{{event.place.name}}</a>
+    </div>
+    <div class="col-lg-4 text-center">
+        <b>Cena: </b> <br>
+        {{event.price}}
+    </div>
+    <div class="col-lg-4 text-left">
+        <b>Kapacita:</b> <br>
+        {{event.capacity}}
+    </div>
+</div>
+{% endblock %}
+
+
+{% block tab2header %}Naše nabídka{% endblock %}
+{% block tab2 %}
 {% for cofe in coffee %}
 <div class="row" style="margin-top: 20px">
     <div class="col-lg text-center">
@@ -85,6 +88,19 @@
     {% endif %}</tr></table>
 </div>
 {% endfor %}
+{% endblock %}
+
+
+{% block tab3header %}Seznam účastníků{% endblock %}
+{% block tab3 %}
+<ul>
+{% for p in event.participants.all %}
+    <li><a href="{% url 'profile' %}?user={{p.pk}}">{{p.first_name}} {{p.last_name}}</a></li>
+{% endfor %} 
+</ul>
+{% endblock %}
+
+
 
 
 {% if loggeduser == event.place.owner %}
@@ -116,4 +132,6 @@
         </form>
     </div>
 </div>-->
-{% endblock %}
+
+
+

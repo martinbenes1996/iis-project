@@ -291,6 +291,8 @@ def profile(request):
         user_id = request.GET.get('user')
         d['userdata'] = User.objects.get(pk=user_id)
         d['drinkerdata'] = models.Drinker.objects.get(key=user_id)
+        d['events'] = models.Event.getEventsOf(user_id)
+        d['owningcafes'] = models.Cafe.objects.filter(owner=d['userdata'])
 
     return render(request, "profile.html", d)
 
@@ -376,6 +378,7 @@ def cafe(request):
         d['cafe_score'] = core.getCafeScore( d['cafe'] )
         d['owner'] = d['cafe'].owner    # returns object User
         d['cafe_coffee_list'] = d['cafe'].offers_coffee.all()
+        d['event_list'] = models.Event.objects.filter(place=d['cafe'])
         try:
             d['is_liking'] = True if d['cafe'] in d['loggeddrinker'].likes_cafe.all() else False
         except:
@@ -653,12 +656,19 @@ def event(request):
     if 'message' in d:
         return errLogout(request, d)
 
+    if request.method == 'POST':
+        if core.processEventParticipate(request):
+            message = 'Stop Participating'
+        else:
+            message = 'Participate'
+        d = {'participatevalue' : message}
+        return HttpResponse(json.dumps(d),content_type='application/json')    
+    
     if request.method == 'GET':
         eventid = request.GET['id']
         d['event'] = models.Event.objects.get(pk=eventid)
-        d['participants'] = [User.objects.get(pk=partic.key) for partic in d['event'].participants.all()]
         try:
-            d['is_participant'] = True if d['loggeduser'] in d['participants'] else False
+            d['participating'] = True if d['loggeduser'] in d['event'].participants.all() else False
         except:
             pass
 
@@ -670,57 +680,47 @@ def event(request):
 
 def addevent(request):
     d = generateDict(request)
+    if 'loggeduser' not in d:
+        d['message'] = 'You must be logged in.'
     if 'message' in d:
-        return errLogout(request, d)
-
+        return errLogout(request, {'message' : d['message']})
+    d = {}
     if request.method == 'POST':
-        if 'loggeduser' not in d:
-            d['message'] = 'You must login before creating cafe'
-
-        d['error_message'] = ''
         d['event_name'] = request.POST['name']
-        d['event_price'] = request.POST.get('price', '')
-        if d['event_price'] != '':
-                try:
-                    d['event_price'] = int(d['event_price'])
-                except:
-                    d['error_message'] = d['error_message'] + "Price must be a decimal number! | "
-        d['event_capacity'] = request.POST.get('capacity', '')
-        if d['event_capacity'] != '':
-                try:
-                    d['event_capacity'] = int(d['event_capacity'])
-                except:
-                    d['error_message'] = d['error_message'] + "Capacity must be a decimal number! | "
-
+        print(d['event_name'])
+        try:
+            d['event_price'] = int(request.POST.get('price', ''))
+        except:
+            d['message'] = "Price must be a decimal number."
+        try:
+            d['event_capacity'] = int(request.POST.get('capacity', ''))
+        except:
+            d['message'] = "Capacity must be a decimal number."
         cafeid = request.POST['cafeid']
-        d['cafe'] = models.Cafe.getData(cafeid)
+        cafe = models.Cafe.getData(cafeid)
+        print(cafe)
 
-        if d['error_message'] != '':
-            d['add'] = True
-            return render(request, "errorevent.html", d)
-
-        print(d)
+        if 'message' in d:
+            return HttpResponse(json.dumps(d),content_type='application/json')
 
         try:
             c = models.Event()
             c.name=d['event_name']
             c.price=d['event_price']
             c.capacity=d['event_capacity']
-            c.place=d['cafe']
+            c.place=cafe
             c.save()
         except:
-            d['add'] = True
-            d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
-            return render(request, "errorevent.html", d)
+            d['message'] = "Database error"
+            return HttpResponse(json.dumps(d),content_type='application/json')
 
-        #return redirect('/profile/')
-        return render(request, "ok_messages/addevent-ok.html", d)
-    elif request.method == 'GET':
-        cafeid = request.GET['cafeid']
-        d['cafe'] = models.Cafe.getData(cafeid)
+        d['cafe_name'] = cafe.name
+        d['cafe_id'] = cafeid
+        return HttpResponse(json.dumps(d), content_type='application/json')
+
     else:
         d['message'] = 'Unexpected link.'
-    return render(request, "addevent.html", d)
+    return render(json.dumps(d),content_type='application/json')
 
 def deleteevent(request):
     d = generateDict(request)
@@ -744,7 +744,7 @@ def participateevent(request):
     if request.method == 'GET':
         pk_event = request.GET.get('pk')
         d['event'] = models.Event.objects.get(pk=pk_event)
-        d['event'].participants.add(d['loggeddrinker'])
+        d['event'].participants.add(d['loggeduser'])
 
     return render(request, "ok_messages/participateevent-ok.html", d)
 
@@ -756,7 +756,7 @@ def deleteparticipateevent(request):
     if request.method == 'GET':
         pk_event = request.GET.get('pk')
         d['event'] = models.Event.objects.get(pk=pk_event)
-        d['event'].participants.remove(d['loggeddrinker'])
+        d['event'].participants.remove(d['loggeduser'])
 
     return render(request, "ok_messages/participateevent-ok.html", d)
 

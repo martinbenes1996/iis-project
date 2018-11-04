@@ -88,6 +88,10 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @classmethod
+    def getEventsOf(cls, u_id):
+        return cls.objects.filter(participants__id=u_id)
 
 class Reaction(models.Model):
     """ Comment. """

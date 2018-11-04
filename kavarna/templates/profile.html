@@ -4,7 +4,7 @@
 {% block header %}{{ userdata.first_name }} {{ userdata.last_name }}{% endblock %}
 
 {% block tab1title %}Základní informace{% endblock %}
-{% block tab2title %}Oblíbené{% endblock %}
+{% block tab2title %}Kavárny{% endblock %}
 {% block tab3title %}Zúčastním se{% endblock %}
 {% block tab4title %}Mé názory{% endblock %}
 
@@ -19,14 +19,38 @@
 {% endblock %}
 
 
-{% block tab2header %}Oblíbené{% endblock %}
+{% block tab2header %}Kavárny{% endblock %}
 {% block tab2 %}
 <div class="row">
     <div class="col-lg-4"></div>
     <div class="col-lg-4">
+        <h4>Oblíbené</h4>
         <ul>
         {% for fav in drinkerdata.likes_cafe.all %}
-            <li>{{fav.name}}</li>
+            <li><a href="{% url 'cafe' %}?id={{fav.pk}}">{{fav.name}}</a></li>
+        {% endfor %}
+        </ul>
+
+        <h4>Spravuji</h4>
+        <ul>
+        {% for own in owningcafes %}
+            <li><a href="{% url 'cafe' %}?id={{own.pk}}">{{own.name}}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="col-lg-4"></div>
+</div>
+{% endblock %}
+
+
+{% block tab3header %}Zúčastním se{% endblock %}
+{% block tab3 %}
+<div class="row">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4">
+        <ul>
+        {% for e in events %}
+            <li><a href="{% url 'event' %}?id={{e.pk}}">{{e.name}}</a></li>
         {% endfor %}
         </ul>
     </div>
