@@ -65,7 +65,9 @@ def processCafeLike(request):
         d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
         if d['cafe'] in d['loggeddrinker'].likes_cafe.all():
             d['loggeddrinker'].likes_cafe.remove(d['cafe'])
+            return False
         else:
             d['loggeddrinker'].likes_cafe.add(d['cafe'])
+            return True
             
     

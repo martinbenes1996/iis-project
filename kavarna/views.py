@@ -8,6 +8,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
+try:
+    from django.utils import simplejson as json
+except ImportError:
+    import json
 from django.http import Http404
 from kavarna import models, core
 from kavarna.core import generateDict
@@ -361,7 +365,12 @@ def cafe(request):
         if request.POST.get('role') == 'score':
             core.processScore(request)
         elif request.POST.get('role') == 'like':
-            core.processCafeLike(request)
+            if core.processCafeLike(request):
+                message = 'Stop Liking'
+            else:
+                message = 'Like'
+            ctx = {'likevalue' : message}
+            return HttpResponse(json.dumps(ctx),content_type='application/json')
             
         return HttpResponseRedirect('')
 
