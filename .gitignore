@@ -1,4 +1,5 @@
 
 
-*.pyc
+*/*.pyc
 *.py.orig
+kavarna/__pycache__/*
