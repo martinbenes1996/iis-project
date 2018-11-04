@@ -95,17 +95,13 @@ class Reaction(models.Model):
     text = models.TextField(blank=True, null=True)
     date = models.DateTimeField(default=timezone.now, blank=True)
     score = models.PositiveSmallIntegerField(default=5)
+
+    cafe = models.ForeignKey(Cafe, null=True, default=None, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, null=True, default=None, on_delete=models.CASCADE)
+    react = models.ForeignKey("Reaction", null=True, default=None, on_delete=models.CASCADE)
     def __str__(self):
         return self.author
-
-class ReactionCafe(Reaction):
-    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE)
-
-class ReactionEvent(Reaction):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-
-class ReactionReaction(Reaction):
-    reaction = models.ForeignKey("Reaction", on_delete=models.CASCADE, related_name="reactionref")
+    
 
 
 

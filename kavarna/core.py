@@ -20,11 +20,11 @@ def getScore(l):
     if len(l) == 0: return 0
     return mean(l)
 def getCafeScore(c):
-    return getScore( [r.score for r in models.ReactionCafe.objects.all().filter(cafe=c)] )
+    return getScore( [r.score for r in models.Reaction.objects.all().filter(cafe=c)] )
 def getEventScore(e):
-    return getScore( [r.score for r in models.ReactionEvent.objects.all().filter(event=e)] )
+    return getScore( [r.score for r in models.Reaction.objects.all().filter(event=e)] )
 def getReactionScore(rr):
-    return getScore( [r.score for r in models.ReactionReaction.objects.all().filter(reaction=rr)] )
+    return getScore( [r.score for r in models.Reaction.objects.all().filter(reaction=rr)] )
 
 def processScore(request):
     d = generateDict(request)
@@ -40,13 +40,13 @@ def processScore(request):
 
         if reactingto == 'Cafe':
             s = models.Cafe.objects.get(id=subject)
-            r = models.ReactionCafe(cafe=s, author=d['loggeduser'], score=score, text=text)
+            r = models.Reaction(cafe=s, author=d['loggeduser'], score=score, text=text)
         elif reactingto == 'Reaction':
             s = models.Reaction.objects.get(id=subject)
-            r = models.ReactionReaction(reaction=s, author=d['loggeduser'], score=score, text=text)
+            r = models.Reaction(react=s, author=d['loggeduser'], score=score, text=text)
         elif reactingto == 'Event':
             s = models.Event.objects.get(id=subject)
-            r = models.ReactionEvent(event=s, author=d['loggeduser'], score=score, text=text)
+            r = models.Reaction(event=s, author=d['loggeduser'], score=score, text=text)
         else:
             raise Exception('Unknown Reaction Subject.')
         

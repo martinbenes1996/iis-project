@@ -294,6 +294,7 @@ def cafe(request):
         return errLogout(request, d)
     
     if request.method == 'POST':
+        print("POST Request")
         core.processScore(request)
         return HttpResponseRedirect('')
 
