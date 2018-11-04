@@ -54,3 +54,18 @@ def processScore(request):
 
     else:
         raise Exception('GET request')
+
+def processCafeLike(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    
+    if request.method == 'POST':
+        pk_cafe = request.POST['pk']
+        d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
+        if d['cafe'] in d['loggeddrinker'].likes_cafe.all():
+            d['loggeddrinker'].likes_cafe.remove(d['cafe'])
+        else:
+            d['loggeddrinker'].likes_cafe.add(d['cafe'])
+            
+    

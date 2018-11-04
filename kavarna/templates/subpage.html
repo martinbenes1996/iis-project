@@ -9,6 +9,49 @@
 	    </div>
         </div>
     </div>
+
+    {% block score %}
+    {% endblock %}
+
+    <div class="row hcentralize">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#Tab1">Základní informace</a></li>
+            <li><a data-toggle="tab" href="#Tab2">Co nabízíme?</a></li>
+            <li><a data-toggle="tab" href="#Tab3">Děje se u nás</a></li>
+            <li><a data-toggle="tab" href="#Tab4">Vaše názory</a></li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="tab-content">
+            <div id="Tab1" class="tab-pane fade in active">
+                {% block tab1 %}
+                <h3>HOME</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                {% endblock %}
+            </div>
+            <div id="Tab2" class="tab-pane fade">
+                {% block tab2 %}
+                <h3>Nabídka</h3>
+                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                {% endblock %}
+            </div>
+            <div id="Tab3" class="tab-pane fade">
+                {% block tab3 %}
+                <h3>Akce u nás</h3>
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                {% endblock %}
+            </div>
+            <div id="Tab4" class="tab-pane fade">
+                {% block tab4 %}
+                <h3>Diskuze</h3>
+                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+
     {% block menu %}
     {% endblock %}
     {% block data %}

@@ -136,32 +136,65 @@ def addcafe(request):
     if request.method == 'POST':
         if 'loggeduser' not in d:
             d['message'] = 'You must login before creating cafe'
-        d['cafe_name'] = request.POST['name']
-        d['cafe_street'] = request.POST.get('street')
-        d['cafe_housenumber'] = request.POST.get('housenumber')
-        d['cafe_city'] = request.POST.get('city')
-        d['cafe_psc'] = request.POST.get('psc')
-        d['cafe_opensat'] = request.POST.get('opensat')
-        d['cafe_closesat'] = request.POST.get('closesat')
-        d['cafe_capacity'] = request.POST.get('capacity')
-        d['cafe_description'] = request.POST.get('description')
-        #for k,v in d.items():
-        #    if v == '':
-        #        d[k] = None
-       # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
+        d['error_message'] = ''
+        try:
+            d['cafe_name'] = request.POST['name']
+            d['cafe_street'] = request.POST.get('street')
+            d['cafe_housenumber'] = request.POST.get('housenumber')
+            if d['cafe_housenumber'] != '':
+                try:
+                    d['cafe_housenumber'] = int(d['cafe_housenumber'])
+                except:
+                    d['error_message'] = d['error_message'] + "Housenumber must be a decimal number! | "
+            d['cafe_city'] = request.POST.get('city')
+            d['cafe_psc'] = request.POST.get('psc')
+            if d['cafe_psc'] != '':
+                try:
+                    if int(d['cafe_psc']) < 10000 or int(d['cafe_psc']) > 99999:
+                        d['error_message'] = d['error_message'] + "Invalid PSC! | "
+                except:
+                    d['error_message'] = d['error_message'] + "PSC must be a decimal number! (input format: 00000) | "
+            d['cafe_opensat'] = request.POST.get('opensat')
+            d['cafe_closesat'] = request.POST.get('closesat')
+            d['cafe_capacity'] = request.POST.get('capacity')
+            if d['cafe_capacity'] != '':
+                try:
+                    d['cafe_capacity'] = int(d['cafe_capacity'])
+                except:
+                    d['error_message'] = d['error_message'] + "Capacity must be a decimal number! | "
+            d['cafe_description'] = request.POST.get('description')
+        except:
+            pass
+
+        if d['error_message'] != '':
+            d['add'] = True
+            return render(request, "errorcafe.html", d)
 
         print(d)
-        c = models.Cafe(name=d['cafe_name'],
-                        street=d['cafe_street'],
-                        housenumber=d['cafe_housenumber'],
-                        city=d['cafe_city'],
-                        psc=d['cafe_psc'],
-                        opensAt=d['cafe_opensat'],
-                        closesAt=d['cafe_closesat'],
-                        #capacity=d['cafe_capacity'],
-                        description=d['cafe_description'],
-                        owner=d['loggeduser'])
-        c.save()
+        try:
+            c = models.Cafe()
+            c.name = d['cafe_name']
+            c.street=d['cafe_street']
+            if d['cafe_housenumber'] != '':
+                c.housenumber=d['cafe_housenumber']
+            #if d['cafe_city'] != '':
+            c.city=d['cafe_city']
+            if d['cafe_psc'] != '':
+                c.psc=d['cafe_psc']
+            #if d['cafe_opensat'] != '':
+            c.opensAt=d['cafe_opensat']
+            #if d['cafe_closesat'] != '':
+            c.closesAt=d['cafe_closesat']
+            if d['cafe_capacity'] != '':
+                c.capacity=d['cafe_capacity']
+            c.description=d['cafe_description']
+            c.owner=d['loggeduser']
+            c.save()
+        except:
+            d['add'] = True
+            d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
+            return render(request, "errorcafe.html", d)
+
         return redirect('cafes')
     else:
         d['message'] = 'Unexpected link.'
@@ -176,34 +209,62 @@ def modifycafe(request):
         if 'loggeduser' not in d:
             d['message'] = 'You must login before modifying cafe'
 
-        d['cafe_name'] = request.POST['name']
-        d['cafe_street'] = request.POST.get('street')
-        d['cafe_housenumber'] = request.POST.get('housenumber')
-        d['cafe_city'] = request.POST.get('city')
-        d['cafe_psc'] = request.POST.get('psc')
-        d['cafe_opensat'] = request.POST.get('opensat')
-        d['cafe_closesat'] = request.POST.get('closesat')
-        d['cafe_capacity'] = request.POST.get('capacity')
-        d['cafe_description'] = request.POST.get('description')
+        d['error_message'] = ''
+        try:
+            d['cafe_name'] = request.POST['name']
+            d['cafe_street'] = request.POST.get('street')
+            d['cafe_housenumber'] = request.POST.get('housenumber')
+            if d['cafe_housenumber'] != '':
+                try:
+                    d['cafe_housenumber'] = int(d['cafe_housenumber'])
+                except:
+                    d['error_message'] = d['error_message'] + "Housenumber must be a decimal number! | "
+            d['cafe_city'] = request.POST.get('city')
+            d['cafe_psc'] = request.POST.get('psc')
+            if d['cafe_psc'] != '':
+                try:
+                    if int(d['cafe_psc']) < 10000 or int(d['cafe_psc']) > 99999:
+                        d['error_message'] = d['error_message'] + "Invalid PSC! | "
+                except:
+                    d['error_message'] = d['error_message'] + "PSC must be a decimal number! | "
+            d['cafe_opensat'] = request.POST.get('opensat')
+            d['cafe_closesat'] = request.POST.get('closesat')
+            d['cafe_capacity'] = request.POST.get('capacity')
+            if d['cafe_capacity'] != '':
+                try:
+                    d['cafe_capacity'] = int(d['cafe_capacity'])
+                except:
+                    d['error_message'] = d['error_message'] + "Capacity must be a decimal number! | "
+            d['cafe_description'] = request.POST.get('description')
+        except:
+            pass
+
         next_url = request.POST.get('next_url')
         cafe = models.Cafe.objects.get(pk=request.POST.get('cafe'))
-        #cafe = request.POST.get('cafe')
-        #for k,v in d.items():
-        #    if v == '':
-        #        d[k] = None
-        # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
+        d['cafe'] = cafe
+
+        if d['error_message'] != '':
+            d['add'] = False
+            return render(request, "errorcafe.html", d)
 
         print(d)
-        cafe.name=d['cafe_name']
-        cafe.street=d['cafe_street']
-        cafe.housenumber=d['cafe_housenumber']
-        cafe.city=d['cafe_city']
-        cafe.psc=d['cafe_psc']
-        cafe.opensAt=d['cafe_opensat']
-        cafe.closesAt=d['cafe_closesat']
-        cafe.capacity=d['cafe_capacity']
-        cafe.description=d['cafe_description']
-        cafe.save()
+        try:
+            cafe.name=d['cafe_name']
+            cafe.street=d['cafe_street']
+            if d['cafe_housenumber'] != '':
+                cafe.housenumber=d['cafe_housenumber']
+            cafe.city=d['cafe_city']
+            cafe.psc=d['cafe_psc']
+            cafe.opensAt=d['cafe_opensat']
+            cafe.closesAt=d['cafe_closesat']
+            if d['cafe_capacity'] != '':
+                cafe.capacity=d['cafe_capacity']
+            cafe.description=d['cafe_description']
+            cafe.save()
+        except:
+            d['add'] = False
+            d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
+            return render(request, "errorcafe.html", d)
 
         return redirect(next_url, permanent=True)
     elif request.method == 'GET':
@@ -223,7 +284,10 @@ def profile(request):
 
     # change to requested user profile number
     if request.method == 'GET':
-        user_id = request.GET.get('user', d['loggeduser'].pk)
+        try:
+            user_id = request.GET.get('user', d['loggeduser'].pk)
+        except:
+            user_id = request.GET.get('user')
         d['user_profile'] = User.objects.get(pk=user_id)
     else:
         d['user_profile'] = User.objects.first()
@@ -245,7 +309,7 @@ def profile_cafe(request):
     #d['user_cafes_list'] = models.Cafe.objects.all()
     d['user_cafes_list'] = models.Cafe.objects.filter(owner=d['user_profile'])#.values()
 
-    return render(request, "profile-cafe.html", d)
+    return render(request, "cafe.html", d)
 
 def deletecafe(request):
     d = generateDict(request)
@@ -292,44 +356,27 @@ def cafe(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
-    
+
     if request.method == 'POST':
-        print("POST Request")
-        core.processScore(request)
+        if request.POST.get('role') == 'score':
+            core.processScore(request)
+        elif request.POST.get('role') == 'like':
+            core.processCafeLike(request)
+            
         return HttpResponseRedirect('')
 
     if request.method == 'GET':
         cafeid = request.GET['id']
         d['cafe'] = models.Cafe.objects.get(pk=cafeid)
         d['cafe_score'] = core.getCafeScore( d['cafe'] )
+        d['owner'] = d['cafe'].owner    # returns object User
+        d['cafe_coffee_list'] = d['cafe'].offers_coffee.all()
         try:
             d['is_liking'] = True if d['cafe'] in d['loggeddrinker'].likes_cafe.all() else False
         except:
             pass
 
-    return render(request, "cafe-info.html", d)
-
-def cafe_coffee(request):
-    d = generateDict(request)
-    if 'message' in d:
-        return errLogout(request, d)
-
-    if request.method == 'GET':
-        cafeid = request.GET['id']
-        print(cafeid)
-        d['cafe'] = models.Cafe.getData(cafeid)
-        d['owner'] = d['cafe'].owner    # returns object User
-
-        print(d['cafe'].offers_coffee.all())    # asi
-        d['cafe_coffee_list'] = d['cafe'].offers_coffee.all()
-        return render(request, "cafe-coffee.html", d)
-    #raise Http404("Massive internal error!!")
-
-
-    #d['user_cafes_list'] = models.Cafe.objects.all()
-    #d['cafe_coffee_list'] = models.Coffee.objects.filter(owner=d['user_profile'])#.values()
-
-    #return render(request, "profile-cafe.html", d)
+    return render(request, "cafe.html", d)
 
 def addcoffee(request):
     d = generateDict(request)
@@ -339,56 +386,95 @@ def addcoffee(request):
     if request.method == 'POST':
         if 'loggeduser' not in d:
             d['message'] = 'You must login before creating cafe'
-        d['coffee_name'] = request.POST['name']
-        d['coffee_placeoforigin'] = request.POST.get('placeoforigin', None)
-        d['coffee_quality'] = request.POST.get('quality', None)
-        d['coffee_taste'] = request.POST.get('taste', None)
-        d['coffee_preparation'] = request.POST.get('preparation', None)
-        d['coffee_bean'] = request.POST.get('bean', None)
-        d['coffee_bean_perc'] = request.POST.get('beanperc', None)
-        d['coffee_bean2'] = request.POST.get('bean2', None)
-        d['coffee_bean_perc2'] = request.POST.get('beanperc2', None)
-        d['coffee_bean3'] = request.POST.get('bean3', None)
-        d['coffee_bean_perc3'] = request.POST.get('beanperc3', None)
+        d['error_message'] = ''
+
+        d['coffee_name'] = request.POST.get('name', '')
+        d['coffee_placeoforigin'] = request.POST.get('placeoforigin', '')
+        d['coffee_quality'] = request.POST.get('quality', '')
+        d['coffee_taste'] = request.POST.get('taste', '')
+        d['coffee_preparation'] = request.POST.get('preparation', '')
+        d['coffee_bean'] = request.POST.get('bean', '')
+        d['coffee_bean_perc'] = request.POST.get('beanperc', '')
+        if d['coffee_bean_perc'] != '':
+            try:
+                if int(d['coffee_bean_perc']) < 1 or int(d['coffee_bean_perc']) > 100:
+                    d['error_message'] = d['error_message'] + "Percentage of first bean must be between 1 - 100! | "
+                else:
+                    d['coffee_bean_perc'] = int(d['coffee_bean_perc'])
+                    sumperc = d['coffee_bean_perc']
+            except:
+                d['error_message'] = d['error_message'] + "Percentage of first bean must be a decimal number! | "
+        d['coffee_bean2'] = request.POST.get('bean2', '')
+        d['coffee_bean_perc2'] = request.POST.get('beanperc2', '')
+        if d['coffee_bean_perc2'] != '':
+            try:
+                if int(d['coffee_bean_perc2']) < 1 or int(d['coffee_bean_perc2']) > 100:
+                    d['error_message'] = d['error_message'] + "Percentage of second bean must be between 1 - 100! | "
+                else:
+                    d['coffee_bean_perc2'] = int(d['coffee_bean_perc2'])
+                    sumperc = sumperc+d['coffee_bean_perc2']
+            except:
+                d['error_message'] = d['error_message'] + "Percentage of second bean must be a decimal number! | "
+        d['coffee_bean3'] = request.POST.get('bean3', '')
+        d['coffee_bean_perc3'] = request.POST.get('beanperc3', '')
+        if d['coffee_bean_perc3'] != '':
+            try:
+                if int(d['coffee_bean_perc3']) < 1 or int(d['coffee_bean_perc3']) > 100:
+                    d['error_message'] = d['error_message'] + "Percentage of third bean must be between 1 - 100! | "
+                else:
+                    d['coffee_bean_perc3'] = int(d['coffee_bean_perc3'])
+                    sumperc = sumperc+d['coffee_bean_perc3']
+            except:
+                d['error_message'] = d['error_message'] + "Percentage of third bean must be a decimal number! | "
+        if sumperc != 100:
+            d['error_message'] = d['error_message'] + "Sum of all percentages must be equal to 100! | "
+        if d['coffee_bean'] == d['coffee_bean2'] and d['coffee_bean'] != None or d['coffee_bean'] == d['coffee_bean3'] and d['coffee_bean'] != None or d['coffee_bean2'] == d['coffee_bean3'] and d['coffee_bean2'] != None:
+            d['error_message'] = d['error_message'] + "You cannot assign parcentage to the same bean more than once! | "
+
         cafeid = request.POST['cafeid']
         d['cafe'] = models.Cafe.getData(cafeid)
-        #for k,v in d.items():
-        #    if v == '':
-        #        d[k] = None
-       # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
+
+        if d['error_message'] != '':
+            d['add'] = True
+            d['preparations'] = models.CoffeePreparation.objects.all()
+            d['beans'] = models.CoffeeBean.objects.all()
+            return render(request, "errorcoffee.html", d)
 
         print(d)
+        try:
+            c = models.Coffee()
+            c.name=d['coffee_name']
+            c.place_of_origin=d['coffee_placeoforigin']
+            c.quality=d['coffee_quality']
+            c.taste_description=d['coffee_taste']
+            c.preparation=models.CoffeePreparation.objects.get(pk=d['coffee_preparation'])
+            c.save()
 
-        c = models.Coffee()
-        c.name=d['coffee_name']
-        #if d['coffee_placeoforigin'] != None:
-        c.place_of_origin=d['coffee_placeoforigin']
-        #if d['coffee_quality'] != None:
-        c.quality=d['coffee_quality']
-        #if d['coffee_taste'] != None:
-        c.taste_description=d['coffee_taste']
-        c.preparation=models.CoffeePreparation.objects.get(pk=d['coffee_preparation'])
-        c.save()
-
-        d['cafe'].offers_coffee.add(c)  # add coffee to cafe
-        if d['coffee_bean_perc'] != '' and d['coffee_bean_perc'] != None:
-            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
-            contains.coffee = c
-            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean'])
-            contains.percentage = d['coffee_bean_perc']
-            contains.save()
-        if d['coffee_bean_perc2'] != '' and d['coffee_bean_perc2'] != None:
-            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
-            contains.coffee = c
-            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean2'])
-            contains.percentage = d['coffee_bean_perc2']
-            contains.save()
-        if d['coffee_bean_perc3'] != '' and d['coffee_bean_perc3'] != None:
-            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
-            contains.coffee = c
-            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean3'])
-            contains.percentage = d['coffee_bean_perc3']
-            contains.save()
+            d['cafe'].offers_coffee.add(c)  # add coffee to cafe
+            if d['coffee_bean_perc'] != '' and d['coffee_bean_perc'] != None:
+                contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+                contains.coffee = c
+                contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean'])
+                contains.percentage = d['coffee_bean_perc']
+                contains.save()
+            if d['coffee_bean_perc2'] != '' and d['coffee_bean_perc2'] != None:
+                contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+                contains.coffee = c
+                contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean2'])
+                contains.percentage = d['coffee_bean_perc2']
+                contains.save()
+            if d['coffee_bean_perc3'] != '' and d['coffee_bean_perc3'] != None:
+                contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+                contains.coffee = c
+                contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean3'])
+                contains.percentage = d['coffee_bean_perc3']
+                contains.save()
+        except:
+            d['add'] = True
+            d['preparations'] = models.CoffeePreparation.objects.all()
+            d['beans'] = models.CoffeeBean.objects.all()
+            d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
+            return render(request, "errorcoffee.html", d)
 
         return render(request, "ok_messages/addcoffee-ok.html", d)
         #return redirect('/profile/')
@@ -409,58 +495,110 @@ def modifycoffee(request):
     if request.method == 'POST':
         if 'loggeduser' not in d:
             d['message'] = 'You must login before creating cafe'
-        d['coffee_name'] = request.POST['name']
-        d['coffee_placeoforigin'] = request.POST.get('placeoforigin', None)
-        d['coffee_quality'] = request.POST.get('quality', None)
-        d['coffee_taste'] = request.POST.get('taste', None)
-        d['coffee_preparation'] = request.POST.get('preparation', None)
+        d['error_message'] = ''
+        sumperc = 0
+
+        d['coffee_name'] = request.POST.get('name', '')
+        d['coffee_placeoforigin'] = request.POST.get('placeoforigin', '')
+        d['coffee_quality'] = request.POST.get('quality', '')
+        d['coffee_taste'] = request.POST.get('taste', '')
+        d['coffee_preparation'] = request.POST.get('preparation', '')
         d['coffee_bean'] = request.POST.get('bean', None)
-        d['coffee_bean_perc'] = request.POST.get('beanperc', None)
+        d['coffee_bean_perc'] = request.POST.get('beanperc', '')
+        if d['coffee_bean_perc'] != '':
+            try:
+                if int(d['coffee_bean_perc']) < 1 or int(d['coffee_bean_perc']) > 100:
+                    d['error_message'] = d['error_message'] + "Percentage of first bean must be between 1 - 100! | "
+                else:
+                    d['coffee_bean_perc'] = int(d['coffee_bean_perc'])
+                    sumperc = d['coffee_bean_perc']
+            except:
+                d['error_message'] = d['error_message'] + "Percentage of first bean must be a decimal number! | "
+        else:
+            d['coffee_bean'] = None
         d['coffee_bean2'] = request.POST.get('bean2', None)
-        d['coffee_bean_perc2'] = request.POST.get('beanperc2', None)
+        d['coffee_bean_perc2'] = request.POST.get('beanperc2', '')
+        if d['coffee_bean_perc2'] != '':
+            try:
+                if int(d['coffee_bean_perc2']) < 1 or int(d['coffee_bean_perc2']) > 100:
+                    d['error_message'] = d['error_message'] + "Percentage of second bean must be between 1 - 100! | "
+                else:
+                    d['coffee_bean_perc2'] = int(d['coffee_bean_perc2'])
+                    sumperc = sumperc+d['coffee_bean_perc2']
+            except:
+                d['error_message'] = d['error_message'] + "Percentage of second bean must be a decimal number! | "
+        else:
+            d['coffee_bean2'] = None
         d['coffee_bean3'] = request.POST.get('bean3', None)
-        d['coffee_bean_perc3'] = request.POST.get('beanperc3', None)
+        d['coffee_bean_perc3'] = request.POST.get('beanperc3', '')
+        if d['coffee_bean_perc3'] != '':
+            try:
+                if int(d['coffee_bean_perc3']) < 1 or int(d['coffee_bean_perc3']) > 100:
+                    d['error_message'] = d['error_message'] + "Percentage of third bean must be between 1 - 100! | "
+                else:
+                    d['coffee_bean_perc3'] = int(d['coffee_bean_perc3'])
+                    sumperc = sumperc+d['coffee_bean_perc3']
+            except:
+                d['error_message'] = d['error_message'] + "Percentage of third bean must be a decimal number! | "
+        else:
+            d['coffee_bean3'] = None
+
+        if sumperc != 100:
+            d['error_message'] = d['error_message'] + "Sum of all percentages must be equal to 100! | "
+        if d['coffee_bean'] == d['coffee_bean2'] and d['coffee_bean'] != None or d['coffee_bean'] == d['coffee_bean3'] and d['coffee_bean'] != None or d['coffee_bean2'] == d['coffee_bean3'] and d['coffee_bean2'] != None:
+            d['error_message'] = d['error_message'] + "You cannot assign parcentage to the same bean more than once! | "
+
         cafeid = request.POST['cafeid']
         d['cafe'] = models.Cafe.getData(cafeid)
         coffee = models.Coffee.objects.get(pk=request.POST.get('coffeeid', None))
+        d['coffee'] = coffee
         next_url = request.POST.get('next_url', '/')
-        #for k,v in d.items():
-        #    if v == '':
-        #        d[k] = None
-       # if d['cafe_capacity'] == '': d['cafe_capacity'] = 0
+
+        if d['error_message'] != '':
+            d['add'] = False
+            d['preparations'] = models.CoffeePreparation.objects.all()
+            d['beans'] = models.CoffeeBean.objects.all()
+            return render(request, "errorcoffee.html", d)
 
         print(d)
 
-        coffee.name=d['coffee_name']
-        coffee.place_of_origin=d['coffee_placeoforigin']
-        coffee.quality=d['coffee_quality']
-        coffee.taste_description=d['coffee_taste']
-        coffee.preparation=models.CoffeePreparation.objects.get(pk=d['coffee_preparation'])
-        coffee.save()
+        try:
+            coffee.name=d['coffee_name']
+            coffee.place_of_origin=d['coffee_placeoforigin']
+            coffee.quality=d['coffee_quality']
+            coffee.taste_description=d['coffee_taste']
+            coffee.preparation=models.CoffeePreparation.objects.get(pk=d['coffee_preparation'])
+            coffee.save()
 
-        # delete all relations between coffee and beans
-        for beancontain in models.CoffeeContainsBeans.objects.filter(coffee=coffee):
-            beancontain.delete()
+            # delete all relations between coffee and beans
+            for beancontain in models.CoffeeContainsBeans.objects.filter(coffee=coffee):
+                beancontain.delete()
 
-        # recreate relations
-        if d['coffee_bean_perc'] != '' and d['coffee_bean_perc'] != None:
-            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
-            contains.coffee = coffee
-            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean'])
-            contains.percentage = d['coffee_bean_perc']
-            contains.save()
-        if d['coffee_bean_perc2'] != '' and d['coffee_bean_perc2'] != None:
-            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
-            contains.coffee = coffee
-            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean2'])
-            contains.percentage = d['coffee_bean_perc2']
-            contains.save()
-        if d['coffee_bean_perc3'] != '' and d['coffee_bean_perc3'] != None:
-            contains = models.CoffeeContainsBeans() # add percentage of coffee beans
-            contains.coffee = coffee
-            contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean3'])
-            contains.percentage = d['coffee_bean_perc3']
-            contains.save()
+            # recreate relations
+            if d['coffee_bean_perc'] != '' and d['coffee_bean_perc'] != None:
+                contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+                contains.coffee = coffee
+                contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean'])
+                contains.percentage = d['coffee_bean_perc']
+                contains.save()
+            if d['coffee_bean_perc2'] != '' and d['coffee_bean_perc2'] != None:
+                contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+                contains.coffee = coffee
+                contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean2'])
+                contains.percentage = d['coffee_bean_perc2']
+                contains.save()
+            if d['coffee_bean_perc3'] != '' and d['coffee_bean_perc3'] != None:
+                contains = models.CoffeeContainsBeans() # add percentage of coffee beans
+                contains.coffee = coffee
+                contains.coffeeBean = models.CoffeeBean.objects.get(pk=d['coffee_bean3'])
+                contains.percentage = d['coffee_bean_perc3']
+                contains.save()
+        except:
+            d['add'] = False
+            d['preparations'] = models.CoffeePreparation.objects.all()
+            d['beans'] = models.CoffeeBean.objects.all()
+            d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
+            return render(request, "errorcoffee.html", d)
 
         return render(request, "ok_messages/addcoffee-ok.html", d)
         #return redirect(next_url, permanent=True)
@@ -521,22 +659,9 @@ def event(request):
 
         print(d)
         d['coffee'] = d['event'].coffee_list.all()
-        d['all_coffee'] = models.Coffee.objects.all()
+        d['all_coffee'] = list(set(models.Coffee.objects.all()) - set(d['coffee']))
 
         return render(request, "event.html", d)
-
-def cafe_event(request):
-    d = generateDict(request)
-    if 'message' in d:
-        return errLogout(request, d)
-
-    if request.method == 'GET':
-        cafeid = request.GET['id']
-        d['cafe'] = models.Cafe.getData(cafeid)
-        d['owner'] = d['cafe'].owner    # returns object User
-
-        d['cafe_event_list'] = d['cafe'].event_set.all()    # returns all events in cafe - hopefully
-        return render(request, "cafe-event.html", d)
 
 def addevent(request):
     d = generateDict(request)
@@ -546,20 +671,42 @@ def addevent(request):
     if request.method == 'POST':
         if 'loggeduser' not in d:
             d['message'] = 'You must login before creating cafe'
+
+        d['error_message'] = ''
         d['event_name'] = request.POST['name']
-        d['event_price'] = request.POST.get('price', None)
-        d['event_capacity'] = request.POST.get('capacity', None)
+        d['event_price'] = request.POST.get('price', '')
+        if d['event_price'] != '':
+                try:
+                    d['event_price'] = int(d['event_price'])
+                except:
+                    d['error_message'] = d['error_message'] + "Price must be a decimal number! | "
+        d['event_capacity'] = request.POST.get('capacity', '')
+        if d['event_capacity'] != '':
+                try:
+                    d['event_capacity'] = int(d['event_capacity'])
+                except:
+                    d['error_message'] = d['error_message'] + "Capacity must be a decimal number! | "
+
         cafeid = request.POST['cafeid']
         d['cafe'] = models.Cafe.getData(cafeid)
 
+        if d['error_message'] != '':
+            d['add'] = True
+            return render(request, "errorevent.html", d)
+
         print(d)
 
-        c = models.Event()
-        c.name=d['event_name']
-        c.price=d['event_price']
-        c.capacity=d['event_capacity']
-        c.place=d['cafe']
-        c.save()
+        try:
+            c = models.Event()
+            c.name=d['event_name']
+            c.price=d['event_price']
+            c.capacity=d['event_capacity']
+            c.place=d['cafe']
+            c.save()
+        except:
+            d['add'] = True
+            d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
+            return render(request, "errorevent.html", d)
 
         #return redirect('/profile/')
         return render(request, "ok_messages/addevent-ok.html", d)
@@ -635,27 +782,3 @@ def deletecoffeeevent(request):
         d['event'].coffee_list.remove(d['coffee'])
 
     return render(request, "ok_messages/participateevent-ok.html", d)
-
-def likecafe(request):
-    d = generateDict(request)
-    if 'message' in d:
-        return errLogout(request, d)
-
-    if request.method == 'GET':
-        pk_cafe = request.GET.get('pk')
-        d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
-        d['loggeddrinker'].likes_cafe.add(d['cafe'])
-
-    return render(request, "ok_messages/likecafe-ok.html", d)
-
-def deletelikecafe(request):
-    d = generateDict(request)
-    if 'message' in d:
-        return errLogout(request, d)
-
-    if request.method == 'GET':
-        pk_cafe = request.GET.get('pk')
-        d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
-        d['loggeddrinker'].likes_cafe.remove(d['cafe'])
-
-    return render(request, "ok_messages/likecafe-ok.html", d)
