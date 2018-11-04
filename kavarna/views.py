@@ -288,15 +288,11 @@ def profile(request):
 
     # change to requested user profile number
     if request.method == 'GET':
-        try:
-            user_id = request.GET.get('user', d['loggeduser'].pk)
-        except:
-            user_id = request.GET.get('user')
-        d['user_profile'] = User.objects.get(pk=user_id)
-    else:
-        d['user_profile'] = User.objects.first()
+        user_id = request.GET.get('user')
+        d['userdata'] = User.objects.get(pk=user_id)
+        d['drinkerdata'] = models.Drinker.objects.get(key=user_id)
 
-    return render(request, "profile-info.html", d)
+    return render(request, "profile.html", d)
 
 def profile_cafe(request):
     d = generateDict(request)

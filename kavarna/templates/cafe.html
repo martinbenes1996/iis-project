@@ -1,12 +1,9 @@
 {% extends "subpage.html" %}
 
-{% block header %}
-        <h1>{{cafe.name}}</h1>
-{% endblock %}
+{% block header %}{{cafe.name}}{% endblock %}
 
 {% block score %}
-
-<div class="row" style="margin-top: 20px">
+<div class="row" style="margin: 20px">
     <div class="col-lg text-center"> 
 
         <!-- LIKE/STOP LIKING tlacitko -->
@@ -38,16 +35,20 @@
             }); 
         })
         </script>
-  
         {% endif %}
-
     </div>
 </div>
-
 {% endblock %}
 
+{% block tab1title %}Základní informace{% endblock %}
+{% block tab2title %}Co nabízíme?{% endblock %}
+{% block tab3title %}Děje se u nás{% endblock %}
+{% block tab4title %}Vaše názory{% endblock %}
+
+{% block tab1header %}Základní informace{% endblock %}
 {% block tab1 %}
 <div class="row" style="margin-top: 20px">
+        
     <div class="col-lg-4 text-center">
         {{cafe.street}} {{cafe.housenumber}}<br>
         {{cafe.city}}<br>
@@ -79,10 +80,10 @@
 </div>
 {% endblock %}
 
+{% block tab2header %}Co nabízíme?{% endblock %}
 {% block tab2 %}
 <div class="row hcentralize">
     <div class="col">
-        <h2>Our offer</h2>
         <table>
             {% for a in cafe_coffee_list %}
             <tr>
@@ -133,10 +134,10 @@
 {% endblock %}
 
 
+{% block tab3header %}Děje se u nás{% endblock %}
 {% block tab3 %}
 <div class="row">
     <div class="col">
-        <h2 class="hcentralize">Cupping akce</h2>
         <table>
             {% for a in cafe_event_list %}
             <tr>
@@ -182,13 +183,13 @@
     </div>
 </div>
 {% endif %}
-
 {% endblock %}
 
+
+{% block tab4header %}Vaše názory{% endblock %}
 {% block tab4 %}
 <div class="row">
     <div class="col">
-        <h2 class="hcentralize">Píšete o nás</h2>
         Blablabla
     </div>
 </div>
