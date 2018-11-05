@@ -379,6 +379,10 @@ def cafe(request):
         d['owner'] = d['cafe'].owner    # returns object User
         d['cafe_coffee_list'] = d['cafe'].offers_coffee.all()
         d['event_list'] = models.Event.objects.filter(place=d['cafe'])
+        d['cafe_reactions'] = models.Reaction.objects.filter(cafe=d['cafe'])
+        l = [p.pk for p in d['cafe_reactions']]
+        d['reaction_reactions'] = models.Reaction.objects.filter(react__in=l)
+        print(d['reaction_reactions'])
         try:
             d['is_liking'] = True if d['cafe'] in d['loggeddrinker'].likes_cafe.all() else False
         except:
@@ -787,3 +791,24 @@ def deletecoffeeevent(request):
         d['event'].coffee_list.remove(d['coffee'])
 
     return render(request, "ok_messages/participateevent-ok.html", d)
+
+def react(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    
+    if request.method == 'POST':
+        reaction = models.Reaction()
+        reaction.text = request.POST['text']
+        reaction.author = d['loggeduser']
+        if 'reaction_id' in request.POST:
+            reaction_id = int( request.POST['reaction_id'] )
+            reaction.react = models.Reaction.objects.get(pk=reaction_id)
+            
+        if 'cafe_id' in request.POST:
+            cafe_id = int( request.POST['cafe_id'] )
+            reaction.cafe = models.Cafe.objects.get(pk=cafe_id)
+        
+        reaction.save()
+        print("Created reaction!")
+        return HttpResponseRedirect('/cafe?id='+request.POST['cafe_id']+'#Tab4')

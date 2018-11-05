@@ -1,0 +1,21 @@
+<li> <a href="{% url 'profile' %}?user={{node.author.pk}}">{{node.author.first_name}} {{node.author.last_name}}</a>: {{node.text}} <a href="#react{{node.pk}}" data-toggle="collapse">React</a>
+    <ul>
+        {% for rr in reaction_reactions %}
+            {% if rr.react == node %}
+                {% include 'snippets/reaction.html' with node=rr %}
+            {% endif %}
+        {% endfor %}
+        {% if loggeduser %}
+        <div id="react{{node.pk}}" class="collapse">
+        <form method="POST" action="/react/">{% csrf_token %}
+            <input name="cafe_id" type="hidden" value="{{cafe.pk}}" required />
+            <input name="reaction_id" type="hidden" value="{{node.pk}}" required />
+            <div class="row">
+                <div class="col-lg-6"><input name="text" placeholder="React" required /> </div>
+                <div class="col-lg-6"><button class="btn" type="submit">Send</button></div>
+            </div>
+        </form>
+        </div>
+        {% endif %}
+    </ul>
+</li>

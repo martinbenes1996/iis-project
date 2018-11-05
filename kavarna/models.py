@@ -103,8 +103,8 @@ class Reaction(models.Model):
     cafe = models.ForeignKey(Cafe, null=True, default=None, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, null=True, default=None, on_delete=models.CASCADE)
     react = models.ForeignKey("Reaction", null=True, default=None, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.author
+    class Meta:
+        ordering = ['date']
     
 
 

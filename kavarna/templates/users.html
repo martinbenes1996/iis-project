@@ -10,10 +10,10 @@
     
     {% for a in users_list %}
     <tr>
-        <th>{{a.first_name}} {{a.last_name}}</th>
+        <th><a href="{% url 'profile'%}?user={{a.pk}}">{{a.first_name}} {{a.last_name}}</a></th>
         <th>{{a.email}}</th>
         <th>
-            {% include 'snippets/postbutton.html' with linkuser=a %}
+            {% include 'snippets/postprofile.html' with linkuser=a %}
             
         </th>
     </tr>

@@ -42,4 +42,5 @@ urlpatterns = [
     path('deleteparticipateevent/', views.deleteparticipateevent, name='deleteparticipateevent'),
     path('addcoffeeevent/', views.addcoffeeevent, name='addcoffeeevent'),
     path('deletecoffeeevent/', views.deletecoffeeevent, name='deletecoffeeevent'),
+    path('react/', views.react, name='react')
 ]

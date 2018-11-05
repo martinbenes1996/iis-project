@@ -16,7 +16,7 @@
     {% endblock %}
 
     <div class="row hcentralize">
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs" id="mytabs">
             <li class="active"><a data-toggle="tab" href="#Tab1">{% block tab1title %}TAB1{% endblock %}</a></li>
             <li><a data-toggle="tab" href="#Tab2">{% block tab2title %}TAB2{% endblock %}</a></li>
             <li><a data-toggle="tab" href="#Tab3">{% block tab3title %}TAB3{% endblock %}</a></li>
@@ -68,6 +68,23 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $('#mytabs a').click(function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+              
+        // store the currently selected tab in the hash value
+        $("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
+            var id = $(e.target).attr("href").substr(1);
+            window.location.hash = id;
+        });
+              
+        // on load of the page: switch to the currently selected tab
+        var hash = window.location.hash;
+        $('#mytabs a[href="' + hash + '"]').tab('show');
+    </script>
 
 
     {% block menu %}
