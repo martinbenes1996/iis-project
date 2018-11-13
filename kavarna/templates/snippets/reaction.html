@@ -1,4 +1,7 @@
-<li> <a href="{% url 'profile' %}?user={{node.author.pk}}">{{node.author.first_name}} {{node.author.last_name}}</a>: {{node.text}} <a href="#react{{node.pk}}" data-toggle="collapse">React</a>
+<li> <a href="{% url 'profile' %}?user={{node.author.pk}}">{{node.author.first_name}} {{node.author.last_name}}</a>: {{node.text}} 
+    {% if loggeduser %}
+    <a href="#react{{node.pk}}" data-toggle="collapse">React</a>
+    {% endif %}
     <ul>
         {% for rr in reaction_reactions %}
             {% if rr.react == node %}

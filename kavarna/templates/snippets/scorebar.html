@@ -11,8 +11,8 @@
         <option>5</option>
     </select>
     <button class="btn btn-info" type="submit">Odeslat</button>
-</form>-
-<!--
+</form>
+
 <script>
 // Starrr plugin (https://github.com/dobtco/starrr)
 var __slice = [].slice;
@@ -23,7 +23,7 @@ var __slice = [].slice;
   Starrr = (function() {
     // parameter default
     Starrr.prototype.defaults = {
-      rating: void 0,
+      rating: 3,
       numStars: 5,
       change: function(e, value) {}
     };
@@ -52,24 +52,18 @@ var __slice = [].slice;
       });
       this.$el.on('click.starrr', 'span', function(e) {
 
-          /////////////////////////////////////////////////
-         /* var xhr = new XMLHttpRequest();
-          xhr.open("POST", '', true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.send(JSON.stringify({
-              value: _this.$el.find('span').index(e.currentTarget) + 1,
-              
-          });
-*/
+        var currScore = _this.$el.find('span').index(e.currentTarget) + 1;
+        $.ajax({
+          url: 'score/',
+          data: {
+            'reactingto': "{{ reactingto }}",
+            'pk_subject': {{ pk_subject }},
+            'score': currScore
+          },
+          dataType: 'json',
+          success: function (data) {}
+        });
 
-//xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-//xhr.send(_this.$el.find('span').index(e.currentTarget) + 1);
-///////////////////////////////////////////////////
-
-
-
-
-        document.getElementById("kravinka").innerHTML = _this.$el.find('span').index(e.currentTarget) + 1;
         return _this.setRating(_this.$el.find('span').index(e.currentTarget) + 1);
       });
       this.$el.on('starrr:change', this.options.change);
@@ -143,17 +137,13 @@ $(function() {
 });
 
 $( document ).ready(function() {
-      
-    document.getElementById("kravinka").innerHTML = value;
   $('#stars').on('starrr:change', function(e, value){
     $('#count').html(value);
   });
   
   $('#stars-existing').on('starrr:change', function(e, value){
-    document.getElementById("kravinka").innerHTML = value;
     $('#count-existing').html(value);
   });
 });
 </script>
 <div id="stars" class="starrr"></div>
-<p id="kravinka"></p>-->

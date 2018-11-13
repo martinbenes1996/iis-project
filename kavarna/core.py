@@ -31,11 +31,11 @@ def processScore(request):
     if 'message' in d:
         return errLogout(request, d)
     
-    if request.method == 'POST':
-        subject = request.POST['pk_subject']
-        reactingto = request.POST['reactingto']
-        score = int(request.POST['score'])
-        text = request.POST.get('text', '')
+    if request.method == 'GET':
+        subject = request.GET['pk_subject']
+        reactingto = request.GET['reactingto']
+        score = int(request.GET['score'])
+        text = request.GET.get('text', '')
         print("adding reaction by ", d['loggeduser'], " to ", subject, ": ", score)
 
         if reactingto == 'Cafe':
@@ -53,7 +53,7 @@ def processScore(request):
         r.save()
 
     else:
-        raise Exception('GET request')
+        raise Exception('POST request')
 
 def processCafeLike(request):
     d = generateDict(request)

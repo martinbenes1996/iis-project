@@ -1,19 +1,20 @@
 {% extends "subpage.html" %}
 
+{% load static %}
+
 {% block header %}{{cafe.name}}{% endblock %}
 
 {% block score %}
-<div class="row" style="margin: 20px">
+{% if loggeduser %}
+<div class="row" style="margin: 0px">
     <div class="col-lg text-center"> 
-
         <!-- LIKE/STOP LIKING tlacitko -->
-        {% if loggeduser %}
-        <input type="button" id="like" class="btn btn-lg btn-warning" name="{{ likebutton }}" value=
-        {% if is_liking %}
-            "Stop Liking"
-        {% else %}
-            "Like"
-        {% endif %}
+        <img id="like" src=
+            {% if is_liking %}
+                "{% static 'img/full_heart.png' %}"
+            {% else %}
+                "{% static 'img/empty_heart.png' %}"
+            {% endif %}
         />
         <script>
         // click -> sends async request
@@ -27,7 +28,18 @@
                 dataType: "json",
                 // on success changes 
                 success: function(response) {
-                    $('#like').prop('value', response.likevalue)
+                    if(response.liked) {
+                        $('#like').prop('src', "{% static 'img/full_heart.png' %}");
+                    } else {
+                        $('#like').prop('src', "{% static 'img/empty_heart.png' %}");    
+                    }
+                    if(response.likecount == 0) {
+                        $('#likecount').text("Be first to like it.");
+                    } else if(response.likecount == 1) {
+                        $('#likecount').text("1 person likes it.");
+                    } else {
+                        $('#likecount').text(response.likecount+" people like it.")
+                    }
                 },
                 // on error nothing :(
                 error: function(rs, e) {
@@ -35,9 +47,19 @@
             }); 
         })
         </script>
-        {% endif %}
+
+        <span id="likecount">
+            {% if like_count == 0 %}
+                Be first to like it.
+            {% elif like_count == 1 %}
+                {{like_count}} person likes it.
+            {% else %}
+                {{like_count}} poeple like it.
+            {% endif %}
+        </span>
     </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block tab1title %}Základní informace{% endblock %}
@@ -63,10 +85,13 @@
         </form>
     </div>
     <div class="col-lg-4 text-center">
+        {% if loggeduser %}
         <h3>Hodnocení: {{ cafe_score }}</h3>
         <h3>Ohodnot si sam:</h3>
         {% include 'snippets/scorebar.html' with pk_subject=cafe.pk reactingto="Cafe" %}
+        {% endif %}
     </div>
+    
 </div>
 <div class="row" style="margin-top: 30px">
     <div class="col text-center">
