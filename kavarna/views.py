@@ -375,6 +375,10 @@ def cafe(request):
         cafeid = request.GET['id']
         d['cafe'] = models.Cafe.objects.get(pk=cafeid)
         d['cafe_score'] = core.getCafeScore( d['cafe'] )
+        if models.Reaction.objects.filter(author=d['loggeduser'],cafe=d['cafe']).exclude(score=None).count() > 0:
+            d['my_cafe_score'] = models.Reaction.objects.get(author=d['loggeduser'],cafe=d['cafe']).score
+        else:
+            d['my_cafe_score'] = "void 0"
         d['owner'] = d['cafe'].owner    # returns object User
         d['cafe_coffee_list'] = d['cafe'].offers_coffee.all()
         d['event_list'] = models.Event.objects.filter(place=d['cafe'])
@@ -395,10 +399,21 @@ def cafescore(request):
     if 'message' in d:
         return errLogout(request, d)
     if request.method == 'GET':
-        print(request.GET)
-        core.processScore(request)
-        return HttpResponse(json.dumps({}), content_type='application/json')
-        
+        d = {}
+        d['cafe_score'] = core.processScore(request)
+        return HttpResponse(json.dumps(d), content_type='application/json')
+
+def cafelike(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request,d)
+    if request.method == 'GET':
+        pk_cafe = request.GET['pk']
+        d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
+        ctx = {'liked' : core.processCafeLike(request),
+               'likecount' : models.Drinker.objects.filter(likes_cafe=d['cafe']).count()}
+        return HttpResponse(json.dumps(ctx), content_type='application/json')
+            
 
 def addcoffee(request):
     d = generateDict(request)

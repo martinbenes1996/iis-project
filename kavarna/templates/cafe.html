@@ -20,11 +20,9 @@
         // click -> sends async request
         $('#like').click(function(){
             $.ajax({
-                type: "POST",
-                url: "{% url 'cafe' %}",
-                data: {'pk': '{{ cafe.pk }}', 
-                       'role': 'like',
-                       'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                type: "GET",
+                url: "{% url 'cafelike' %}",
+                data: {'pk': '{{ cafe.pk }}'},
                 dataType: "json",
                 // on success changes 
                 success: function(response) {
@@ -86,7 +84,7 @@
     </div>
     <div class="col-lg-4 text-center">
         {% if loggeduser %}
-        <h3>Hodnocení: {{ cafe_score }}</h3>
+        <h3>Hodnocení: <span id="cafescore">{{ cafe_score }}</span></h3>
         <h3>Ohodnot si sam:</h3>
         {% include 'snippets/scorebar.html' with pk_subject=cafe.pk reactingto="Cafe" %}
         {% endif %}

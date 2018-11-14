@@ -98,7 +98,7 @@ class Reaction(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
     date = models.DateTimeField(default=timezone.now, blank=True)
-    score = models.PositiveSmallIntegerField(default=5)
+    score = models.PositiveSmallIntegerField(blank=True, null=True)
 
     cafe = models.ForeignKey(Cafe, null=True, default=None, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, null=True, default=None, on_delete=models.CASCADE)

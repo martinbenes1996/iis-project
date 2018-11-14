@@ -32,6 +32,7 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('cafe/', views.cafe, name='cafe'),
     path('cafe/score/', views.cafescore, name='cafescore'),
+    path('cafe/like/', views.cafelike, name='cafelike'),
     path('coffee/', views.coffee, name='coffee'),
     path('event/', views.event, name='event'),
     path('addcoffee/', views.addcoffee, name='addcoffee'),
