@@ -69,26 +69,32 @@ Dodat počet přihlášených
 
 {% block tab2header %}Naše nabídka{% endblock %}
 {% block tab2 %}
-{% for cofe in coffee %}
+
 <div class="row" style="margin-top: 20px">
     <div class="col-lg text-center">
-	<table align="center"><tr><td>	
-	<form method="get" action="/coffee/">
-            <input name="id" type="hidden" value="{{ cofe.pk }}" required />
-            <button class="btn btn-link" type="Submit">{{cofe.name}}</button>
-        </form></td>
-    
-    {% if loggeduser == event.place.owner %}
-        <td>
-	<form method="get" action="/deletecoffeeevent/">
-            <input name="pk_coffee" type="hidden" value="{{ cofe.pk }}" required />
-	    <input name="pk_event" type="hidden" value="{{ event.pk }}" required />
-            <button type="Submit">Delete</button>
-        </form></td>
+	<table align="center">
+        {% for cofe in coffee %}
+        <tr>
+            <td>	
+	            <form method="get" action="/coffee/">
+                    <input name="id" type="hidden" value="{{ cofe.pk }}" required />
+                    <button class="btn btn-link" type="Submit">{{cofe.name}}</button>
+                </form>
+            </td>
+        {% if loggeduser == event.place.owner %}
+            <td>
+	            <form method="get" action="/deletecoffeeevent/">
+                    <input name="pk_coffee" type="hidden" value="{{ cofe.pk }}" required />
+	                <input name="pk_event" type="hidden" value="{{ event.pk }}" required />
+                    <button type="Submit">Delete</button>
+                </form>
+            </td>
+        {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
     </div>
-    {% endif %}</tr></table>
 </div>
-{% endfor %}
 
 {% if loggeduser == event.place.owner %}
 <!-- Adding coffee to event -->
