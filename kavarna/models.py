@@ -45,16 +45,16 @@ class CoffeeContainsBeans(models.Model):
 class Cafe(models.Model):
     """ Cafe. """
     name = models.CharField(max_length=64)
-    street = models.CharField(max_length=64, blank=True, null=True)
-    housenumber = models.PositiveIntegerField(blank=True, null=True)
-    city = models.CharField(max_length=64, blank=True, null=True)
-    psc = models.CharField(max_length=64, blank=True, null=True)
+    street = models.CharField(max_length=64, blank=True, null=True, default='')
+    housenumber = models.PositiveIntegerField(blank=True, null=True, default=0) # needs to be changed
+    city = models.CharField(max_length=64, blank=True, null=True, default='')
+    psc = models.CharField(max_length=64, blank=True, null=True, default='')
     #opensAt = models.TimeField(blank=True, null=True)
     #closesAt = models.TimeField(blank=True, null=True)
-    opensAt = models.CharField(max_length=64, blank=True, null=True)
-    closesAt = models.CharField(max_length=64, blank=True, null=True)
+    opensAt = models.CharField(max_length=64, blank=True, null=True, default='')
+    closesAt = models.CharField(max_length=64, blank=True, null=True, default='')
     capacity = models.PositiveSmallIntegerField(blank=True, null=True, default=0)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, default='')
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     offers_coffee = models.ManyToManyField(Coffee)
 
@@ -88,7 +88,7 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     @classmethod
     def getEventsOf(cls, u_id):
         return cls.objects.filter(participants__id=u_id)
@@ -105,7 +105,7 @@ class Reaction(models.Model):
     react = models.ForeignKey("Reaction", null=True, default=None, on_delete=models.CASCADE)
     class Meta:
         ordering = ['date']
-    
+
 
 
 

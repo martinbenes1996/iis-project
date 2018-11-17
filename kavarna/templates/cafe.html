@@ -184,18 +184,18 @@
                 <th>
                     <form method="get" action="{% url 'deleteevent' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
-			            <input name="request_path" type="hidden" value="/profile" required />
+			<input name="request_path" type="hidden" value="/profile" required />
                         <button type="Submit">Delete</button>
                     </form>
-		        </th><!--
-		            <th>
-		                <form method="get" action="{% url 'modifycoffee' %}">{% csrf_token %}
-			                <input name="pk" type="hidden" value="{{ cafe.pk }}" required />
-                            <input name="coffeeid" type="hidden" value="{{ a.pk }}" required />
-			                <input name="request_path" type="hidden" value="/profile" required />
-                            <button type="Submit">Modify</button>
-                        </form>
-		            </th>-->
+		</th>
+		<th>
+		    <form method="get" action="{% url 'modifyevent' %}">{% csrf_token %}
+		    	<input name="id" type="hidden" value="{{ cafe.pk }}" required />
+			<input name="eventid" type="hidden" value="{{ a.pk }}" required />
+		    	<!--<input name="request_path" type="hidden" value="/profile" required />-->
+                    	<button type="Submit">Modify</button>
+                    </form>
+		</th>
 		        {% endif %}
             </tr>
             {% endfor %}

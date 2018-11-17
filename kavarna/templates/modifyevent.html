@@ -1,0 +1,18 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/modifyevent/" method="post">{% csrf_token %}
+    <h3 class="text-center">Add Event</h3>
+    {{warning|safe}}
+    <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
+    <input name="eventid" type="hidden" value="{{ event.pk }}" required />
+    <input type="" class="form-control" name="name" value="{{ event.name }}" placeholder="Event Name *" required>
+    <input type="" class="form-control" name="price" value="{{ event.price }}" placeholder="Price *">
+    <input type="" class="form-control" name="capacity" value="{{ event.capacity }}" placeholder="Capacity *">
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add new event</button>
+</form>
+
+<div class="row hcentralize">
+    <a href="/cafe/?id={{cafe.pk}}#Tab3"><button class="btn btn-lg btn-info" type="submit">Go Back</button></a>
+</div>
+{% endblock %}

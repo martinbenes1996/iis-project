@@ -39,6 +39,7 @@ urlpatterns = [
     path('modifycoffee/', views.modifycoffee, name='modifycoffee'),
     path('deletecoffee/', views.deletecoffee, name='deletecoffee'),
     path('addevent/', views.addevent, name='addevent'),
+    path('modifyevent/', views.modifyevent, name='modifyevent'),
     path('deleteevent/', views.deleteevent, name='deleteevent'),
     path('participateevent/', views.participateevent, name='participateevent'),
     path('deleteparticipateevent/', views.deleteparticipateevent, name='deleteparticipateevent'),

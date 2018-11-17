@@ -7,7 +7,7 @@
     <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
     <input name="coffeeid" type="hidden" value="{{ coffee.pk }}" required />
     <input name="next_url" type="hidden" value="{{ next_url }}" required />
-    <input type="" class="form-control" name="name" placeholder="Coffee Name" value="{{ coffee.name }}" required>
+    <input type="" class="form-control" name="name" placeholder="Coffee Name *" value="{{ coffee.name }}" required>
     <input type="" class="form-control" name="placeoforigin" placeholder="Place of origin" value="{{ coffee.place_of_origin }}">
     <input type="" class="form-control" name="quality" placeholder="Quality (awful-average-great)" value="{{ coffee.quality }}">
     <input type="" class="form-control" name="taste" placeholder="Taste description" value="{{ coffee.taste_description }}">

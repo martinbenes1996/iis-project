@@ -4,11 +4,11 @@
 <form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addcafe/" method="post">{% csrf_token %}
     <h3 class="text-center">Add Café</h3>
     {{warning|safe}}
-    <input type="" class="form-control" name="name" value="{{cafe_name}}" placeholder="Cafe Name" required>
+    <input type="" class="form-control" name="name" value="{{cafe_name}}" placeholder="Cafe Name *" required>
     <input type="" class="form-control" name="street" value="{{cafe_street}}" placeholder="Street">
     <input type="" class="form-control" name="housenumber" value="{{cafe_housenumber}}" placeholder="House Number">
     <input type="" class="form-control" name="city" value="{{cafe_city}}" placeholder="City">
-    <input type="" class="form-control" name="psc" value="{{cafe_psc}}" placeholder="PSC">
+    <input type="" class="form-control" name="psc" value="{{cafe_psc}}" placeholder="PSC (00000)">
     <input type="" class="form-control" name="opensat" value="{{cafe_opensat}}" placeholder="Opening Time">
     <input type="" class="form-control" name="closesat" value="{{cafe_closesat}}" placeholder="Closing Time">
     <input type="" class="form-control" name="capacity" value="{{cafe_capacity}}" placeholder="Capacity">

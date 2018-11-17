@@ -143,30 +143,30 @@ def addcafe(request):
         d['error_message'] = ''
         try:
             d['cafe_name'] = request.POST['name']
-            d['cafe_street'] = request.POST.get('street')
-            d['cafe_housenumber'] = request.POST.get('housenumber')
+            d['cafe_street'] = request.POST.get('street','')
+            d['cafe_housenumber'] = request.POST.get('housenumber','')
             if d['cafe_housenumber'] != '':
                 try:
                     d['cafe_housenumber'] = int(d['cafe_housenumber'])
                 except:
                     d['error_message'] = d['error_message'] + "Housenumber must be a decimal number! | "
-            d['cafe_city'] = request.POST.get('city')
-            d['cafe_psc'] = request.POST.get('psc')
+            d['cafe_city'] = request.POST.get('city','')
+            d['cafe_psc'] = request.POST.get('psc','')
             if d['cafe_psc'] != '':
                 try:
                     if int(d['cafe_psc']) < 10000 or int(d['cafe_psc']) > 99999:
                         d['error_message'] = d['error_message'] + "Invalid PSC! | "
                 except:
                     d['error_message'] = d['error_message'] + "PSC must be a decimal number! (input format: 00000) | "
-            d['cafe_opensat'] = request.POST.get('opensat')
-            d['cafe_closesat'] = request.POST.get('closesat')
-            d['cafe_capacity'] = request.POST.get('capacity')
+            d['cafe_opensat'] = request.POST.get('opensat','')
+            d['cafe_closesat'] = request.POST.get('closesat','')
+            d['cafe_capacity'] = request.POST.get('capacity','')
             if d['cafe_capacity'] != '':
                 try:
                     d['cafe_capacity'] = int(d['cafe_capacity'])
                 except:
                     d['error_message'] = d['error_message'] + "Capacity must be a decimal number! | "
-            d['cafe_description'] = request.POST.get('description')
+            d['cafe_description'] = request.POST.get('description','')
         except:
             pass
 
@@ -216,30 +216,30 @@ def modifycafe(request):
         d['error_message'] = ''
         try:
             d['cafe_name'] = request.POST['name']
-            d['cafe_street'] = request.POST.get('street')
-            d['cafe_housenumber'] = request.POST.get('housenumber')
+            d['cafe_street'] = request.POST.get('street','')
+            d['cafe_housenumber'] = request.POST.get('housenumber','')
             if d['cafe_housenumber'] != '':
                 try:
                     d['cafe_housenumber'] = int(d['cafe_housenumber'])
                 except:
                     d['error_message'] = d['error_message'] + "Housenumber must be a decimal number! | "
-            d['cafe_city'] = request.POST.get('city')
-            d['cafe_psc'] = request.POST.get('psc')
+            d['cafe_city'] = request.POST.get('city','')
+            d['cafe_psc'] = request.POST.get('psc','')
             if d['cafe_psc'] != '':
                 try:
                     if int(d['cafe_psc']) < 10000 or int(d['cafe_psc']) > 99999:
                         d['error_message'] = d['error_message'] + "Invalid PSC! | "
                 except:
                     d['error_message'] = d['error_message'] + "PSC must be a decimal number! | "
-            d['cafe_opensat'] = request.POST.get('opensat')
-            d['cafe_closesat'] = request.POST.get('closesat')
-            d['cafe_capacity'] = request.POST.get('capacity')
+            d['cafe_opensat'] = request.POST.get('opensat','')
+            d['cafe_closesat'] = request.POST.get('closesat','')
+            d['cafe_capacity'] = request.POST.get('capacity','')
             if d['cafe_capacity'] != '':
                 try:
                     d['cafe_capacity'] = int(d['cafe_capacity'])
                 except:
                     d['error_message'] = d['error_message'] + "Capacity must be a decimal number! | "
-            d['cafe_description'] = request.POST.get('description')
+            d['cafe_description'] = request.POST.get('description','')
         except:
             pass
 
@@ -827,6 +827,57 @@ def addevent(request):
         d['message'] = 'Unexpected link.'
     return render(json.dumps(d),content_type='application/json')
 
+def modifyevent(request):
+    d = generateDict(request)
+    if 'loggeduser' not in d:
+        d['message'] = 'You must be logged in.'
+    if 'message' in d:
+        return errLogout(request, {'message' : d['message']})
+    d = {}
+    d['error_message'] = ''
+    if request.method == 'POST':
+        eventid = request.POST.get('eventid','')
+        d['event'] = models.Event.objects.get(pk=eventid)
+        d['event_name'] = request.POST.get('name', '')
+        if d['event_name'] == '':
+            d['error_message'] = d['error_message'] + "You must provide the name of the event."
+        try:
+            d['event_price'] = int(request.POST.get('price', ''))
+        except:
+            d['error_message'] = d['error_message'] + "Price must be a decimal number."
+        try:
+            d['event_capacity'] = int(request.POST.get('capacity', ''))
+        except:
+            d['error_message'] = d['error_message'] + "Capacity must be a decimal number."
+        cafeid = request.POST['cafeid']
+        d['cafe'] = models.Cafe.getData(cafeid)
+
+        if d['error_message'] != '':
+            d['add'] = False
+            return render(request, "errorevent.html", d)
+
+        try:
+            c = d['event']
+            c.name=d['event_name']
+            c.price=d['event_price']
+            c.capacity=d['event_capacity']
+            c.save()
+        except:
+            d['error_message'] = d['error_message'] + "Database error."
+            return render(request, "errorevent.html", d)
+
+        return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab3")
+
+    elif request.method == 'GET':
+        cafeid = request.GET.get('id', '')
+        eventid = request.GET.get('eventid', '')
+        d['cafe'] = models.Cafe.objects.get(pk=cafeid)
+        d['event'] = models.Event.objects.get(pk=eventid)
+        return render(request, "modifyevent.html", d)
+    else:
+        d['message'] = 'Unexpected link.'
+    return render(json.dumps(d),content_type='application/json')
+
 def deleteevent(request):
     d = generateDict(request)
     if 'message' in d:
@@ -839,8 +890,6 @@ def deleteevent(request):
         models.Event.objects.get(pk=pk_event).delete()
 
     return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab3")
-    #return render(request, "ok_messages/addevent-ok.html", d)
-    #return redirect(next_url, permanent=True)
 
 def participateevent(request):
     d = generateDict(request)
