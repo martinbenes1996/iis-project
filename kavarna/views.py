@@ -925,8 +925,8 @@ def addcoffeeevent(request):
     if request.method == 'GET':
         pk_event = request.GET.get('pk')
         d['event'] = models.Event.objects.get(pk=pk_event)
-        pk=request.GET.get('coffee', None)
-        if pk != None:
+        pk=request.GET.get('coffee', '')
+        if pk != '':
             d['coffee'] = models.Coffee.objects.get(pk=pk)
             d['event'].coffee_list.add(d['coffee'])
 
