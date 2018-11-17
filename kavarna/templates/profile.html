@@ -25,21 +25,59 @@
     <div class="col-lg-4"></div>
     <div class="col-lg-4">
         <h4>Oblíbené</h4>
-        <ul>
+        <table>
         {% for fav in drinkerdata.likes_cafe.all %}
-            <li><a href="{% url 'cafe' %}?id={{fav.pk}}">{{fav.name}}</a></li>
+            <tr><th><a href="{% url 'cafe' %}?id={{fav.pk}}">{{fav.name}}</a></th>
+	</tr>
         {% endfor %}
-        </ul>
+        </table>
 
         <h4>Spravuji</h4>
-        <ul>
+        <table>
         {% for own in owningcafes %}
-            <li><a href="{% url 'cafe' %}?id={{own.pk}}">{{own.name}}</a></li>
+            <tr><th><a href="{% url 'cafe' %}?id={{own.pk}}">{{own.name}}</a></th>
+
+		{% if userdata == loggeduser %}
+                <th>
+                    <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
+                        <input name="pk" type="hidden" value="{{ own.pk }}" required />
+			<input name="request_path" type="hidden" value="/profile_cafe" required />
+                        <button type="Submit">Delete</button>
+                    </form>
+		</th>
+		<th>
+		    <form method="get" action="{% url 'modifycafe' %}">{% csrf_token %}
+                        <input name="pk" type="hidden" value="{{ own.pk }}" required />
+			<input name="request_path" type="hidden" value="/profile_cafe" required />
+                        <button type="Submit">Modify</button>
+                    </form>
+		</th>
+		{% endif %}
+
+
         {% endfor %}
-        </ul>
+        </table>
     </div>
     <div class="col-lg-4"></div>
 </div>
+
+{% if userdata == loggeduser %}
+<div class="row hcentralize">
+    <div class="col-lg-3">
+        <!--<h3>Založit Kavárnu</h3>
+        <form action="{% url 'addcafe' %}" method="post">{% csrf_token %}
+	    <input name="pk" type="hidden" value="{{ user_profile.pk }}" required />
+            <button class="btn btn-info" type="submit">Založit Kavárnu</button>
+        </form>-->
+	<div class="row hcentralize">
+    	    <a href="{% url 'addcafe' %}"><button class="btn btn-lg btn-warning" type="submit">Add café</button></a>
+	</div>
+    </div>
+
+</div>
+{% endif %}
+
+
 {% endblock %}
 
 

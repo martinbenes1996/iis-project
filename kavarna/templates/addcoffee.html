@@ -13,6 +13,7 @@
     	<tr><td>
     	Preparation:</td><td>
     	<select name="preparation">
+		<option value="None">None</option>
 	    {% for prep in preparations %}
 	        <option value="{{ prep.pk }}">{{ prep.name }}</option>
 	    {% endfor %}
@@ -22,6 +23,7 @@
 	<td>
     	Bean (%):</td><td>
     	<select name="bean">
+	        <option value="None">None</option>
 	    {% for bean in beans %}
 	    	<option value="{{ bean.pk }}">{{ bean.name }}</option>
 	    {% endfor %}
@@ -31,6 +33,7 @@
 	<td>
     	Bean (%):</td><td>
     	<select name="bean2">
+	        <option value="None">None</option>
 	    {% for bean in beans %}
 	    	<option value="{{ bean.pk }}">{{ bean.name }}</option>
 	    {% endfor %}
@@ -40,6 +43,7 @@
 	<td>
     	Bean (%):</td><td>
     	<select name="bean3">
+	        <option value="None">None</option>
 	    {% for bean in beans %}
 	    	<option value="{{ bean.pk }}">{{ bean.name }}</option>
 	    {% endfor %}
@@ -53,6 +57,6 @@
 </form>
 
 <div class="row hcentralize">
-    <a href="{% url '' %}"><button class="btn btn-lg btn-info" type="submit">Go Home</button></a>
+    <a href="/cafe/?id={{cafe.pk}}#Tab2"><button class="btn btn-lg btn-info" type="submit">Go Back</button></a>
 </div>
 {% endblock %}

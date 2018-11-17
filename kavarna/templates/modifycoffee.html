@@ -7,16 +7,21 @@
     <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
     <input name="coffeeid" type="hidden" value="{{ coffee.pk }}" required />
     <input name="next_url" type="hidden" value="{{ next_url }}" required />
-    <input type="" class="form-control" name="name" value="{{ coffee.name }}" required>
-    <input type="" class="form-control" name="placeoforigin" value="{{ coffee.place_of_origin }}">
-    <input type="" class="form-control" name="quality" value="{{ coffee.quality }}">
-    <input type="" class="form-control" name="taste" value="{{ coffee.taste_description }}">
+    <input type="" class="form-control" name="name" placeholder="Coffee Name" value="{{ coffee.name }}" required>
+    <input type="" class="form-control" name="placeoforigin" placeholder="Place of origin" value="{{ coffee.place_of_origin }}">
+    <input type="" class="form-control" name="quality" placeholder="Quality (awful-average-great)" value="{{ coffee.quality }}">
+    <input type="" class="form-control" name="taste" placeholder="Taste description" value="{{ coffee.taste_description }}">
     <table>
     	<tr><td>
     	Preparation:</td><td>
     	<select name="preparation">
+		<option value="None">None</option>
 	    {% for prep in preparations %}
-	        <option value="{{ prep.pk }}">{{ prep.name }}</option>
+	        {% if prep == preparation %}
+	            <option value="{{ prep.pk }}" selected="selected">{{ prep.name }}</option>
+		{% else %}
+		    <option value="{{ prep.pk }}">{{ prep.name }}</option>
+		{% endif %}
 	    {% endfor %}
     	</select></td>
     	</tr><tr>
@@ -24,29 +29,56 @@
 	<td>
     	Bean (%):</td><td>
     	<select name="bean">
+		<option value="None">None</option>
 	    {% for bean in beans %}
-	    	<option value="{{ bean.pk }}">{{ bean.name }}</option>
+		{% if bean == beanset1 %}
+	            <option value="{{ bean.pk }}" selected="selected">{{ bean.name }}</option>
+		{% else %}
+		    <option value="{{ bean.pk }}">{{ bean.name }}</option>
+		{% endif %}
 	    {% endfor %}
     	</select>
-        <input type="" class="form-control" name="beanperc" placeholder="percentage of said bean">
+	{% if beanperc1 != None %}
+            <input type="" class="form-control" name="beanperc" placeholder="percentage of said bean" value="{{ beanperc1 }}">
+	{% else %}
+	    <input type="" class="form-control" name="beanperc" placeholder="percentage of said bean">
+	{% endif %}
         </td></tr><tr>
 	<td>
     	Bean (%):</td><td>
     	<select name="bean2">
+		<option value="None">None</option>
 	    {% for bean in beans %}
-	    	<option value="{{ bean.pk }}">{{ bean.name }}</option>
+	    	{% if bean == beanset2 %}
+	            <option value="{{ bean.pk }}" selected="selected">{{ bean.name }}</option>
+		{% else %}
+		    <option value="{{ bean.pk }}">{{ bean.name }}</option>
+		{% endif %}
 	    {% endfor %}
     	</select>
-        <input type="" class="form-control" name="beanperc2" placeholder="percentage of said bean">
+        {% if beanperc2 != None %}
+            <input type="" class="form-control" name="beanperc2" placeholder="percentage of said bean" value="{{ beanperc2 }}">
+	{% else %}
+	    <input type="" class="form-control" name="beanperc2" placeholder="percentage of said bean">
+	{% endif %}
         </td></tr><tr>
 	<td>
     	Bean (%):</td><td>
     	<select name="bean3">
+		<option value="None">None</option>
 	    {% for bean in beans %}
-	    	<option value="{{ bean.pk }}">{{ bean.name }}</option>
+	    	{% if bean == beanset3 %}
+	            <option value="{{ bean.pk }}" selected="selected">{{ bean.name }}</option>
+		{% else %}
+		    <option value="{{ bean.pk }}">{{ bean.name }}</option>
+		{% endif %}
 	    {% endfor %}
     	</select>
-        <input type="" class="form-control" name="beanperc3" placeholder="percentage of said bean">
+        {% if beanperc3 != None %}
+            <input type="" class="form-control" name="beanperc3" placeholder="percentage of said bean" value="{{ beanperc3 }}">
+	{% else %}
+	    <input type="" class="form-control" name="beanperc3" placeholder="percentage of said bean">
+	{% endif %}
         </td>
 
     </tr>
@@ -55,6 +87,6 @@
 </form>
 
 <div class="row hcentralize">
-    <a href="{{ next_url }}"><button class="btn btn-lg btn-info" type="submit">Go back</button></a>
+    <a href="/cafe/?id={{cafe.pk}}#Tab2"><button class="btn btn-lg btn-info" type="submit">Go back</button></a>
 </div>
 {% endblock %}

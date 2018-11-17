@@ -89,6 +89,27 @@ Dodat počet přihlášených
     {% endif %}</tr></table>
 </div>
 {% endfor %}
+
+{% if loggeduser == event.place.owner %}
+<!-- Adding coffee to event -->
+<div class="row text-center" style="margin-top: 20px">
+    <div class="col-lg text-center">
+	<form method="get" action="/addcoffeeevent/">
+            <input name="pk" type="hidden" value="{{ event.pk }}" required />
+	    <table align="center"><tr><td>
+    		Coffee:</td><td>
+    		<select name="coffee">
+	    	    {% for cof in all_coffee %}
+	            	<option value="{{ cof.pk }}">{{ cof.name }}</option>
+	    	    {% endfor %}
+    		</select></td><td>
+            	<button type="Submit">Add coffee to event</button></td></tr>
+	    </table>
+        </form>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}
 
 
