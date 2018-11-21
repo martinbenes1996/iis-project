@@ -4,6 +4,7 @@
 <form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addcafe/" method="post">{% csrf_token %}
     <h3 class="text-center">Add Café</h3>
     {{warning|safe}}
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
     <input type="" class="form-control" name="name" value="{{cafe_name}}" placeholder="Cafe Name *" required>
     <input type="" class="form-control" name="street" value="{{cafe_street}}" placeholder="Street">
     <input type="" class="form-control" name="housenumber" value="{{cafe_housenumber}}" placeholder="House Number">

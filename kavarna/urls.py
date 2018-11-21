@@ -21,9 +21,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name=''),
     path('register/', views.register, name='register'),
+    path('adm/', views.adm, name='adm'),
     path('signin/', views.signin, name='signin'),
     path('search/', views.search, name='search'),
     path('users/', views.users, name='users'),
+    path('deleteuser/', views.deleteuser, name='deleteuser'),
     path('cafes/', views.cafes, name='cafes'),
     path('profile/', views.profile, name='profile'),
     path('deletecafe/', views.deletecafe, name='deletecafe'),
@@ -45,5 +47,9 @@ urlpatterns = [
     path('deleteparticipateevent/', views.deleteparticipateevent, name='deleteparticipateevent'),
     path('addcoffeeevent/', views.addcoffeeevent, name='addcoffeeevent'),
     path('deletecoffeeevent/', views.deletecoffeeevent, name='deletecoffeeevent'),
+    path('addprep/', views.addprep, name='addprep'),
+    path('deleteprep/', views.deleteprep, name='deleteprep'),
+    path('addbean/', views.addbean, name='addbean'),
+    path('deletebean/', views.deletebean, name='deletebean'),
     path('react/', views.react, name='react')
 ]

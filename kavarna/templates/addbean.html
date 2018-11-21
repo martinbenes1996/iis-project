@@ -1,0 +1,20 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addbean/" method="post">{% csrf_token %}
+    <h3 class="text-center">Add Bean</h3>
+    {{warning|safe}}
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
+    <input type="" class="form-control" name="name" placeholder="Bean Name *" required>
+    <input type="" class="form-control" name="origin" placeholder="Origin *" required>
+    <input type="" class="form-control" name="aroma" placeholder="Aroma *" required>
+    <input type="" class="form-control" name="acidity" placeholder="Acidity (0-10)*" required>
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add new bean</button>
+</form>
+
+{% if request_path == "/adm" %}
+<div class="row hcentralize">
+    <a href="/adm/?id={{loggeduser.pk}}"><button class="btn btn-lg btn-info" type="submit">Go Back</button></a>
+</div>
+{% endif %}
+{% endblock %}

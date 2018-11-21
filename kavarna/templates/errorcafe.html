@@ -13,7 +13,7 @@
     {{warning|safe}}
     {% if add == False %}
     <input name="cafe" type="hidden" value="{{ cafe.pk }}" required />
-    <input name="next_url" type="hidden" value="{{ next_url }}" required />
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
     {% endif %}
     <table align="center">
     <tr><td>Cafe Name *: </td><td>

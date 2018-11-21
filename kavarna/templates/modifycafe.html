@@ -4,8 +4,8 @@
 <form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/modifycafe/" method="post">{% csrf_token %}
     <h3 class="text-center">Modify Café</h3>
     {{warning|safe}}
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
     <input name="cafe" type="hidden" value="{{ cafe.pk }}" required />
-    <input name="next_url" type="hidden" value="{{ next_url }}" required />
     <table align="center">
     <tr><td>Cafe Name *: </td><td>
     <input id="name_l" type="" class="form-control" name="name" value="{{cafe.name}}" required></td>
