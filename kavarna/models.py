@@ -70,6 +70,7 @@ class Drinker(models.Model):
     fav_coffee = models.ManyToManyField(Coffee)
     fav_preparation = models.ManyToManyField(CoffeePreparation)
     likes_cafe = models.ManyToManyField(Cafe)
+    admin = models.BooleanField(default=False)
 
     @classmethod
     def getData(cls, email):

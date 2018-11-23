@@ -86,7 +86,7 @@ def deleteuser(request):
         d['request_path'] = request.GET.get('request_path','/')
         user_id = request.GET.get('user','')
         models.User.objects.get(pk=user_id).delete()
-        models.Drinker.objects.get(pk=user_id).delete()
+        models.Drinker.objects.get(key=user_id).delete()
 
     if d['request_path'] == '/adm':
         return redirect('/adm/?id='+str(d['loggeduser'].pk))
@@ -1230,6 +1230,48 @@ def deletebean(request):
     else:
         return redirect('/')
 
+def promoteuser(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'GET':
+        pk_user = request.GET.get('user', '')
+        drinker = models.Drinker.objects.get(key=pk_user)
+        drinker.admin = True
+        drinker.save()
+        d['request_path'] = request.GET.get('request_path','/')
+
+    if d['request_path'] == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
+
+def demoteuser(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'GET':
+        pk_user = request.GET.get('user', '')
+        drinker = models.Drinker.objects.get(key=pk_user)
+        drinker.admin = False
+        drinker.save()
+        d['request_path'] = request.GET.get('request_path','/')
+
+    if d['request_path'] == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
+
 def adm(request):
     d = generateDict(request)
     if 'message' in d:
@@ -1238,7 +1280,8 @@ def adm(request):
     if 'loggeduser' not in d:       # user is not logged in
         d['message'] = 'You must login'
         return redirect('/')
-    # ohlidat si, ze je user opravdu admin!! Potreba promena indikujici adminstvi!
+    if d['loggeddrinker'].admin != True:    # check if visitor really has admin rights
+        return redirect('/')
 
     if request.method == 'GET':
         profid = request.GET.get('id','')
@@ -1246,6 +1289,7 @@ def adm(request):
 
         # all users except the one logged in
         d['users'] = models.User.objects.exclude(pk=d['loggeduser'].pk)
+        d['drinkers'] = models.Drinker.objects.exclude(key=d['loggeduser'].pk)
         d['cafes'] = models.Cafe.objects.all()
         d['coffee'] = models.Coffee.objects.all()
         d['events'] = models.Event.objects.all()

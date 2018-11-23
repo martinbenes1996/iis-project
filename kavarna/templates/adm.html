@@ -16,7 +16,25 @@
                 <button type="Submit">Delete</button>
             </form>
 	</td>
-	<td>promote</td><!-- tlacitko na povyseni uzivatele na admina, potreba doplnit indikator adminstvi! -->
+	<td>
+	    {% for d in drinkers %}
+	    {% if u.pk == d.key %}
+	    {% if d.admin == False %}
+	    <form method="get" action="{% url 'promoteuser' %}">{% csrf_token %}
+            	<input name="user" type="hidden" value="{{ u.pk }}" required />
+		<input name="request_path" type="hidden" value="/adm" required />
+                <button type="Submit">Promote</button>
+            </form>
+	    {% else %}
+	    <form method="get" action="{% url 'demoteuser' %}">{% csrf_token %}
+            	<input name="user" type="hidden" value="{{ u.pk }}" required />
+		<input name="request_path" type="hidden" value="/adm" required />
+                <button type="Submit">Demote</button>
+            </form>
+	    {% endif %}
+	    {% endif %}
+	    {% endfor %}
+	</td>
     </tr>
 {% endfor %}
 </table>

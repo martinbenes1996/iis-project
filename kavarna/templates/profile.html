@@ -16,10 +16,11 @@
     <b>Příjmení:</b> {{ userdata.last_name }}<br>
     <b>E-mail:</b> {{ userdata.email }}<br>
 </div>
+{% if drinkerdata.admin and loggeduser.pk == userdata.pk %}
 <div align="center">
     <a href="/adm/?id={{userdata.pk}}"><button class="btn btn-lg btn-info" type="submit">Adm Page</button></a>
 </div>
-
+{% endif %}
 {% endblock %}
 
 
