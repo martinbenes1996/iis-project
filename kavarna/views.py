@@ -73,6 +73,47 @@ def register(request):
     else:
         return render(request, "register.html", d)
 
+def modifyuser(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'POST':
+        # parse form
+        d['register_first_name'] = request.POST.get("first_name", "")
+        d['register_last_name'] = request.POST.get("last_name", "")
+        d['register_email'] = request.POST.get("email", "")
+        d['request_path'] = request.POST.get('request_path','/')
+
+        user = models.User.objects.get(pk=request.POST.get("user", ""))
+        user.email = d['register_email']
+        user.username = d['register_email']
+        user.first_name = d['register_first_name']
+        user.last_name = d['register_last_name']
+        user.save()
+        if d['request_path'] == '/profile/':
+            return redirect('/')                        # system will automatically log out
+            #return redirect('/profile/?user='+str(user.pk)+"#Tab1")
+        else:
+            return redirect('/')
+    elif request.method == 'GET':
+        d['request_path'] = request.GET.get('request_path','/')
+        user_id = request.GET.get('user','')
+        d['user'] = models.User.objects.get(pk=user_id)
+        d['register_first_name'] = d['user'].first_name
+        d['register_last_name'] = d['user'].last_name
+        d['register_email'] = d['user'].email
+        #d['register_password'] = d['user'].password
+        #d['register_password2'] = d['user'].password
+        return render(request, "modifyuser.html", d)
+    else:
+        pass
+        #return render(request, "register.html", d)
+
 def deleteuser(request):
     d = generateDict(request)
     if 'message' in d:

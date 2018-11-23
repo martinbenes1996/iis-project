@@ -19,9 +19,11 @@
     
     
     <div class="col-lg-10 searchlist" style="margin-left: 40px">
-        
+         
         {% include 'snippets/searchresult.html' with list=caferesults resultgroupid="caferesults" blockheader="Café" %}
+	
         {% include 'snippets/searchresult.html' with list=coffeeresults resultgroupid="coffeeresults" blockheader="Coffee" %}
+	
         {% include 'snippets/searchresult.html' with list=placeresults resultgroupid="placeresults" blockheader="Place" %}
 
     </div>
