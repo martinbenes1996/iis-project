@@ -1,0 +1,32 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<p align="center">{{error_message}}</p>
+
+{% if add == True %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addprep/" method="post">
+{% else %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/modifyprep/" method="post">
+{% endif %}
+{% csrf_token %}
+    <h3 class="text-center">Add Preparation</h3>
+    {{warning|safe}}
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
+    {% if add == False %}
+    <input name="prepid" type="hidden" value="{{ preparation.pk }}" required />
+    {% endif %}
+    <table align="center">
+    <tr><td>Preparation Name *: </td><td>
+    <input type="" class="form-control" name="name" value="{{preparation_name}}" placeholder="Preparation Name *" required></td></tr>
+    <tr><td>Description *: </td><td>
+    <input type="" class="form-control" name="description" value="{{preparation_description}}" placeholder="Description *" required></td></tr>
+    </table>
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add preparation</button>
+</form>
+
+{% if request_path == "/adm" %}
+<div class="row hcentralize">
+    <a href="/adm/?id={{loggeduser.pk}}"><button class="btn btn-lg btn-info" type="submit">Go Back</button></a>
+</div>
+{% endif %}
+{% endblock %}

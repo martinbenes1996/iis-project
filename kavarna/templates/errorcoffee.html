@@ -14,7 +14,7 @@
     {{warning|safe}}
     {% if add == False %}
     <input name="coffeeid" type="hidden" value="{{ coffee.pk }}" required />
-    <input name="next_url" type="hidden" value="{{ next_url }}" required />
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
     {% endif %}
     <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
     <table align="center"><tr><td>Coffee Name *: </td><td>

@@ -4,6 +4,7 @@
 <form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addevent/" method="post">{% csrf_token %}
     <h3 class="text-center">Add Event</h3>
     {{warning|safe}}
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
     <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
     <input type="" class="form-control" name="name" placeholder="Event Name *" required>
     <input type="" class="form-control" name="price" placeholder="Price *">

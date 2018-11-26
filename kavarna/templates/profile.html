@@ -16,6 +16,20 @@
     <b>Příjmení:</b> {{ userdata.last_name }}<br>
     <b>E-mail:</b> {{ userdata.email }}<br>
 </div>
+{% if loggeduser.pk == userdata.pk %}
+<div align="center">
+    <form method="get" action="{% url 'modifyuser' %}">{% csrf_token %}
+    	<input name="user" type="hidden" value="{{ userdata.pk }}" required />
+    	<input name="request_path" type="hidden" value="/profile/" required />
+    	<button type="Submit">Modify Data</button>
+    </form>
+</div>
+{% endif %}
+{% if drinkerdata.admin and loggeduser.pk == userdata.pk %}
+<div align="center">
+    <a href="/adm/?id={{userdata.pk}}"><button class="btn btn-lg btn-info" type="submit">Adm Page</button></a>
+</div>
+{% endif %}
 {% endblock %}
 
 
@@ -41,17 +55,17 @@
                 <th>
                     <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ own.pk }}" required />
-			<input name="request_path" type="hidden" value="/profile_cafe" required />
+			<input name="request_path" type="hidden" value="/profile" required />
                         <button type="Submit">Delete</button>
                     </form>
 		</th>
 		<th>
 		    <form method="get" action="{% url 'modifycafe' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ own.pk }}" required />
-			<input name="request_path" type="hidden" value="/profile_cafe" required />
+			<input name="request_path" type="hidden" value="/profile" required />
                         <button type="Submit">Modify</button>
                     </form>
-		</th>
+		</th></tr>
 		{% endif %}
 
 
@@ -64,14 +78,15 @@
 {% if userdata == loggeduser %}
 <div class="row hcentralize">
     <div class="col-lg-3">
-        <!--<h3>Založit Kavárnu</h3>
-        <form action="{% url 'addcafe' %}" method="post">{% csrf_token %}
-	    <input name="pk" type="hidden" value="{{ user_profile.pk }}" required />
-            <button class="btn btn-info" type="submit">Založit Kavárnu</button>
-        </form>-->
+        <!--<h3>Založit Kavárnu</h3>-->
+        <form action="{% url 'addcafe' %}" method="get">{% csrf_token %}
+	    <!--<input name="pk" type="hidden" value="{{ user_profile.pk }}" required />-->
+	    <input name="request_path" type="hidden" value="/profile" required />
+            <button class="btn btn-lg btn-warning" type="submit">Add Cafe</button>
+        </form><!--
 	<div class="row hcentralize">
     	    <a href="{% url 'addcafe' %}"><button class="btn btn-lg btn-warning" type="submit">Add café</button></a>
-	</div>
+	</div>-->
     </div>
 
 </div>

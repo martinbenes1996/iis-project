@@ -73,6 +73,67 @@ def register(request):
     else:
         return render(request, "register.html", d)
 
+def modifyuser(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'POST':
+        # parse form
+        d['register_first_name'] = request.POST.get("first_name", "")
+        d['register_last_name'] = request.POST.get("last_name", "")
+        d['register_email'] = request.POST.get("email", "")
+        d['request_path'] = request.POST.get('request_path','/')
+
+        user = models.User.objects.get(pk=request.POST.get("user", ""))
+        user.email = d['register_email']
+        user.username = d['register_email']
+        user.first_name = d['register_first_name']
+        user.last_name = d['register_last_name']
+        user.save()
+        if d['request_path'] == '/profile/':
+            return redirect('/')                        # system will automatically log out
+            #return redirect('/profile/?user='+str(user.pk)+"#Tab1")
+        else:
+            return redirect('/')
+    elif request.method == 'GET':
+        d['request_path'] = request.GET.get('request_path','/')
+        user_id = request.GET.get('user','')
+        d['user'] = models.User.objects.get(pk=user_id)
+        d['register_first_name'] = d['user'].first_name
+        d['register_last_name'] = d['user'].last_name
+        d['register_email'] = d['user'].email
+        #d['register_password'] = d['user'].password
+        #d['register_password2'] = d['user'].password
+        return render(request, "modifyuser.html", d)
+    else:
+        pass
+        #return render(request, "register.html", d)
+
+def deleteuser(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'GET':
+        d['request_path'] = request.GET.get('request_path','/')
+        user_id = request.GET.get('user','')
+        models.User.objects.get(pk=user_id).delete()
+        models.Drinker.objects.get(key=user_id).delete()
+
+    if d['request_path'] == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
+
 def signin(request):
     d = generateDict(request)
     if 'message' in d:
@@ -137,11 +198,16 @@ def addcafe(request):
     if 'message' in d:
         return errLogout(request, d)
 
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
     if request.method == 'POST':
         if 'loggeduser' not in d:
             d['message'] = 'You must login before creating cafe'
         d['error_message'] = ''
         try:
+            d['request_path'] = request.POST.get('request_path','')
             d['cafe_name'] = request.POST['name']
             d['cafe_street'] = request.POST.get('street','')
             d['cafe_housenumber'] = request.POST.get('housenumber','')
@@ -199,15 +265,27 @@ def addcafe(request):
             d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
             return render(request, "errorcafe.html", d)
 
-        return redirect('/profile/?user='+str(d['loggeduser'].pk)+"#Tab2")
+        if d['request_path'] == '/profile':
+            return redirect('/profile/?user='+str(d['loggeduser'].pk)+"#Tab2")
+        elif d['request_path'] == '/adm':
+            return redirect('/adm/?id='+str(d['loggeduser'].pk))
+        else:
+            return redirect('/')
     else:
-        d['message'] = 'Unexpected link.'
+        pass
+        #d['message'] = 'Unexpected link.'
+
+    d['request_path'] = request.GET.get('request_path','')
     return render(request, "addcafe.html", d)
 
 def modifycafe(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
+
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
 
     if request.method == 'POST':
         if 'loggeduser' not in d:
@@ -243,7 +321,7 @@ def modifycafe(request):
         except:
             pass
 
-        next_url = request.POST.get('next_url')
+        d['request_path'] = request.POST.get('request_path','')
         cafe = models.Cafe.objects.get(pk=request.POST.get('cafe'))
         d['cafe'] = cafe
 
@@ -270,13 +348,19 @@ def modifycafe(request):
             d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
             return render(request, "errorcafe.html", d)
 
-        return redirect('/profile/?user='+str(d['loggeduser'].pk)+"#Tab2")
+        if d['request_path'] == '/profile':
+            return redirect('/profile/?user='+str(d['loggeduser'].pk)+"#Tab2")
+        elif d['request_path'] == '/adm':
+            return redirect('/adm/?id='+str(d['loggeduser'].pk))
+        else:
+            return redirect('/')
     elif request.method == 'GET':
         cafe_id = request.GET.get('pk')
         d['cafe'] = models.Cafe.objects.get(pk=cafe_id)
-        d['next_url'] = request.GET.get('request_path', '/')
+        d['request_path'] = request.GET.get('request_path', '/')
     else:
-        d['message'] = 'Unexpected link.'
+        pass
+        #d['message'] = 'Unexpected link.'
 
     return render(request, "modifycafe.html", d)
 
@@ -301,6 +385,10 @@ def profile_cafe(request):
     if 'message' in d:
         return errLogout(request, d)
 
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
     # change to requested user profile number
     if request.method == 'GET':
         user_id = request.GET.get('user', d['loggeduser'].pk) #User.objects.get(email=d['loggeduser']).pk)
@@ -318,12 +406,22 @@ def deletecafe(request):
     if 'message' in d:
         return errLogout(request, d)
 
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
     if request.method == 'GET':
         next_url = request.GET.get('request_path', '/')
+        print(next_url)
         pk_cafe = request.GET.get('pk')
         models.Cafe.objects.get(pk=pk_cafe).delete()
 
-    return redirect('/profile/?user='+str(d['loggeduser'].pk)+"#Tab2")
+    if next_url == '/profile':
+        return redirect('/profile/?user='+str(d['loggeduser'].pk)+"#Tab2")
+    elif next_url == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
 
 def users(request):
     d = generateDict(request)
@@ -372,25 +470,31 @@ def cafe(request):
         return HttpResponseRedirect('')
 
     if request.method == 'GET':
-        cafeid = request.GET['id']
-        d['cafe'] = models.Cafe.objects.get(pk=cafeid)
-        d['cafe_score'] = core.getCafeScore( d['cafe'] )
-        if models.Reaction.objects.filter(author=d['loggeduser'],cafe=d['cafe']).exclude(score=None).count() > 0:
-            d['my_cafe_score'] = models.Reaction.objects.get(author=d['loggeduser'],cafe=d['cafe']).score
-        else:
-            d['my_cafe_score'] = "void 0"
-        d['owner'] = d['cafe'].owner    # returns object User
-        d['cafe_coffee_list'] = d['cafe'].offers_coffee.all()
-        d['event_list'] = models.Event.objects.filter(place=d['cafe'])
-        d['cafe_reactions'] = models.Reaction.objects.filter(cafe=d['cafe'])
-        l = [p.pk for p in d['cafe_reactions']]
-        d['reaction_reactions'] = models.Reaction.objects.filter(react__in=l)
-        #print(d['reaction_reactions'])
-        d['like_count'] = models.Drinker.objects.filter(likes_cafe=d['cafe']).count
         try:
-            d['is_liking'] = True if d['cafe'] in d['loggeddrinker'].likes_cafe.all() else False
-        except:
-            pass
+            cafeid = request.GET['id']
+            d['cafe'] = models.Cafe.objects.get(pk=cafeid)
+            d['cafe_score'] = core.getCafeScore( d['cafe'] )
+            try:
+                if models.Reaction.objects.filter(author=d['loggeduser'],cafe=d['cafe']).exclude(score=None).count() > 0:
+                    d['my_cafe_score'] = models.Reaction.objects.get(author=d['loggeduser'],cafe=d['cafe']).score
+                else:
+                    d['my_cafe_score'] = "void 0"
+            except KeyError:
+                d['my_cafe_score'] = "void 0"
+            d['owner'] = d['cafe'].owner    # returns object User
+            d['cafe_coffee_list'] = d['cafe'].offers_coffee.all()
+            d['event_list'] = models.Event.objects.filter(place=d['cafe'])
+            d['cafe_reactions'] = models.Reaction.objects.filter(cafe=d['cafe'])
+            l = [p.pk for p in d['cafe_reactions']]
+            d['reaction_reactions'] = models.Reaction.objects.filter(react__in=l)
+            #print(d['reaction_reactions'])
+            d['like_count'] = models.Drinker.objects.filter(likes_cafe=d['cafe']).count
+            try:
+                d['is_liking'] = True if d['cafe'] in d['loggeddrinker'].likes_cafe.all() else False
+            except:
+                d['is_liking'] = False
+        except KeyError:        # if noone is logged in
+            return redirect('/')
 
     return render(request, "cafe.html", d)
 
@@ -420,12 +524,17 @@ def addcoffee(request):
     if 'message' in d:
         return errLogout(request, d)
 
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
     if request.method == 'POST':
         if 'loggeduser' not in d:
             d['message'] = 'You must login before creating cafe'
         d['error_message'] = ''
         sumperc = 0
 
+        d['request_path'] = request.POST.get('request_path','/')
         d['coffee_name'] = request.POST.get('name', '')
         d['coffee_placeoforigin'] = request.POST.get('placeoforigin', '')
         d['coffee_quality'] = request.POST.get('quality', '')
@@ -523,10 +632,15 @@ def addcoffee(request):
             d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
             return render(request, "errorcoffee.html", d)
 
-        return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab2")
-        #return render(request, "ok_messages/addcoffee-ok.html", d)
-        #return redirect('/profile/')
+        if d['request_path'] == '/cafe':
+            return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab2")
+        elif d['request_path'] == '/adm':
+            return redirect('/adm/?id='+str(d['loggeduser'].pk))
+        else:
+            return redirect('/')
+
     elif request.method == 'GET':
+        d['request_path'] = request.GET.get('request_path','/')
         cafeid = request.GET['cafeid']
         d['cafe'] = models.Cafe.getData(cafeid)
         d['preparations'] = models.CoffeePreparation.objects.all()
@@ -540,12 +654,17 @@ def modifycoffee(request):
     if 'message' in d:
         return errLogout(request, d)
 
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
     if request.method == 'POST':
         if 'loggeduser' not in d:
             d['message'] = 'You must login before creating cafe'
         d['error_message'] = ''
         sumperc = 0
 
+        d['request_path'] = request.POST.get('request_path','/')
         d['coffee_name'] = request.POST.get('name', '')
         d['coffee_placeoforigin'] = request.POST.get('placeoforigin', '')
         d['coffee_quality'] = request.POST.get('quality', '')
@@ -602,8 +721,6 @@ def modifycoffee(request):
         if d['coffee_bean'] == d['coffee_bean2'] and d['coffee_bean'] != None or d['coffee_bean'] == d['coffee_bean3'] and d['coffee_bean'] != None or d['coffee_bean2'] == d['coffee_bean3'] and d['coffee_bean2'] != None:
             d['error_message'] = d['error_message'] + "You cannot assign parcentage to the same bean more than once! | "
 
-        cafeid = request.POST['cafeid']
-        d['cafe'] = models.Cafe.getData(cafeid)
         coffee = models.Coffee.objects.get(pk=request.POST.get('coffeeid', None))
         d['coffee'] = coffee
         next_url = request.POST.get('next_url', '/')
@@ -693,12 +810,22 @@ def modifycoffee(request):
                 d['beanperc3'] = [x.percentage for x in d['memb'] if x.coffeeBean == d['beanset3']][0]
             return render(request, "errorcoffee.html", d)
 
-        return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab2")
-        #return render(request, "ok_messages/addcoffee-ok.html", d)
+        if d['request_path'] == '/cafe':
+            cafeid = request.POST['cafeid']
+            d['cafe'] = models.Cafe.getData(cafeid)
+            return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab2")
+        elif d['request_path'] == '/adm':
+            return redirect('/adm/?id='+str(d['loggeduser'].pk))
+        else:
+            return redirect('/')
+
     elif request.method == 'GET':
-        cafe_id = request.GET.get('pk')
-        d['cafe'] = models.Cafe.objects.get(pk=cafe_id)
-        d['next_url'] = request.GET.get('request_path', '/')
+        cafe_id = request.GET.get('pk','')
+        if cafe_id != '':
+            d['cafe'] = models.Cafe.objects.get(pk=cafe_id)
+        else:
+            d['cafe'] = ''
+        d['request_path'] = request.GET.get('request_path','/')
         coffee_id = request.GET.get('coffeeid', None)
         d['coffee'] = models.Coffee.objects.get(pk=coffee_id)
         d['preparations'] = models.CoffeePreparation.objects.all()
@@ -732,16 +859,23 @@ def deletecoffee(request):
     if 'message' in d:
         return errLogout(request, d)
 
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
     if request.method == 'GET':
-        next_url = request.GET.get('request_path', '/')
+        d['request_path'] = request.GET.get('request_path','/')
         pk_coffee = request.GET.get('pk')
-        pk_cafe = request.GET.get('pk_cafe')
-        d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
         models.Coffee.objects.get(pk=pk_coffee).delete()
 
-    return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab2")
-    #return render(request, "ok_messages/addcoffee-ok.html", d)
-    #return redirect(next_url, permanent=True)
+    if d['request_path'] == '/cafe':
+        pk_cafe = request.GET.get('pk_cafe')
+        d['cafe'] = models.Cafe.objects.get(pk=pk_cafe)
+        return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab2")
+    elif d['request_path'] == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
 
 def coffee(request):
     d = generateDict(request)
@@ -774,8 +908,9 @@ def event(request):
         d['event'] = models.Event.objects.get(pk=eventid)
         try:
             d['participating'] = True if d['loggeduser'] in d['event'].participants.all() else False
-        except:
-            pass
+        except KeyError:
+            d['participating'] = False
+            #return redirect('/')    # user not logged in
 
         print(d)
         d['coffee'] = d['event'].coffee_list.all()
@@ -785,12 +920,14 @@ def event(request):
 
 def addevent(request):
     d = generateDict(request)
-    if 'loggeduser' not in d:
-        d['message'] = 'You must be logged in.'
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
     if 'message' in d:
         return errLogout(request, {'message' : d['message']})
-    d = {}
+    #d = {}
     if request.method == 'POST':
+        d['request_path'] = request.POST.get('request_path', '/')
         d['event_name'] = request.POST['name']
         print(d['event_name'])
         try:
@@ -829,13 +966,15 @@ def addevent(request):
 
 def modifyevent(request):
     d = generateDict(request)
-    if 'loggeduser' not in d:
-        d['message'] = 'You must be logged in.'
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
     if 'message' in d:
         return errLogout(request, {'message' : d['message']})
-    d = {}
+    #d = {}
     d['error_message'] = ''
     if request.method == 'POST':
+        d['request_path'] = request.POST.get('request_path', '/')
         eventid = request.POST.get('eventid','')
         d['event'] = models.Event.objects.get(pk=eventid)
         d['event_name'] = request.POST.get('name', '')
@@ -849,8 +988,6 @@ def modifyevent(request):
             d['event_capacity'] = int(request.POST.get('capacity', ''))
         except:
             d['error_message'] = d['error_message'] + "Capacity must be a decimal number."
-        cafeid = request.POST['cafeid']
-        d['cafe'] = models.Cafe.getData(cafeid)
 
         if d['error_message'] != '':
             d['add'] = False
@@ -866,12 +1003,23 @@ def modifyevent(request):
             d['error_message'] = d['error_message'] + "Database error."
             return render(request, "errorevent.html", d)
 
-        return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab3")
+        if d['request_path'] == '/cafe3':
+            cafeid = request.POST['cafeid']
+            d['cafe'] = models.Cafe.getData(cafeid)
+            return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab3")
+        elif d['request_path'] == '/adm':
+            return redirect('/adm/?id='+str(d['loggeduser'].pk))
+        else:
+            return redirect('/')
 
     elif request.method == 'GET':
-        cafeid = request.GET.get('id', '')
+        d['request_path'] = request.GET.get('request_path', '/')
         eventid = request.GET.get('eventid', '')
-        d['cafe'] = models.Cafe.objects.get(pk=cafeid)
+        cafeid = request.GET.get('id', '')
+        if cafeid != '':
+            d['cafe'] = models.Cafe.objects.get(pk=cafeid)
+        else:
+            d['cafe'] = ''
         d['event'] = models.Event.objects.get(pk=eventid)
         return render(request, "modifyevent.html", d)
     else:
@@ -883,18 +1031,31 @@ def deleteevent(request):
     if 'message' in d:
         return errLogout(request, d)
 
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
     if request.method == 'GET':
-        next_url = request.GET.get('request_path', '/')
+        d['request_path'] = request.GET.get('request_path', '/')
         pk_event = request.GET.get('pk')
         d['cafe'] = models.Event.objects.get(pk=pk_event).place
         models.Event.objects.get(pk=pk_event).delete()
 
-    return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab3")
+    if d['request_path'] == '/cafe3':
+        return redirect('/cafe/?id='+str(d['cafe'].pk)+"#Tab3")
+    elif d['request_path'] == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
 
 def participateevent(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
+
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
 
     if request.method == 'GET':
         pk_event = request.GET.get('pk')
@@ -909,6 +1070,10 @@ def deleteparticipateevent(request):
     if 'message' in d:
         return errLogout(request, d)
 
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
     if request.method == 'GET':
         pk_event = request.GET.get('pk')
         d['event'] = models.Event.objects.get(pk=pk_event)
@@ -921,6 +1086,10 @@ def addcoffeeevent(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
+
+    if 'loggeduser' not in d:
+        d['message'] = 'You must login'
+        return redirect('/')
 
     if request.method == 'GET':
         pk_event = request.GET.get('pk')
@@ -937,6 +1106,10 @@ def deletecoffeeevent(request):
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
+
+    if 'loggeduser' not in d:
+        d['message'] = 'You must login'
+        return redirect('/')
 
     if request.method == 'GET':
         pk_event = request.GET.get('pk_event', None)
@@ -968,3 +1141,203 @@ def react(request):
         reaction.save()
         print("Created reaction!")
         return HttpResponseRedirect('/cafe?id='+request.POST['cafe_id']+'#Tab4')
+
+def addprep(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'POST':
+        d['error_message'] = ''
+        d['request_path'] = request.POST.get('request_path','')
+        d['preparation_name'] = request.POST.get('name','')
+        d['preparation_description'] = request.POST.get('description','')
+
+        # might be needed later
+        if d['error_message'] != '':
+            d['add'] = True
+            return render(request, "errorprep.html", d)
+
+        try:
+            c = models.CoffeePreparation()
+            c.name = d['preparation_name']
+            c.description=d['preparation_description']
+            c.save()
+        except:
+            d['add'] = True
+            d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
+            return render(request, "errorprep.html", d)
+
+        if d['request_path'] == '/adm':
+            return redirect('/adm/?id='+str(d['loggeduser'].pk))
+        else:
+            return redirect('/')
+    else:
+        pass
+
+    d['request_path'] = request.GET.get('request_path','')
+    return render(request, "addprep.html", d)
+
+def deleteprep(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'GET':
+        pk_prep = request.GET.get('pk', '')
+        models.CoffeePreparation.objects.get(pk=pk_prep).delete()
+        d['request_path'] = request.GET.get('request_path','/')
+
+    if d['request_path'] == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
+
+def addbean(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'POST':
+        d['error_message'] = ''
+        d['request_path'] = request.POST.get('request_path','')
+        d['bean_name'] = request.POST.get('name','')
+        d['bean_origin'] = request.POST.get('origin','')
+        d['bean_aroma'] = request.POST.get('aroma','')
+        d['bean_acidity'] = request.POST.get('acidity','')
+        try:
+            if int(d['bean_acidity']) < 0 or int(d['bean_acidity']) > 10:
+                d['error_message'] = d['error_message'] + "Acidity must be between 0-10! | "
+            else:
+                d['bean_acidity'] = int(d['bean_acidity'])
+        except:
+            d['error_message'] = d['error_message'] + "Acidity must be a decimal number between 0-10! | "
+
+        # might be needed later
+        if d['error_message'] != '':
+            d['add'] = True
+            return render(request, "errorbean.html", d)
+
+        try:
+            c = models.CoffeeBean()
+            c.name = d['bean_name']
+            c.origin = d['bean_origin']
+            c.aroma = d['bean_aroma']
+            c.acidity=d['bean_acidity']
+            c.save()
+        except:
+            d['add'] = True
+            d['error_message'] = "Database error, all strings must be shorter than 64 or some number is too high or something else... | "
+            return render(request, "errorbean.html", d)
+
+        if d['request_path'] == '/adm':
+            return redirect('/adm/?id='+str(d['loggeduser'].pk))
+        else:
+            return redirect('/')
+    else:
+        pass
+
+    d['request_path'] = request.GET.get('request_path','')
+    return render(request, "addbean.html", d)
+
+def deletebean(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'GET':
+        pk_bean = request.GET.get('pk', '')
+        models.CoffeeBean.objects.get(pk=pk_bean).delete()
+        d['request_path'] = request.GET.get('request_path','/')
+
+    if d['request_path'] == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
+
+def promoteuser(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'GET':
+        pk_user = request.GET.get('user', '')
+        drinker = models.Drinker.objects.get(key=pk_user)
+        drinker.admin = True
+        drinker.save()
+        d['request_path'] = request.GET.get('request_path','/')
+
+    if d['request_path'] == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
+
+def demoteuser(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:
+        d['message'] = 'You must login'
+        return redirect('/')
+
+    if request.method == 'GET':
+        pk_user = request.GET.get('user', '')
+        drinker = models.Drinker.objects.get(key=pk_user)
+        drinker.admin = False
+        drinker.save()
+        d['request_path'] = request.GET.get('request_path','/')
+
+    if d['request_path'] == '/adm':
+        return redirect('/adm/?id='+str(d['loggeduser'].pk))
+    else:
+        return redirect('/')
+
+def adm(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+
+    if 'loggeduser' not in d:       # user is not logged in
+        d['message'] = 'You must login'
+        return redirect('/')
+    if d['loggeddrinker'].admin != True:    # check if visitor really has admin rights
+        return redirect('/')
+
+    if request.method == 'GET':
+        profid = request.GET.get('id','')
+        d['profile'] = models.User.objects.get(pk=profid)
+
+        # all users except the one logged in
+        d['users'] = models.User.objects.exclude(pk=d['loggeduser'].pk)
+        d['drinkers'] = models.Drinker.objects.exclude(key=d['loggeduser'].pk)
+        d['cafes'] = models.Cafe.objects.all()
+        d['coffee'] = models.Coffee.objects.all()
+        d['events'] = models.Event.objects.all()
+        d['preparations'] = models.CoffeePreparation.objects.all()
+        d['beans'] = models.CoffeeBean.objects.all()
+
+        return render(request, "adm.html", d)
+
+
+

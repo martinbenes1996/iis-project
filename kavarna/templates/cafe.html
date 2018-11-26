@@ -121,7 +121,7 @@
                     <form method="get" action="{% url 'deletecoffee' %}">{% csrf_token %}
 			<input name="pk_cafe" type="hidden" value="{{ cafe.pk }}" required />
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
-			<input name="request_path" type="hidden" value="/profile" required />
+			<input name="request_path" type="hidden" value="/cafe" required />
                         <button type="Submit">Delete</button>
                     </form>
 		</th>
@@ -129,7 +129,7 @@
 		    <form method="get" action="{% url 'modifycoffee' %}">{% csrf_token %}
 			<input name="pk" type="hidden" value="{{ cafe.pk }}" required />
                         <input name="coffeeid" type="hidden" value="{{ a.pk }}" required />
-			<input name="request_path" type="hidden" value="/profile" required />
+			<input name="request_path" type="hidden" value="/cafe" required />
                         <button type="Submit">Modify</button>
                     </form>
 		</th>
@@ -147,6 +147,7 @@
 	<div class="row hcentralize">
 	    <form method="get" action="{% url 'addcoffee' %}">
                	<input name="cafeid" type="hidden" value={{cafe.pk}} required />
+		<input name="request_path" type="hidden" value="/cafe" required />
                 <button class="btn btn-lg btn-warning" type="Submit">Add coffee</button>
             </form>
 	</div>
@@ -184,7 +185,7 @@
                 <th>
                     <form method="get" action="{% url 'deleteevent' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
-			<input name="request_path" type="hidden" value="/profile" required />
+			<input name="request_path" type="hidden" value="/cafe3" required />
                         <button type="Submit">Delete</button>
                     </form>
 		</th>
@@ -192,7 +193,7 @@
 		    <form method="get" action="{% url 'modifyevent' %}">{% csrf_token %}
 		    	<input name="id" type="hidden" value="{{ cafe.pk }}" required />
 			<input name="eventid" type="hidden" value="{{ a.pk }}" required />
-		    	<!--<input name="request_path" type="hidden" value="/profile" required />-->
+		    	<input name="request_path" type="hidden" value="/cafe3" required />
                     	<button type="Submit">Modify</button>
                     </form>
 		</th>
@@ -206,6 +207,7 @@
                     class="form-signin" action="/addevent/" method="post"
                     style="display: inline">{% csrf_token %}
                     <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
+		    <input name="request_path" type="hidden" value="/cafe3" required />
                     <tr>
                     <th><input type="" class="form-control" name="name" placeholder="Event Name" required></th>
                     <th><input type="" class="form-control" name="price" placeholder="Price"></th>
