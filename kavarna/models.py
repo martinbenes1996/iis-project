@@ -45,16 +45,16 @@ class CoffeeContainsBeans(models.Model):
 class Cafe(models.Model):
     """ Cafe. """
     name = models.CharField(max_length=64)
-    street = models.CharField(max_length=64, blank=True, null=True, default='')
-    housenumber = models.PositiveIntegerField(blank=True, null=True, default=0) # needs to be changed
-    city = models.CharField(max_length=64, blank=True, null=True, default='')
-    psc = models.CharField(max_length=64, blank=True, null=True, default='')
-    #opensAt = models.TimeField(blank=True, null=True)
-    #closesAt = models.TimeField(blank=True, null=True)
-    opensAt = models.CharField(max_length=64, blank=True, null=True, default='')
-    closesAt = models.CharField(max_length=64, blank=True, null=True, default='')
-    capacity = models.PositiveSmallIntegerField(blank=True, null=True, default=0)
-    description = models.TextField(blank=True, null=True, default='')
+    street = models.CharField(max_length=64, blank=True, default='')
+    housenumber = models.PositiveIntegerField(blank=True, default=0) # needs to be changed
+    city = models.CharField(max_length=64, blank=True, default='')
+    psc = models.CharField(max_length=64, blank=True, default='')
+    #opensAt = models.TimeField(blank=True)
+    #closesAt = models.TimeField(blank=True)
+    opensAt = models.CharField(max_length=64, blank=True, default='')
+    closesAt = models.CharField(max_length=64, blank=True, default='')
+    capacity = models.PositiveSmallIntegerField(blank=True, default=0)
+    description = models.TextField(blank=True, default='')
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     offers_coffee = models.ManyToManyField(Coffee)
 
