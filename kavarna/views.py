@@ -87,14 +87,39 @@ def modifyuser(request):
         d['register_first_name'] = request.POST.get("first_name", "")
         d['register_last_name'] = request.POST.get("last_name", "")
         d['register_email'] = request.POST.get("email", "")
+        d['register_password'] = request.POST.get("password", "")
+        d['register_password2'] = request.POST.get("password2", "")
         d['request_path'] = request.POST.get('request_path','/')
 
-        user = models.User.objects.get(pk=request.POST.get("user", ""))
-        user.email = d['register_email']
-        user.username = d['register_email']
-        user.first_name = d['register_first_name']
-        user.last_name = d['register_last_name']
-        user.save()
+        if d['register_password'] != d['register_password2']:
+            d['errmess'] = 'Passwords are not the same!'
+            d['request_path'] = request.POST.get('request_path','/')
+            user_id = request.POST.get('user','')
+            d['user'] = models.User.objects.get(pk=user_id)
+            return render(request, "modifyuser.html", d)
+        if models.User.objects.filter(email=d['register_email']).count() > 0:
+            d['errmess'] = 'Email already exists, change it please.'
+            d['request_path'] = request.POST.get('request_path','/')
+            user_id = request.POST.get('user','')
+            d['user'] = models.User.objects.get(pk=user_id)
+            return render(request, "modifyuser.html", d)
+
+        try:
+            user = models.User.objects.get(pk=request.POST.get("user", ""))
+            user.email = d['register_email']
+            user.username = d['register_email']
+            user.first_name = d['register_first_name']
+            user.last_name = d['register_last_name']
+            if d['register_password'] != '':
+                user.set_password(d['register_password'])
+            user.save()
+        except:
+            d['errmess'] = 'Some error occured while saving your changes, change your data please.'
+            d['request_path'] = request.POST.get('request_path','/')
+            user_id = request.POST.get('user','')
+            d['user'] = models.User.objects.get(pk=user_id)
+            return render(request, "modifyuser.html", d)
+
         if d['request_path'] == '/profile/':
             return redirect('/')                        # system will automatically log out
             #return redirect('/profile/?user='+str(user.pk)+"#Tab1")
@@ -175,20 +200,25 @@ def search(request):
         return errLogout(request, d)
 
     # cafe results
-    try:
-        d['caferesults'] = models.Cafe.objects.filter(name=d['key']).values()
-    except:
-        pass
+    if d['key'] == '':
+        d['caferesults'] = models.Cafe.objects.all()
+    else:
+        d['caferesults'] = models.Cafe.objects.filter(name__iexact=d['key']).values()
+
     # ...
 
     # coffee results
-    try:
-        d['coffeeresults'] = models.Coffee.objects.filter(name=d['key']).values()
-    except:
-        pass
+    if d['key'] == '':
+        d['coffeeresults'] = models.Coffee.objects.all()
+    else:
+        d['coffeeresults'] = models.Coffee.objects.filter(name__iexact=d['key']).values()
     #...
 
     # coffeebeansresults results
+    if d['key'] == '':
+        d['cuppingresults'] = models.Event.objects.all()
+    else:
+        d['cuppingresults'] = models.Event.objects.filter(name__iexact=d['key']).values()
     # ...
 
     return render(request, "search.html", d)
@@ -1329,8 +1359,10 @@ def adm(request):
         d['profile'] = models.User.objects.get(pk=profid)
 
         # all users except the one logged in
-        d['users'] = models.User.objects.exclude(pk=d['loggeduser'].pk)
-        d['drinkers'] = models.Drinker.objects.exclude(key=d['loggeduser'].pk)
+        #d['users'] = models.User.objects.exclude(pk=d['loggeduser'].pk)
+        #d['drinkers'] = models.Drinker.objects.exclude(key=d['loggeduser'].pk)
+        d['users'] = models.User.objects.all()
+        d['drinkers'] = models.Drinker.objects.all()
         d['cafes'] = models.Cafe.objects.all()
         d['coffee'] = models.Coffee.objects.all()
         d['events'] = models.Event.objects.all()

@@ -5,7 +5,7 @@
     Results for "{{key}}".
 </div>
 
-<div class="row">
+<div class="row"><!--		vizualne to blbne
     <div class="col-lg-1 text-right">
         <div class="row" style="padding-right: 30%">
             <span style="position: fixed">
@@ -14,7 +14,7 @@
                 <a href="#placeresults">Places</a><br>
             </span>
         </div>
-    </div>
+    </div>-->
 
     
     
@@ -24,7 +24,7 @@
 	
         {% include 'snippets/searchresult.html' with list=coffeeresults resultgroupid="coffeeresults" blockheader="Coffee" %}
 	
-        {% include 'snippets/searchresult.html' with list=placeresults resultgroupid="placeresults" blockheader="Place" %}
+        {% include 'snippets/searchresult.html' with list=cuppingresults resultgroupid="cuppingresults" blockheader="Cupping session" %}
 
     </div>
     

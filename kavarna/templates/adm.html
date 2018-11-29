@@ -9,6 +9,7 @@
 {% for u in users %}
     <tr>
 	<td><a href="{% url 'profile' %}?user={{u.pk}}">{{u.first_name}} {{u.last_name}}</a></td>
+	{% if u.pk != loggeduser.pk %}	
 	<td>
 	    <form method="get" action="{% url 'deleteuser' %}">{% csrf_token %}
             	<input name="user" type="hidden" value="{{ u.pk }}" required />
@@ -35,6 +36,7 @@
 	    {% endif %}
 	    {% endfor %}
 	</td>
+	{% endif %}
     </tr>
 {% endfor %}
 </table>

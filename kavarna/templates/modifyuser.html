@@ -1,6 +1,8 @@
 {% extends "titlepage.html" %}
 
 {% block content %}
+<p align="center">{{ errmess }}</p>
+
 <form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/modifyuser/" method="post">{% csrf_token %}
     <h3 class="text-center">Register Form</h3>
     <input name="request_path" type="hidden" value="{{request_path}}" required />
@@ -8,6 +10,8 @@
     <input type="" class="form-control" name="first_name" placeholder="Name" value="{{register_first_name}}" required>
     <input type="" class="form-control" name="last_name" value="{{register_last_name}}" placeholder="Surname">
     <input type="email" class="form-control" name="email" value="{{register_email}}" placeholder="Email" required>
+    <input type="password" class="form-control" name="password" placeholder="Password">
+    <input type="password" class="form-control" name="password2" placeholder="Password repeat">
     {% include 'snippets/alertbox.html' %}
     <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Modify</button>
 </form>
