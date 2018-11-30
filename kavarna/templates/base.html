@@ -27,7 +27,7 @@
                                 <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">
                                 {{ loggeduser.first_name }} {{ loggeduser.last_name }}
                                 <span class="caret"></span></button>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu dropdown-menu-right">
                                     <li><a href="{% url 'profile' %}?user={{ loggeduser.pk }}">Zobrazit profil</a></li>
                                     <li><a href="{% url 'logout' %}">Logout</a></li>
                                 </ul>
