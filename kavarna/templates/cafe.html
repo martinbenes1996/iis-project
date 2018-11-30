@@ -293,12 +293,12 @@
         <ul>
             {% for node in cafe_reactions %}
                 {% if not node.react %}
-                    {% include "snippets/reaction.html" with p=cafe.pk %}
+                    {% include "snippets/reaction.html" with pk=cafe.pk %}
                 {% endif %}
             {% endfor %}
             {% if loggeduser %}
             <form method="POST" action="react/">{% csrf_token %}
-                <input name="cafe_id" type="hidden" value="{{cafe.pk}}" required />
+                <input name="id" type="hidden" value="{{cafe.pk}}" required />
                 <div class="row">
                     <div class="col-lg-6"><input name="text" placeholder="React" required /> </div>
                     <div class="col-lg-6"><button class="btn" type="submit">Send</button></div>

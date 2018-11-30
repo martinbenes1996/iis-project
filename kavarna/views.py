@@ -500,7 +500,7 @@ def cafereact(request):
             reaction.cafe = models.Cafe.objects.get(pk=cafe_id)
         reaction.save()
         print("Created reaction!")
-        return HttpResponseRedirect('/cafe?id='+request.POST['cafe_id']+'#Tab4')
+        return HttpResponseRedirect('/cafe?id='+request.POST['id']+'#Tab4')
 def eventreact(request):
     d = generateDict(request)
     if 'message' in d:
