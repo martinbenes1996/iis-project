@@ -5,11 +5,22 @@
     <div class="row searchitem">
         <div class="container-fluid" style="border: 1px solid black">
             <div class="row text-center">
+		{% if resultgroupid == "caferesults" %}
                 <form action="/cafe" method="get">
                     <input name="id" type="hidden" value="{{ item.id }}" required />
                     <h1><button class="btn btn-link" type="Submit">{{item.name|upper}}</button></h1>
                 </form>
-                
+		{% elif resultgroupid == "coffeeresults" %}
+                <form action="/coffee" method="get">
+                    <input name="id" type="hidden" value="{{ item.id }}" required />
+                    <h1><button class="btn btn-link" type="Submit">{{item.name|upper}}</button></h1>
+                </form>
+		{% elif resultgroupid == "cuppingresults" %}
+		<form action="/event" method="get">
+                    <input name="id" type="hidden" value="{{ item.id }}" required />
+                    <h1><button class="btn btn-link" type="Submit">{{item.name|upper}}</button></h1>
+                </form>
+		{% endif %}
             </div>
         </div>
     </div>
