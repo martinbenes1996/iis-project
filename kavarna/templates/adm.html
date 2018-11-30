@@ -52,8 +52,8 @@
 	
 		<td>
 			<form method="get" action="{% url 'modifyuser' %}">{% csrf_token %}
-				<input name="user" type="hidden" value="{{ userdata.pk }}" required />
-				<input name="request_path" type="hidden" value="/profile/" required />
+				<input name="user" type="hidden" value="{{ u.pk }}" required />
+				<input name="request_path" type="hidden" value="/adm" required />
 				<button type="Submit" class="btn btn-primary">Edit</button>
 			</form>
 		</td>

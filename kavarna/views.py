@@ -123,6 +123,8 @@ def modifyuser(request):
         if d['request_path'] == '/profile/':
             return redirect('/')                        # system will automatically log out
             #return redirect('/profile/?user='+str(user.pk)+"#Tab1")
+        elif d['request_path'] == '/adm':
+            return redirect('/adm'+'?id='+str(user.pk))
         else:
             return redirect('/')
     elif request.method == 'GET':
