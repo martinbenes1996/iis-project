@@ -476,7 +476,7 @@ def cafe(request):
             d['cafe_score'] = core.getCafeScore( d['cafe'] )
             try:
                 if models.Reaction.objects.filter(author=d['loggeduser'],cafe=d['cafe']).exclude(score=None).count() > 0:
-                    d['my_cafe_score'] = models.Reaction.objects.get(author=d['loggeduser'],cafe=d['cafe']).score
+                    d['my_cafe_score'] = models.Reaction.objects.get(author=d['loggeduser'],cafe=d['cafe'], text="").score
                 else:
                     d['my_cafe_score'] = "void 0"
             except KeyError:
@@ -484,7 +484,7 @@ def cafe(request):
             d['owner'] = d['cafe'].owner    # returns object User
             d['cafe_coffee_list'] = d['cafe'].offers_coffee.all()
             d['event_list'] = models.Event.objects.filter(place=d['cafe'])
-            d['cafe_reactions'] = models.Reaction.objects.filter(cafe=d['cafe'])
+            d['cafe_reactions'] = models.Reaction.objects.filter(cafe=d['cafe']).exclude(text="")
             l = [p.pk for p in d['cafe_reactions']]
             d['reaction_reactions'] = models.Reaction.objects.filter(react__in=l)
             #print(d['reaction_reactions'])
@@ -885,6 +885,7 @@ def coffee(request):
     if request.method == 'GET':
         coffeeid = request.GET['id']
         d['coffee'] = models.Coffee.objects.get(pk=coffeeid)
+        d['cafes'] = models.Cafe.objects.filter(offers_coffee=d['coffee'])
         d['beans'] = d['coffee'].beans.all()
         d['memb'] = models.CoffeeContainsBeans.objects.filter(coffee=d['coffee'])
 
@@ -900,7 +901,9 @@ def event(request):
             message = 'Stop Participating'
         else:
             message = 'Participate'
-        d = {'participatevalue' : message}
+        eventid = request.POST['pk']
+        participantcount = models.Event.objects.get(pk=eventid).participants.count()
+        d = {'participatevalue' : message, 'participantcount' : participantcount}
         return HttpResponse(json.dumps(d),content_type='application/json')
 
     if request.method == 'GET':

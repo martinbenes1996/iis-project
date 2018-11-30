@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block header %}{{cafe.name}}{% endblock %}
+{% block pagetype %}Café{% endblock %}
 
 {% block score %}
 {% if loggeduser %}
@@ -68,7 +69,6 @@
 {% block tab1header %}Základní informace{% endblock %}
 {% block tab1 %}
 <div class="row" style="margin-top: 20px">
-        
     <div class="col-lg-4 text-center">
         {{cafe.street}} {{cafe.housenumber}}<br>
         {{cafe.city}}<br>
@@ -89,7 +89,6 @@
         {% include 'snippets/scorebar.html' with pk_subject=cafe.pk reactingto="Cafe" %}
         {% endif %}
     </div>
-    
 </div>
 <div class="row" style="margin-top: 30px">
     <div class="col text-center">
@@ -105,101 +104,133 @@
 
 {% block tab2header %}Co nabízíme?{% endblock %}
 {% block tab2 %}
-<div class="row hcentralize">
-    <div class="col">
-        <table>
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <table class="table table-sm">
+            <caption>Menu</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    {% if owner == loggeduser %}
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                    {% endif %}
+                </tr>
+            </thead>
             {% for a in cafe_coffee_list %}
             <tr>
-                <th>
-		    <form method="get" action="/coffee">
-                	<input name="id" type="hidden" value={{a.pk}} required />
-                	<button class="btn btn-link" type="Submit">{{a.name}}</button>
-            	    </form>
-		</th>
-		{% if owner == loggeduser %}
-                <th>
-                    <form method="get" action="{% url 'deletecoffee' %}">{% csrf_token %}
-			<input name="pk_cafe" type="hidden" value="{{ cafe.pk }}" required />
-                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
-			<input name="request_path" type="hidden" value="/cafe" required />
-                        <button type="Submit">Delete</button>
+                <th>#{{ forloop.counter }}</th>
+                <td>
+                    <form method="get" action="/coffee">
+                        <input name="id" type="hidden" value={{a.pk}} required />
+                        <button class="btn btn-link" type="Submit">{{a.name}}</button>
                     </form>
-		</th>
-		<th>
-		    <form method="get" action="{% url 'modifycoffee' %}">{% csrf_token %}
-			<input name="pk" type="hidden" value="{{ cafe.pk }}" required />
+                </td>
+                {% if owner == loggeduser %}
+                <td>
+                    <form method="get" action="{% url 'modifycoffee' %}">{% csrf_token %}
+                        <input name="pk" type="hidden" value="{{ cafe.pk }}" required />
                         <input name="coffeeid" type="hidden" value="{{ a.pk }}" required />
-			<input name="request_path" type="hidden" value="/cafe" required />
-                        <button type="Submit">Modify</button>
+                        <input name="request_path" type="hidden" value="/cafe" required />
+                        <button type="Submit" class="btn btn-info">Modify</button>
                     </form>
-		</th>
-		{% endif %}
-             </tr>
-             {% endfor %}
-         </table>
+                </td>
+                <td>
+                    <form method="get" action="{% url 'deletecoffee' %}">{% csrf_token %}
+                        <input name="pk_cafe" type="hidden" value="{{ cafe.pk }}" required />
+                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
+                        <input name="request_path" type="hidden" value="/cafe" required />
+                        <button type="Submit" class="btn btn-warning">Delete</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </table>
     </div>
+    <div class="col-lg-3"></div>
 </div>
 
-<br>
 {% if owner == loggeduser %}
-<div class="row hcentralize">
-    <div class="col-lg">
-	<div class="row hcentralize">
-	    <form method="get" action="{% url 'addcoffee' %}">
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+	    <div class="row hcentralize">
+	        <form method="get" action="{% url 'addcoffee' %}">
                	<input name="cafeid" type="hidden" value={{cafe.pk}} required />
-		<input name="request_path" type="hidden" value="/cafe" required />
-                <button class="btn btn-lg btn-warning" type="Submit">Add coffee</button>
+		        <input name="request_path" type="hidden" value="/cafe" required />
+                <button class="btn btn-lg btn-success" type="Submit">Add coffee</button>
             </form>
-	</div>
+	    </div>
     </div>
-
+    <div class="col-lg-3"></div>
 </div>
 {% endif %}
+
 {% endblock %}
 
 
-{% block tab3header %}Děje se u nás{% endblock %}
+{% block tab3header %}What is going on?{% endblock %}
 {% block tab3 %}
 <div class="row">
     <div class="col-lg-2"></div>
     <div class="col-lg-8">
-        <table>
+        <table class="table table-sm">
+            <caption>Our events</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Event</th>
+                    <th scop="col">Price</th>
+                    <th scope="col">Capacity</th>
+                    <th scope="col">Location</th>
+                    {% if owner == loggeduser %}
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                    {% endif %}
+                </tr>
+            </thead>
             {% for a in event_list %}
             <tr>
-                <th>
+                <th>#{{ forloop.counter }}</th>
+                <td>
 		            <form method="get" action="/event/">
                 	    <input name="id" type="hidden" value={{a.pk}} required />
                 	    <button class="btn btn-link" type="Submit">{{a.name}}</button>
             	    </form>
-                </th>
-                <th> {{ a.price }} </th>
-                <th> {{ a.capacity }} </th>
-                <th>
+                </td>
+                <td> {{ a.price }} </td>
+                <td> {{ a.capacity }} </td>
+                <td>
                     <form method="get" action="/cafe/">
                         <input name="id" type="hidden" value={{a.place.pk}} required />
                         <button class="btn btn-link" type="Submit">{{a.place.name}}</button>
                     </form>
-                </th>
+                </td>
                 
                 {% if owner == loggeduser %}
-                <th>
+                <td>
+                    <form method="get" action="{% url 'modifyevent' %}">{% csrf_token %}
+                        <input name="id" type="hidden" value="{{ cafe.pk }}" required />
+                        <input name="eventid" type="hidden" value="{{ a.pk }}" required />
+                        <input name="request_path" type="hidden" value="/cafe3" required />
+                        <button type="Submit" class="btn btn-info">Modify</button>
+                    </form>
+                </td>
+                <td>
                     <form method="get" action="{% url 'deleteevent' %}">{% csrf_token %}
                         <input name="pk" type="hidden" value="{{ a.pk }}" required />
-			<input name="request_path" type="hidden" value="/cafe3" required />
-                        <button type="Submit">Delete</button>
+			            <input name="request_path" type="hidden" value="/cafe3" required />
+                        <button type="Submit" class="btn btn-warning">Delete</button>
                     </form>
-		</th>
-		<th>
-		    <form method="get" action="{% url 'modifyevent' %}">{% csrf_token %}
-		    	<input name="id" type="hidden" value="{{ cafe.pk }}" required />
-			<input name="eventid" type="hidden" value="{{ a.pk }}" required />
-		    	<input name="request_path" type="hidden" value="/cafe3" required />
-                    	<button type="Submit">Modify</button>
-                    </form>
-		</th>
-		        {% endif %}
+		        </td>
+                {% endif %}
+                
             </tr>
             {% endfor %}
+
             <span id="append"></span>
             {% if owner == loggeduser %}
             <tr>
@@ -207,14 +238,21 @@
                     class="form-signin" action="/addevent/" method="post"
                     style="display: inline">{% csrf_token %}
                     <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
-		    <input name="request_path" type="hidden" value="/cafe3" required />
+		            <input name="request_path" type="hidden" value="/cafe3" required />
                     <tr>
-                    <th><input type="" class="form-control" name="name" placeholder="Event Name" required></th>
-                    <th><input type="" class="form-control" name="price" placeholder="Price"></th>
-                    <th><input type="" class="form-control" name="capacity" placeholder="Capacity"></th>
-                    <th><button class="btn btn-warning btn-block" type="submit">Add new event</button></th>
-                    <th></th>
-                    </tr>
+                    <td></td>
+                    <td>
+                        <input type="" class="form-control" name="name" placeholder="Event Name*" required>
+                    </td>
+                    <td>
+                        <input type="" class="form-control" name="price" placeholder="Price">
+                    </td>
+                    <td>
+                        <input type="" class="form-control" name="capacity" placeholder="Capacity">
+                    </td>
+                    <td></td>
+                    <td><button class="btn btn-success" type="submit">Create event</button></th>
+                    <td></td>
                 </form>
                 <script>
                     $("#NewEventCafeForm").submit(function(e) {

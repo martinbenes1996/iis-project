@@ -1,79 +1,155 @@
-{% extends "page.html" %}
+{% extends "subpage.html" %}
 
-{% block content %}
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        <h1>{{coffee.name}}</h1>
-    </div>
+{% block header %}{{coffee.name}}{% endblock %}
+{% block pagetype %}Coffee{% endblock %}
+
+{% block tab1header %}Informations{% endblock %}
+
+
+{% block tab1title %}About{% endblock %}
+{% block tab2title %}Preparation{% endblock %}
+{% block tab3title %}Where to get{% endblock %}
+{% block tab4title %}Reference{% endblock %}
+
+{% block tab1 %}
+
+<div class="row">
+<div class="col-lg-3"></div>
+<div class="col-lg-6">
+<table class="table table-sm">
+    <caption>About coffee</caption>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tr>
+        <th>Name</th>
+        <td> {{coffee.name}} </td>
+    </tr>
+    <tr>
+        <th>Origin</th>
+        <td> {{coffee.place_of_origin}} </td>
+    </tr>
+    <tr>
+        <th>Quality</th>
+        <td>{{coffee.quality}}</td>
+    </tr>
+    <tr>
+        <th>Taste</th>
+        <td>{{coffee.taste_description}}</td>
+    </tr>
+</table>
 </div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        Place of origin: {{coffee.place_of_origin}}
-    </div>
+<div class="col-lg-3"></div>
 </div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        Quality: {{coffee.quality}}
-    </div>
+{% endblock %}
+
+{% block tab2header %}Preparation{% endblock %}
+{% block tab2 %}
+<div class="row">
+<div class="col-lg-3"></div>
+<div class="col-lg-6">
+<table class="table table-sm">
+    <caption>Preparation of coffee</caption>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tr>
+        <th>Preparation</th>
+        <td>{{coffee.preparation.name}}</td>
+    </tr>
+    <tr>
+        <th>Description</th>
+        <td>{{coffee.preparation.description}}</td>
+    </tr>
+</table>
+
+<table class="table table-sm">
+    <caption>Coffee beans in coffee</caption>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tr>
+        <th>Preparation</th>
+        <td>{{coffee.preparation.description}}</td>
+    </tr>
+    <tr>
+        <th>Beans</th>
+        <td>
+            {% for bean in beans %}
+            <ul>
+                {% for a in memb %}
+                    {% if a.coffeeBean == bean %}
+                    <li>
+                        {{bean.name}} [{{a.percentage}}%]
+                    </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% endfor %}
+        </td>
+    </tr>
+</table>
+
 </div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        Description of taste:
-    </div>
-</div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        <p>{{coffee.taste_description}}</p>
-    </div>
+<div class="col-lg-3"></div>
 </div>
 
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        <h3>Preparation: {{coffee.preparation.name}}</h3>
-    </div>
-    <div class="col-lg text-center">
-        {{coffee.preparation.description}}
-    </div>
-</div>
-
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        <h3>Beans:</h3>
-    </div>
-</div>
-{% for bean in beans %}
-<div class="row" style="margin-top: 20px">
-    {% for a in memb %}
-    {% if a.coffeeBean == bean %}
-    <div class="col-lg text-center">
-        Name: {{bean.name}}, {{a.percentage}}%
-    </div>
-    {% endif %}
-    {% endfor %}
-</div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        Origin: {{bean.origin}}
-    </div>
-</div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        Aroma: {{bean.aroma}}
-    </div>
-</div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-        Acidity: {{bean.acidity}}
-    </div>
-</div>
-{% endfor %}
 <!--
-<div class="row text-center" style="margin-top: 20px">
-    <div class="col">
-        <form method="get" action="/cafe_coffee/">
-            <input name="id" type="hidden" value="{{ cafe.pk }}" required />
-            <button class="btn btn-link" type="Submit">BACK</button>
-        </form>
+<div class="row" style="margin-top: 20px">
+        <div class="col-lg text-center">
+            Origin: {{bean.origin}}
+        </div>
     </div>
-</div>-->
+    <div class="row" style="margin-top: 20px">
+        <div class="col-lg text-center">
+            Aroma: {{bean.aroma}}
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px">
+        <div class="col-lg text-center">
+            Acidity: {{bean.acidity}}
+        </div>
+    </div>
+-->
+
+{% endblock %}
+
+{% block tab3header %}Where you can find it{% endblock %}
+{% block tab3 %}
+
+<div class="row">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4">
+        <table class="table table-sm">
+            <caption>Cafés</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            {% for cafe in cafes %}
+            <tr>
+                <td>#{{forloop.counter}}</td>
+                <td><a href="{% url 'cafe' %}?id={{cafe.pk}}">{{cafe.name}}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-lg-4"></div>
+</div>
+
+{% endblock %}
+
+{% block tab4header %}Your comments{% endblock %}
+{% block tab4 %}
 {% endblock %}

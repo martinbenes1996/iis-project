@@ -1,21 +1,40 @@
 {% extends "subpage.html" %}
 
-
 {% block header %}{{ userdata.first_name }} {{ userdata.last_name }}{% endblock %}
+{% block pagetype %}User{% endblock %}
 
-{% block tab1title %}Základní informace{% endblock %}
-{% block tab2title %}Kavárny{% endblock %}
-{% block tab3title %}Zúčastním se{% endblock %}
-{% block tab4title %}Mé názory{% endblock %}
+{% block tab1title %}About{% endblock %}
+{% block tab2title %}Cafés{% endblock %}
+{% block tab3title %}Events{% endblock %}
+{% block tab4title %}My references{% endblock %}
 
 
-{% block tab1header %}Základní informace{% endblock %}
+{% block tab1header %}User{% endblock %}
 {% block tab1 %}
-<div class="row text-center">
-    <b>Jméno:</b> {{ userdata.first_name }}<br>
-    <b>Příjmení:</b> {{ userdata.last_name }}<br>
-    <b>E-mail:</b> {{ userdata.email }}<br>
+<div class="row">
+<div class="col-lg-3"></div>
+<div class="col-lg-6">
+<table class="table table-sm">
+    <caption>About user</caption>
+    <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+    <tr>
+        <th>Name</th>
+        <td> {{userdata.first_name}} {{userdata.last_name}} </td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td> {{userdata.email}} </td>
+    </tr>
+</table>
 </div>
+<div class="col-lg-3"></div>
+</div>
+
 {% if loggeduser.pk == userdata.pk %}
 <div align="center">
     <form method="get" action="{% url 'modifyuser' %}">{% csrf_token %}
@@ -25,6 +44,7 @@
     </form>
 </div>
 {% endif %}
+
 {% if drinkerdata.admin and loggeduser.pk == userdata.pk %}
 <div align="center">
     <a href="/adm/?id={{userdata.pk}}"><button class="btn btn-lg btn-info" type="submit">Adm Page</button></a>
@@ -33,81 +53,111 @@
 {% endblock %}
 
 
-{% block tab2header %}Kavárny{% endblock %}
+{% block tab2header %}Cafés{% endblock %}
 {% block tab2 %}
 <div class="row">
-    <div class="col-lg-4"></div>
-    <div class="col-lg-4">
-        <h4>Oblíbené</h4>
-        <table>
-        {% for fav in drinkerdata.likes_cafe.all %}
-            <tr><th><a href="{% url 'cafe' %}?id={{fav.pk}}">{{fav.name}}</a></th>
-	</tr>
-        {% endfor %}
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+
+        <table class="table table-sm">
+            <caption>Managing</caption>
+            <thead class="thead-dark">
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                {% if userdata == loggeduser %}
+                <th scope="col">Upravit</th>
+                <th scope="col">Odstranit</th>
+                {% endif %}
+            </tr></thead>
+            
+            <tbody>
+            {% for own in owningcafes %}
+                <tr>
+                    <th scope="row">#{{ forloop.counter}}</th>
+                    <td>
+                        <a href="{% url 'cafe' %}?id={{own.pk}}">{{own.name}}</a>
+                    </td>
+                    <td>
+                        <form method="get" action="{% url 'modifycafe' %}">{% csrf_token %}
+                            <input name="pk" type="hidden" value="{{ own.pk }}" required />
+                            <input name="request_path" type="hidden" value="/profile" required />
+                            <button type="Submit" class="btn btn-sm btn-link">Modify</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
+                            <input name="pk" type="hidden" value="{{ own.pk }}" required />
+                            <input name="request_path" type="hidden" value="/profile" required />
+                            <button type="Submit" class="btn btn-sm btn-link">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
         </table>
 
-        <h4>Spravuji</h4>
-        <table>
-        {% for own in owningcafes %}
-            <tr><th><a href="{% url 'cafe' %}?id={{own.pk}}">{{own.name}}</a></th>
+        {% if userdata == loggeduser %}
+        <div class="row hcentralize">
+            <div class="col">
+                <!--<h3>Založit Kavárnu</h3>-->
+                <form action="{% url 'addcafe' %}" method="get">{% csrf_token %}
+	                <input name="request_path" type="hidden" value="/profile" required />
+                    <button class="btn btn-success" type="submit">Click to create café</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
 
-		{% if userdata == loggeduser %}
-                <th>
-                    <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
-                        <input name="pk" type="hidden" value="{{ own.pk }}" required />
-			<input name="request_path" type="hidden" value="/profile" required />
-                        <button type="Submit">Delete</button>
-                    </form>
-		</th>
-		<th>
-		    <form method="get" action="{% url 'modifycafe' %}">{% csrf_token %}
-                        <input name="pk" type="hidden" value="{{ own.pk }}" required />
-			<input name="request_path" type="hidden" value="/profile" required />
-                        <button type="Submit">Modify</button>
-                    </form>
-		</th></tr>
-		{% endif %}
-
-
-        {% endfor %}
+        <table class="table table-sm">
+            <caption>Favourite</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                </tr>
+            </thead>
+            {% for fav in drinkerdata.likes_cafe.all %}
+            <tr>
+                <th>{{ forloop.counter }}</th>
+                <td>
+                    <a href="{% url 'cafe' %}?id={{fav.pk}}">{{fav.name}}</a>
+                </td>
+            </tr>
+            {% endfor %}
         </table>
     </div>
-    <div class="col-lg-4"></div>
+    <div class="col-lg-3"></div>
 </div>
-
-{% if userdata == loggeduser %}
-<div class="row hcentralize">
-    <div class="col-lg-3">
-        <!--<h3>Založit Kavárnu</h3>-->
-        <form action="{% url 'addcafe' %}" method="get">{% csrf_token %}
-	    <!--<input name="pk" type="hidden" value="{{ user_profile.pk }}" required />-->
-	    <input name="request_path" type="hidden" value="/profile" required />
-            <button class="btn btn-lg btn-warning" type="submit">Add Cafe</button>
-        </form><!--
-	<div class="row hcentralize">
-    	    <a href="{% url 'addcafe' %}"><button class="btn btn-lg btn-warning" type="submit">Add café</button></a>
-	</div>-->
-    </div>
-
-</div>
-{% endif %}
 
 
 {% endblock %}
 
 
-{% block tab3header %}Zúčastním se{% endblock %}
+{% block tab3header %}Participating events{% endblock %}
 {% block tab3 %}
 <div class="row">
-    <div class="col-lg-4"></div>
-    <div class="col-lg-4">
-        <ul>
-        {% for e in events %}
-            <li><a href="{% url 'event' %}?id={{e.pk}}">{{e.name}}</a></li>
-        {% endfor %}
-        </ul>
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <table class="table table-sm">
+            <caption>Going</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Event</th>
+                </tr>
+            </thead>
+            {% for e in events %}
+            <tr>
+                <th>#{{ forloop.counter }}</th>
+                    <td>
+                      <a href="{% url 'event' %}?id={{e.pk}}">{{e.name}}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
     </div>
-    <div class="col-lg-4"></div>
+    <div class="col-lg-3"></div>
 </div>
 {% endblock %}
 

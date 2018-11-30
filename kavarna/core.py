@@ -20,11 +20,11 @@ def getScore(l):
     if len(l) == 0: return 0
     return mean(l)
 def getCafeScore(c):
-    return getScore( [r.score for r in models.Reaction.objects.all().filter(cafe=c)] )
+    return getScore( [r.score for r in models.Reaction.objects.all().filter(cafe=c).exclude(score=None)] )
 def getEventScore(e):
-    return getScore( [r.score for r in models.Reaction.objects.all().filter(event=e)] )
+    return getScore( [r.score for r in models.Reaction.objects.all().filter(event=e).exclude(score=None)] )
 def getReactionScore(rr):
-    return getScore( [r.score for r in models.Reaction.objects.all().filter(reaction=rr)] )
+    return getScore( [r.score for r in models.Reaction.objects.all().filter(reaction=rr).exclude(score=None)] )
 
 def processScore(request):
     d = generateDict(request)

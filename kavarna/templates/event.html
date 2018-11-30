@@ -1,6 +1,7 @@
 {% extends "subpage.html" %}
 
 {% block header %}{{event.name}}{% endblock %}
+{% block pagetype %}Event{% endblock %}
 
 {% block score %}
 <div class="row" style="margin: 20px">
@@ -26,6 +27,7 @@
                 // on success changes 
                 success: function(response) {
                     $('#participate').prop('value', response.participatevalue)
+                    $('#participantcount').text(response.participantcount);
                 },
                 // on error nothing :(
                 error: function(rs, e) {
@@ -40,34 +42,58 @@
 </div>
 {% endblock %}
 
-{% block tab1title %}Základní informace{% endblock %}
-{% block tab2title %}Co nabízíme?{% endblock %}
-{% block tab3title %}Kdo se účastní?{% endblock %}
-{% block tab4title %}Vaše názory{% endblock %}
+{% block tab1title %}About{% endblock %}
+{% block tab2title %}Our offer{% endblock %}
+{% block tab3title %}Who is going?{% endblock %}
+{% block tab4title %}Reference{% endblock %}
 
 
 
-{% block tab1header%}Základní informace{% endblock %}
+{% block tab1header%}Information{% endblock %}
 {% block tab1 %}
-<div class="row" style="margin-top: 20px">
-    <div class="col-lg-4 text-right">
-        <b>Místo konání: </b><br>
-        <a href="{% url 'cafe' %}?id={{event.place.pk}}">{{event.place.name}}</a>
+
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+    <table class="table table-sm">
+        <caption>About</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tr>
+            <th>Name</th>
+            <td>{{event.name}}</td>
+        </tr>
+        <tr>
+            <th>Place</th>
+            <td>
+                <a href="{% url 'cafe' %}?id={{event.place.pk}}">{{event.place.name}}</a>
+            </td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>{{event.price}}</td>
+        </tr>
+        <tr>
+            <th>Capacity</th>
+            <td>{{event.capacity}}</td>
+        </tr>
+        <tr>
+            <th>Participants</th>
+            <td id="participantcount">{{event.participants.all | length}}</td>
+        </tr>
+    </table>
     </div>
-    <div class="col-lg-4 text-center">
-        <b>Cena: </b> <br>
-        {{event.price}}
-    </div>
-    <div class="col-lg-4 text-left">
-        <b>Kapacita:</b> <br>
-        {{event.capacity}}
-    </div>
+    <div class="col-lg-3"></div>
 </div>
-Dodat počet přihlášených
+
 {% endblock %}
 
 
-{% block tab2header %}Naše nabídka{% endblock %}
+{% block tab2header %}Our menu{% endblock %}
 {% block tab2 %}
 
 <div class="row" style="margin-top: 20px">
@@ -120,14 +146,35 @@ Dodat počet přihlášených
 {% endblock %}
 
 
-{% block tab3header %}Seznam účastníků{% endblock %}
+{% block tab3header %}Who is going?{% endblock %}
 {% block tab3 %}
-<ul>
-{% for p in event.participants.all %}
-    <li><a href="{% url 'profile' %}?user={{p.pk}}">{{p.first_name}} {{p.last_name}}</a></li>
-{% endfor %} 
-</ul>
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+    <table class="table table-sm">
+        <caption>Users</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        {% for p in event.participants.all %}
+        <tr>
+            <th>#{{forloop.counter}}</th>
+            <td>
+                <a href="{% url 'profile' %}?user={{p.pk}}">{{p.first_name}} {{p.last_name}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
 {% endblock %}
+
+
 
 
 
