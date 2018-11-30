@@ -407,7 +407,9 @@ def profile(request):
         d['drinkerdata'] = models.Drinker.objects.get(key=user_id)
         d['events'] = models.Event.getEventsOf(user_id)
         d['owningcafes'] = models.Cafe.objects.filter(owner=d['userdata'])
-
+        d['cafescores'] = models.Reaction.objects.filter(author=d['userdata']).exclude(cafe=None).exclude(score=None)
+        d['cafereactions'] = models.Reaction.objects.filter(author=d['userdata'], react=None, score=None).exclude(text=None).exclude(cafe=None)
+        d['eventreactions'] = models.Reaction.objects.filter(author=d['userdata'], react=None, score=None).exclude(text=None).exclude(event=None)
     return render(request, "profile.html", d)
 
 def profile_cafe(request):
@@ -481,6 +483,41 @@ def cafes(request):
     d['users_list'] = User.objects.all()
     d['drinkers_list'] = models.Drinker.objects.all()
     return render(request, "cafes.html", d)
+
+def cafereact(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    if request.method == 'POST':
+        reaction = models.Reaction()
+        reaction.text = request.POST['text']
+        reaction.author = d['loggeduser']
+        if 'reaction_id' in request.POST:
+            reaction_id = int( request.POST['reaction_id'] )
+            reaction.react = models.Reaction.objects.get(pk=reaction_id)
+        if 'id' in request.POST:
+            cafe_id = int( request.POST['id'] )
+            reaction.cafe = models.Cafe.objects.get(pk=cafe_id)
+        reaction.save()
+        print("Created reaction!")
+        return HttpResponseRedirect('/cafe?id='+request.POST['cafe_id']+'#Tab4')
+def eventreact(request):
+    d = generateDict(request)
+    if 'message' in d:
+        return errLogout(request, d)
+    if request.method == 'POST':
+        reaction = models.Reaction()
+        reaction.text = request.POST['text']
+        reaction.author = d['loggeduser']
+        if 'reaction_id' in request.POST:
+            reaction_id = int( request.POST['reaction_id'] )
+            reaction.react = models.Reaction.objects.get(pk=reaction_id)
+        if 'id' in request.POST:
+            event_id = int( request.POST['id'] )
+            reaction.event = models.Event.objects.get(pk=event_id)
+        reaction.save()
+        print("Created reaction!")
+        return HttpResponseRedirect('/event?id='+request.POST['id']+'#Tab4')
 
 def cafe(request):
     d = generateDict(request)
@@ -945,10 +982,11 @@ def event(request):
             d['participating'] = False
             #return redirect('/')    # user not logged in
 
-        print(d)
         d['coffee'] = d['event'].coffee_list.all()
         d['all_coffee'] = list(set(models.Coffee.objects.all()) - set(d['coffee']))
-
+        d['event_reactions'] = models.Reaction.objects.filter(event=d['event']).exclude(text="")
+        l = [p.pk for p in d['event_reactions']]
+        d['reaction_reactions'] = models.Reaction.objects.filter(react__in=l)
         return render(request, "event.html", d)
 
 def addevent(request):
@@ -1153,27 +1191,6 @@ def deletecoffeeevent(request):
 
     return redirect('/event/?id='+str(d['event'].pk)+"#Tab2")
     #return render(request, "ok_messages/participateevent-ok.html", d)
-
-def react(request):
-    d = generateDict(request)
-    if 'message' in d:
-        return errLogout(request, d)
-
-    if request.method == 'POST':
-        reaction = models.Reaction()
-        reaction.text = request.POST['text']
-        reaction.author = d['loggeduser']
-        if 'reaction_id' in request.POST:
-            reaction_id = int( request.POST['reaction_id'] )
-            reaction.react = models.Reaction.objects.get(pk=reaction_id)
-
-        if 'cafe_id' in request.POST:
-            cafe_id = int( request.POST['cafe_id'] )
-            reaction.cafe = models.Cafe.objects.get(pk=cafe_id)
-
-        reaction.save()
-        print("Created reaction!")
-        return HttpResponseRedirect('/cafe?id='+request.POST['cafe_id']+'#Tab4')
 
 def addprep(request):
     d = generateDict(request)

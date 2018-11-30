@@ -161,4 +161,77 @@
 </div>
 {% endblock %}
 
+{% block tab4header %}My references{% endblock %}
+{% block tab4 %}
+
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+    <table class="table table-sm">
+        <caption>Café scores</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Café</th>
+                <th scope="col">Score</th>
+            </tr>
+        </thead>
+        {% for r in cafescores %}
+        <tr>
+            <th>#{{ forloop.counter }}</th>
+            <td>
+                <a href="{% url 'cafe' %}?id={{r.cafe.pk}}">{{r.cafe.name}}</a>
+            </td>
+            <td>{{r.score}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <table class="table table-sm">
+        <caption>Café reactions</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Café</th>
+                <th scope="col">Reaction</th>
+            </tr>
+        </thead>
+        {% for r in cafereactions %}
+        <tr>
+            <th>#{{ forloop.counter }}</th>
+            <td>
+                <a href="{% url 'cafe' %}?id={{r.cafe.pk}}">{{r.cafe.name}}</a>
+            </td>
+            <td>{{r.text}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <table class="table table-sm">
+        <caption>Event reactions</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Event</th>
+                <th scope="col">Reaction</th>
+            </tr>
+        </thead>
+        {% for r in eventreactions %}
+        <tr>
+            <th>#{{ forloop.counter }}</th>
+            <td>
+                <a href="{% url 'event' %}?id={{r.event.pk}}">{{r.event.name}}</a>
+            </td>
+            <td>{{r.text}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
+{% endblock %}
+
+
 

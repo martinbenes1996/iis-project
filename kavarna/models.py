@@ -106,6 +106,9 @@ class Reaction(models.Model):
     react = models.ForeignKey("Reaction", null=True, default=None, on_delete=models.CASCADE)
     class Meta:
         ordering = ['date']
+    
+    # Zazvonit na:
+    # Budinska, Frankova, Patockovi
 
 
 

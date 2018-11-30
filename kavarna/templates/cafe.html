@@ -286,18 +286,18 @@
 {% endblock %}
 
 
-{% block tab4header %}Vaše názory{% endblock %}
+{% block tab4header %}Your references{% endblock %}
 {% block tab4 %}
 <div class="row">
     <div class="col hcentralize align-center">
         <ul>
             {% for node in cafe_reactions %}
                 {% if not node.react %}
-                    {% include "snippets/reaction.html"%}
+                    {% include "snippets/reaction.html" with p=cafe.pk %}
                 {% endif %}
             {% endfor %}
             {% if loggeduser %}
-            <form method="POST" action="/react/">{% csrf_token %}
+            <form method="POST" action="react/">{% csrf_token %}
                 <input name="cafe_id" type="hidden" value="{{cafe.pk}}" required />
                 <div class="row">
                     <div class="col-lg-6"><input name="text" placeholder="React" required /> </div>

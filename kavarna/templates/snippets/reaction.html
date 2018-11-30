@@ -10,8 +10,8 @@
         {% endfor %}
         {% if loggeduser %}
         <div id="react{{node.pk}}" class="collapse">
-        <form method="POST" action="/react/">{% csrf_token %}
-            <input name="cafe_id" type="hidden" value="{{cafe.pk}}" required />
+        <form method="POST" action="react/">{% csrf_token %}
+            <input name="id" type="hidden" value="{{pk}}" required />
             <input name="reaction_id" type="hidden" value="{{node.pk}}" required />
             <div class="row">
                 <div class="col-lg-6"><input name="text" placeholder="React" required /> </div>
