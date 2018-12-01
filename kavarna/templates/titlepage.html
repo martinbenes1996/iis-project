@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 
 {% block maincontent %}
+
 <div class="row vertical-center hcentralize ">
     <div class="col">
-            
+            {% block titleheader %}
+            {% endblock %}
+
         <!-- content -->
         {% block content %}
         {% endblock %}

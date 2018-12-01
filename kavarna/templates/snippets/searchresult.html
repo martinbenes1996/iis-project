@@ -1,3 +1,27 @@
+<table class="table table-sm">
+    <caption>{{blockheader}}</caption>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name of the {{targetaction}}</th>
+        </tr>
+    </thead>
+    {% for item in list %}
+    <tr>
+        <th>{{forloop.counter}}</th>
+        <td>
+            <form action="/{{targetaction}}" method="get">
+                <input name="id" type="hidden" value="{{ item.id }}" required />
+                <button class="btn btn-link" type="Submit">
+                    {{item.name|upper}}
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!--
 <div id={{resultgroupid}}>
     <span class="category-header">{{blockheader}}</span> 
     {% if list %}
@@ -27,3 +51,4 @@
     {% endfor %}
     {% endif %}
 </div>
+-->

@@ -107,10 +107,10 @@ class Reaction(models.Model):
     class Meta:
         ordering = ['date']
     
-    # Zazvonit na:
-    # Budinska, Frankova, Patockovi
-
-
+    # kolovrat_valibuk@cafe.jo [kolovrat]
+    # standa_almara@cafe.jo [standa]
+    # vojteska_slepickova@cafe.jo [vojteska]
+    # kvetoslav_nosorozec@cafe.jo [kvetoslav]
 
 
 

@@ -1,14 +1,31 @@
 {% extends "titlepage.html" %}
+{% load static %}
+
+{% block background %}
+<div id="background-carousel">
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+        <div class="item active" style="background-image: url(https://gq-images.condecdn.net/image/GkXA5JMKyoj/crop/1620/f/Coffee-GQ_05Apr16_istock_b.jpg)"></div>
+        <div class="item" style="background-image:url(https://www.verdict.co.uk/wp-content/uploads/2017/09/pexels-photo-302899-1-1440x961.jpeg)"></div>
+        <div class="item" style="background-image:url(https://kopiluwakdirect.com/wp-content/files/2014/03/Kopi_Luwak_Coffee1.jpg)"></div>
+        <div class="item" style="background-image:url(http://classicrecruitment.net.au/wp-content/uploads/2017/05/barista.jpg)"></div>  
+      
+    
+        
+      </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block content %}
+<a href="{% url '' %}"><h1 class="text-center" style="font-size: 50px; color: black">Café system</h1></a>
+<i class="hcentralize" style="margin-bottom: 30px">Here's where you secret coffee hankers'll come true...</i>
 
-
-<a href="{% url '' %}"><h1 class="text-center">Café Database</h1></a>
 {% include 'snippets/searchbar.html' %} 
 
 <div class="row hcentralize">
-    <a href="register"><button class="btn btn-lg btn-info" type="submit">Register</button></a>
-    <a href="signin"><button class="btn btn-lg btn-info" type="submit">Sign in</button></a>
+    <a href="register"><button class="btn btn-lg btn-dark" style="margin-right: 50px; color: black">Register</button></a>
+    <a href="signin"><button class="btn btn-lg btn-dark" style="color: black">Sign in</button></a>
 </div>
 
 <!--

@@ -8,8 +8,8 @@
 
 {% block tab1title %}About{% endblock %}
 {% block tab2title %}Preparation{% endblock %}
-{% block tab3title %}Where to get{% endblock %}
-{% block tab4title %}Reference{% endblock %}
+{% block tab3title %}Beans{% endblock %}
+{% block tab4title %}Where to get{% endblock %}
 
 {% block tab1 %}
 
@@ -49,8 +49,8 @@
 {% block tab2header %}Preparation{% endblock %}
 {% block tab2 %}
 <div class="row">
-<div class="col-lg-3"></div>
-<div class="col-lg-6">
+<div class="col-lg-2"></div>
+<div class="col-lg-8">
 <table class="table table-sm">
     <caption>Preparation of coffee</caption>
     <thead class="thead-dark">
@@ -69,38 +69,8 @@
     </tr>
 </table>
 
-<table class="table table-sm">
-    <caption>Coffee beans in coffee</caption>
-    <thead class="thead-dark">
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tr>
-        <th>Preparation</th>
-        <td>{{coffee.preparation.description}}</td>
-    </tr>
-    <tr>
-        <th>Beans</th>
-        <td>
-            {% for bean in beans %}
-            <ul>
-                {% for a in memb %}
-                    {% if a.coffeeBean == bean %}
-                    <li>
-                        {{bean.name}} [{{a.percentage}}%]
-                    </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-            {% endfor %}
-        </td>
-    </tr>
-</table>
-
 </div>
-<div class="col-lg-3"></div>
+<div class="col-lg-2"></div>
 </div>
 
 <!--
@@ -123,8 +93,35 @@
 
 {% endblock %}
 
-{% block tab3header %}Where you can find it{% endblock %}
+{% block tab3header %}Beans{% endblock %}
 {% block tab3 %}
+
+<div class="col-lg-3"></div>
+<div class="col-lg-6">
+<table class="table table-sm">
+    <caption>Coffee beans in coffee</caption>
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Bean name</th>
+            <th scope="col">Percentage</th>
+        </tr>
+    </thead>
+    {% for bean in memb %}
+    <tr>
+        <th>#{{forloop.counter}}</th>
+        <td>{{bean.coffeeBean.name}}</td>
+        <td>{{bean.percentage}} %</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+<div class="col-lg-3"></div>
+
+{% endblock %}
+
+{% block tab4header %}Where you can find it{% endblock %}
+{% block tab4 %}
 
 <div class="row">
     <div class="col-lg-4"></div>
@@ -148,8 +145,4 @@
     <div class="col-lg-4"></div>
 </div>
 
-{% endblock %}
-
-{% block tab4header %}Your comments{% endblock %}
-{% block tab4 %}
 {% endblock %}

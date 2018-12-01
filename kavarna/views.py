@@ -27,8 +27,6 @@ def errLogout(request, d):
 
 
 def index(request):
-    #models.Drinker.objects.all().delete()
-    #User.objects.all().delete()
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
@@ -218,10 +216,14 @@ def search(request):
 
     # coffeebeansresults results
     if d['key'] == '':
-        d['cuppingresults'] = models.Event.objects.all()
+        d['eventresults'] = models.Event.objects.all()
     else:
-        d['cuppingresults'] = models.Event.objects.filter(name__iexact=d['key']).values()
+        d['eventresults'] = models.Event.objects.filter(name__iexact=d['key']).values()
     # ...
+
+    d['cafes'] = models.Cafe.objects.all()
+    d['coffees'] = models.Coffee.objects.all()
+    d['events'] = models.Event.objects.all()
 
     return render(request, "search.html", d)
 
@@ -1025,13 +1027,15 @@ def addevent(request):
             c.capacity=d['event_capacity']
             c.place=cafe
             c.save()
+            return redirect('/event/?id='+str(c.pk)+"#Tab3")
         except:
             d['message'] = "Database error"
             return HttpResponse(json.dumps(d),content_type='application/json')
 
         d['cafe_name'] = cafe.name
         d['cafe_id'] = cafeid
-        return HttpResponse(json.dumps(d), content_type='application/json')
+        return redirect('/event/?id='+str(c.pk)+"#Tab3")
+        #return HttpResponse(json.dumps(d), content_type='application/json')
 
     else:
         d['message'] = 'Unexpected link.'

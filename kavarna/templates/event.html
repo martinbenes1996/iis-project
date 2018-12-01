@@ -97,47 +97,65 @@
 {% block tab2 %}
 
 <div class="row" style="margin-top: 20px">
-    <div class="col-lg text-center">
-	<table align="center">
-        {% for cofe in coffee %}
-        <tr>
-            <td>	
-	            <form method="get" action="/coffee/">
-                    <input name="id" type="hidden" value="{{ cofe.pk }}" required />
-                    <button class="btn btn-link" type="Submit">{{cofe.name}}</button>
-                </form>
-            </td>
-        {% if loggeduser == event.place.owner %}
-            <td>
-	            <form method="get" action="/deletecoffeeevent/">
-                    <input name="pk_coffee" type="hidden" value="{{ cofe.pk }}" required />
-	                <input name="pk_event" type="hidden" value="{{ event.pk }}" required />
-                    <button type="Submit">Delete</button>
-                </form>
-            </td>
-        {% endif %}
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <table class="table table-sm">
+            <caption>Coffees</caption>
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Coffee</th>
+                <th scope="col">Delete</th>
+            </thead>
+
+            {% for cofe in coffee %}
+            <tr>
+                <th>#{{forloop.counter}}</th>
+                <td>	
+	                <form method="get" action="/coffee/">
+                        <input name="id" type="hidden" value="{{ cofe.pk }}" required />
+                        <button class="btn btn-link" type="Submit">{{cofe.name}}</button>
+                    </form>
+                </td>
+                <td>
+                    {% if loggeduser == event.place.owner %}
+	                <form method="get" action="/deletecoffeeevent/">
+                        <input name="pk_coffee" type="hidden" value="{{ cofe.pk }}" required />
+	                    <input name="pk_event" type="hidden" value="{{ event.pk }}" required />
+                        <button type="Submit" class="btn btn-warning">Delete</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
+    <div class="col-lg-3"></div>
 </div>
 
 {% if loggeduser == event.place.owner %}
 <!-- Adding coffee to event -->
-<div class="row text-center" style="margin-top: 20px">
+<div class="row" style="margin-top: 20px">
     <div class="col-lg text-center">
-	<form method="get" action="/addcoffeeevent/">
+	    <form method="get" action="/addcoffeeevent/">
             <input name="pk" type="hidden" value="{{ event.pk }}" required />
-	    <table align="center"><tr><td>
-    		Coffee:</td><td>
-    		<select name="coffee">
-			<option value=""></option>
-	    	    {% for cof in all_coffee %}
-	            	<option value="{{ cof.pk }}">{{ cof.name }}</option>
-	    	    {% endfor %}
-    		</select></td><td>
-            	<button type="Submit">Add coffee to event</button></td></tr>
-	    </table>
+            
+            <table align="center">
+                <tr>
+                    <td align="center">
+                        <select class="form-control" id="sel1" name="coffee" style="max-width: 200px; min-width: 200px">
+			                <option value=""></option>
+	    	                {% for cof in all_coffee %}
+	            	        <option value="{{ cof.pk }}">{{ cof.name }}</option>
+	    	                {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <button type="Submit" class="btn btn-success btn-align">Add coffee to event</button>
+                    </td>
+                </tr>
+	        </table>
         </form>
     </div>
 </div>

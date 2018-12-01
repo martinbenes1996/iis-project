@@ -5,26 +5,29 @@
     Results for "{{key}}".
 </div>
 
-<div class="row"><!--		vizualne to blbne
+<div class="row">
     <div class="col-lg-1 text-right">
+        <!--
         <div class="row" style="padding-right: 30%">
-            <span style="position: fixed">
-                <a href="#caferesults">Cafés</a><br>
-                <a href="#coffeeresults">Coffees</a><br>
-                <a href="#placeresults">Places</a><br>
-            </span>
+            <a id="allcafes" href="#caferesults">All cafés</a><br>
+            <a id="allcoffees" href="#coffeeresults">All coffees</a><br>
+            <a id="allevents" href="#eventresults">All events</a><br>
+            <a id="allusers" href="#userresults">All users</a><br>
         </div>
-    </div>-->
+        -->
+    </div>
 
     
     
-    <div class="col-lg-10 searchlist" style="margin-left: 40px">
+    <div class="col-lg-10 searchlist" style="margin-left: 40px" id="results">
          
-        {% include 'snippets/searchresult.html' with list=caferesults resultgroupid="caferesults" blockheader="Café" %}
+        {% include 'snippets/searchresult.html' with list=caferesults resultgroupid="caferesults" blockheader="Café" targetaction="cafe" %}
 	
-        {% include 'snippets/searchresult.html' with list=coffeeresults resultgroupid="coffeeresults" blockheader="Coffee" %}
+        {% include 'snippets/searchresult.html' with list=coffeeresults resultgroupid="coffeeresults" blockheader="Coffee" targetaction="coffee" %}
 	
-        {% include 'snippets/searchresult.html' with list=cuppingresults resultgroupid="cuppingresults" blockheader="Cupping session" %}
+        {% include 'snippets/searchresult.html' with list=eventresults resultgroupid="eventresults" blockheader="Event" targetaction="event" %}
+
+        {% include 'snippets/searchresult.html' with list=userresults resultgroupid="userresults" blockheader="User"  targetaction="profile" %}
 
     </div>
     

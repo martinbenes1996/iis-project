@@ -61,31 +61,63 @@
 {% endif %}
 {% endblock %}
 
-{% block tab1title %}Základní informace{% endblock %}
-{% block tab2title %}Co nabízíme?{% endblock %}
-{% block tab3title %}Děje se u nás{% endblock %}
-{% block tab4title %}Vaše názory{% endblock %}
+{% block tab1title %}About us{% endblock %}
+{% block tab2title %}Our offer{% endblock %}
+{% block tab3title %}What's up?{% endblock %}
+{% block tab4title %}Reference{% endblock %}
 
-{% block tab1header %}Základní informace{% endblock %}
+{% block tab1header %}Information{% endblock %}
 {% block tab1 %}
 <div class="row" style="margin-top: 20px">
-    <div class="col-lg-4 text-center">
-        {{cafe.street}} {{cafe.housenumber}}<br>
-        {{cafe.city}}<br>
-        PSC: {{cafe.psc}}<br>
-        Capacity: {{cafe.capacity}}
+    <div class="col-lg-3 text-center">
+        <table class="table table-sm">
+            <caption>Address</caption>
+            <tr>
+                <th>House</td>
+                <td>{{cafe.street}} {{cafe.housenumber}}</td>
+            </tr>
+            <tr>
+                <th>City</th>
+                <td>{{cafe.city}} {{cafe.psc}}</td>
+            </tr>
+        </table>
     </div>
+    <div class="col-lg-1"></div>
     <div class="col-lg-4 text-center">
-        {{cafe.opensAt}} - {{cafe.closesAt}}
-        <form method="get" action="/profile">
-            <input name="user" type="hidden" value="{{ cafe.owner.id }}" required />
-            Majitel: <button class="btn btn-link" type="Submit">{{cafe.owner.first_name}} {{cafe.owner.last_name}}</button>
-        </form>
+        <table class="table table-sm">
+            <caption>About</caption>
+            <tr>
+                <th>Hours</th>
+                <td>
+                    {{cafe.opensAt}} - {{cafe.closesAt}}
+                </td>
+            </tr>
+            <tr>
+                <th>Owner</th>
+                <td>
+                    <form method="get" action="/profile">
+                        <input name="user" type="hidden" value="{{ cafe.owner.id }}" required />
+                        <button class="btn btn-link" type="Submit">{{cafe.owner.first_name}} {{cafe.owner.last_name}}</button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <th>Capacity</th>
+                <td>{{cafe.capacity}}</td>
+            </tr>
+        </table>
     </div>
-    <div class="col-lg-4 text-center">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-3 text-center">
         {% if loggeduser %}
-        <h3>Hodnocení: <span id="cafescore">{{ cafe_score }}</span></h3>
-        <h3>Ohodnot si sam:</h3>
+        <table class="table table-sm">
+            <caption>Score</caption>
+            <tr>
+                <th>Average score</th>
+                <td id="cafescore">{{ cafe_score }}</td>
+            </tr>
+        </table>
+        Score yourself:
         {% include 'snippets/scorebar.html' with pk_subject=cafe.pk reactingto="Cafe" %}
         {% endif %}
     </div>
@@ -102,7 +134,7 @@
 </div>
 {% endblock %}
 
-{% block tab2header %}Co nabízíme?{% endblock %}
+{% block tab2header %}We offer{% endblock %}
 {% block tab2 %}
 <div class="row">
     <div class="col-lg-3"></div>

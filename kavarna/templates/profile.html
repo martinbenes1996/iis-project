@@ -66,8 +66,8 @@
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
                 {% if userdata == loggeduser %}
-                <th scope="col">Upravit</th>
-                <th scope="col">Odstranit</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
                 {% endif %}
             </tr></thead>
             
@@ -82,14 +82,14 @@
                         <form method="get" action="{% url 'modifycafe' %}">{% csrf_token %}
                             <input name="pk" type="hidden" value="{{ own.pk }}" required />
                             <input name="request_path" type="hidden" value="/profile" required />
-                            <button type="Submit" class="btn btn-sm btn-link">Modify</button>
+                            <button type="Submit" class="btn btn-sm btn-info">Edit</button>
                         </form>
                     </td>
                     <td>
                         <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
                             <input name="pk" type="hidden" value="{{ own.pk }}" required />
                             <input name="request_path" type="hidden" value="/profile" required />
-                            <button type="Submit" class="btn btn-sm btn-link">Delete</button>
+                            <button type="Submit" class="btn btn-sm btn-warning">Delete</button>
                         </form>
                     </td>
                 </tr>
