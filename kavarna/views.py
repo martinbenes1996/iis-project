@@ -221,9 +221,15 @@ def search(request):
         d['eventresults'] = models.Event.objects.filter(name__iexact=d['key']).values()
     # ...
 
+    if d['key'] == '':
+        d['userresults'] = User.objects.all()
+    else:
+        d['userresults'] = User.objects.filter(name__iexact=d['key']).values()
+
     d['cafes'] = models.Cafe.objects.all()
     d['coffees'] = models.Coffee.objects.all()
     d['events'] = models.Event.objects.all()
+    d['users'] = User.objects.all()
 
     return render(request, "search.html", d)
 
