@@ -1,1 +1,2 @@
-web: gunicorn kavarna.wsgi
+web: gunicorn kavarna.wsgi --log-file -
+
