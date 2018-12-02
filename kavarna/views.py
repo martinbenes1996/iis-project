@@ -27,8 +27,6 @@ def errLogout(request, d):
 
 
 def index(request):
-    models.Drinker.objects.all().delete()
-    User.objects.all().delete()
     d = generateDict(request)
     if 'message' in d:
         return errLogout(request, d)
