@@ -1,0 +1,344 @@
+{% extends "subpage.html" %}
+
+{% load static %}
+
+{% block header %}{{cafe.name}}{% endblock %}
+{% block pagetype %}Café{% endblock %}
+
+{% block score %}
+{% if loggeduser %}
+<div class="row" style="margin: 0px">
+    <div class="col-lg text-center"> 
+        <!-- LIKE/STOP LIKING tlacitko -->
+        <img id="like" src=
+            {% if is_liking %}
+                "{% static 'img/full_heart.png' %}"
+            {% else %}
+                "{% static 'img/empty_heart.png' %}"
+            {% endif %}
+        />
+        <script>
+        // click -> sends async request
+        $('#like').click(function(){
+            $.ajax({
+                type: "GET",
+                url: "{% url 'cafelike' %}",
+                data: {'pk': '{{ cafe.pk }}'},
+                dataType: "json",
+                // on success changes 
+                success: function(response) {
+                    if(response.liked) {
+                        $('#like').prop('src', "{% static 'img/full_heart.png' %}");
+                    } else {
+                        $('#like').prop('src', "{% static 'img/empty_heart.png' %}");    
+                    }
+                    if(response.likecount == 0) {
+                        $('#likecount').text("Be first to like it.");
+                    } else if(response.likecount == 1) {
+                        $('#likecount').text("1 person likes it.");
+                    } else {
+                        $('#likecount').text(response.likecount+" people like it.")
+                    }
+                },
+                // on error nothing :(
+                error: function(rs, e) {
+                }
+            }); 
+        })
+        </script>
+
+        <span id="likecount">
+            {% if like_count == 0 %}
+                Be first to like it.
+            {% elif like_count == 1 %}
+                {{like_count}} person likes it.
+            {% else %}
+                {{like_count}} people like it.
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block tab1title %}About us{% endblock %}
+{% block tab2title %}Our offer{% endblock %}
+{% block tab3title %}What's up?{% endblock %}
+{% block tab4title %}Reference{% endblock %}
+
+{% block tab1header %}Information{% endblock %}
+{% block tab1 %}
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg-3 text-center">
+        <table class="table table-sm">
+            <caption>Address</caption>
+            <tr>
+                <th>House</td>
+                <td>{{cafe.street}} {{cafe.housenumber}}</td>
+            </tr>
+            <tr>
+                <th>City</th>
+                <td>{{cafe.city}} {{cafe.psc}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-lg-1"></div>
+    <div class="col-lg-4 text-center">
+        <table class="table table-sm">
+            <caption>About</caption>
+            <tr>
+                <th>Hours</th>
+                <td>
+                    {{cafe.opensAt}} - {{cafe.closesAt}}
+                </td>
+            </tr>
+            <tr>
+                <th>Owner</th>
+                <td>
+                    <form method="get" action="/profile">
+                        <input name="user" type="hidden" value="{{ cafe.owner.id }}" required />
+                        <button class="btn btn-link" type="Submit">{{cafe.owner.first_name}} {{cafe.owner.last_name}}</button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <th>Capacity</th>
+                <td>{{cafe.capacity}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-lg-1"></div>
+    <div class="col-lg-3 text-center">
+        {% if loggeduser %}
+        <table class="table table-sm">
+            <caption>Score</caption>
+            <tr>
+                <th>Average score</th>
+                <td id="cafescore">{{ cafe_score }}</td>
+            </tr>
+        </table>
+        Score yourself:
+        {% include 'snippets/scorebar.html' with pk_subject=cafe.pk reactingto="Cafe" %}
+        {% endif %}
+    </div>
+</div>
+<div class="row" style="margin-top: 30px">
+    <div class="col text-center">
+        <p>{{cafe.description}}</p>
+    </div>
+</div>
+<div class="row text-center" style="margin-top: 20px">
+    <div class="col">
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block tab2header %}We offer{% endblock %}
+{% block tab2 %}
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <table class="table table-sm">
+            <caption>Menu</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    {% if owner == loggeduser %}
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            {% for a in cafe_coffee_list %}
+            <tr>
+                <th>#{{ forloop.counter }}</th>
+                <td>
+                    <form method="get" action="/coffee">
+                        <input name="id" type="hidden" value={{a.pk}} required />
+                        <button class="btn btn-link" type="Submit">{{a.name}}</button>
+                    </form>
+                </td>
+                {% if owner == loggeduser %}
+                <td>
+                    <form method="get" action="{% url 'modifycoffee' %}">{% csrf_token %}
+                        <input name="pk" type="hidden" value="{{ cafe.pk }}" required />
+                        <input name="coffeeid" type="hidden" value="{{ a.pk }}" required />
+                        <input name="request_path" type="hidden" value="/cafe" required />
+                        <button type="Submit" class="btn btn-info">Modify</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="get" action="{% url 'deletecoffee' %}">{% csrf_token %}
+                        <input name="pk_cafe" type="hidden" value="{{ cafe.pk }}" required />
+                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
+                        <input name="request_path" type="hidden" value="/cafe" required />
+                        <button type="Submit" class="btn btn-warning">Delete</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
+{% if owner == loggeduser %}
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+	    <div class="row hcentralize">
+	        <form method="get" action="{% url 'addcoffee' %}">
+               	<input name="cafeid" type="hidden" value={{cafe.pk}} required />
+		        <input name="request_path" type="hidden" value="/cafe" required />
+                <button class="btn btn-lg btn-success" type="Submit">Add coffee</button>
+            </form>
+	    </div>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+
+{% block tab3header %}What is going on?{% endblock %}
+{% block tab3 %}
+<div class="row">
+    <div class="col-lg-2"></div>
+    <div class="col-lg-8">
+        <table class="table table-sm">
+            <caption>Our events</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Event</th>
+                    <th scop="col">Price</th>
+                    <th scope="col">Capacity</th>
+                    <th scope="col">Location</th>
+                    {% if owner == loggeduser %}
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            {% for a in event_list %}
+            <tr>
+                <th>#{{ forloop.counter }}</th>
+                <td>
+		            <form method="get" action="/event/">
+                	    <input name="id" type="hidden" value={{a.pk}} required />
+                	    <button class="btn btn-link" type="Submit">{{a.name}}</button>
+            	    </form>
+                </td>
+                <td> {{ a.price }} </td>
+                <td> {{ a.capacity }} </td>
+                <td>
+                    <form method="get" action="/cafe/">
+                        <input name="id" type="hidden" value={{a.place.pk}} required />
+                        <button class="btn btn-link" type="Submit">{{a.place.name}}</button>
+                    </form>
+                </td>
+                
+                {% if owner == loggeduser %}
+                <td>
+                    <form method="get" action="{% url 'modifyevent' %}">{% csrf_token %}
+                        <input name="id" type="hidden" value="{{ cafe.pk }}" required />
+                        <input name="eventid" type="hidden" value="{{ a.pk }}" required />
+                        <input name="request_path" type="hidden" value="/cafe3" required />
+                        <button type="Submit" class="btn btn-info">Modify</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="get" action="{% url 'deleteevent' %}">{% csrf_token %}
+                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
+			            <input name="request_path" type="hidden" value="/cafe3" required />
+                        <button type="Submit" class="btn btn-warning">Delete</button>
+                    </form>
+		        </td>
+                {% endif %}
+                
+            </tr>
+            {% endfor %}
+
+            <span id="append"></span>
+            {% if owner == loggeduser %}
+            <tr>
+                <form id="NewEventCafeForm" data-toggle="validator" role="form"
+                    class="form-signin" action="/addevent/" method="post"
+                    style="display: inline">{% csrf_token %}
+                    <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
+		            <input name="request_path" type="hidden" value="/cafe3" required />
+                    <tr>
+                    <td></td>
+                    <td>
+                        <input type="" class="form-control" name="name" placeholder="Event Name*" required>
+                    </td>
+                    <td>
+                        <input type="" class="form-control" name="price" placeholder="Price">
+                    </td>
+                    <td>
+                        <input type="" class="form-control" name="capacity" placeholder="Capacity">
+                    </td>
+                    <td></td>
+                    <td><button class="btn btn-success" type="submit">Create event</button></th>
+                    <td></td>
+                </form>
+                <script>
+                    $("#NewEventCafeForm").submit(function(e) {
+                        var form = $(this);
+                        var url = form.attr('action');
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: form.serialize(), // serializes the form's elements.
+                            success: function(data) {
+                                window.location.reload();
+                                //alert('Form OK!');
+                                //alert(data); // show response from the php script.
+                            },
+                            error: function(rs, e) {
+                                //alert('Chyba!')
+                                //alert(rs);
+                            }
+                        });
+                        e.preventDefault(); // avoid to execute the actual submit of the form.
+                    });
+                </script>
+                {{warning|safe}}
+             </tr>
+             {% endif %}
+         </table>
+    </div>
+    <div class="col-lg-2"></div>
+</div>
+
+{% endblock %}
+
+
+{% block tab4header %}Your references{% endblock %}
+{% block tab4 %}
+<div class="row">
+    <div class="col hcentralize align-center">
+        <ul>
+            {% for node in cafe_reactions %}
+                {% if not node.react %}
+                    {% include "snippets/reaction.html" with pk=cafe.pk %}
+                {% endif %}
+            {% endfor %}
+            {% if loggeduser %}
+            <form method="POST" action="react/">{% csrf_token %}
+                <input name="id" type="hidden" value="{{cafe.pk}}" required />
+                <div class="row">
+                    <div class="col-lg-6"><input name="text" placeholder="React" required /> </div>
+                    <div class="col-lg-6"><button class="btn" type="submit">Send</button></div>
+                </div>
+             </form>
+             {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+

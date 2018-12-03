@@ -1,0 +1,221 @@
+{% extends "subpage.html" %}
+
+{% block header %}{{event.name}}{% endblock %}
+{% block pagetype %}Event{% endblock %}
+
+{% block score %}
+<div class="row" style="margin: 20px">
+    <div class="col-lg text-center"> 
+        <!-- LIKE/STOP LIKING tlacitko -->
+        {% if loggeduser %}
+        <input type="button" id="participate" class="btn btn-lg btn-warning" name="{{ likebutton }}" value=
+        {% if participating %}
+            "Stop Participating"
+        {% else %}
+            "Participate"
+        {% endif %}
+        />
+        <script>
+        // click -> sends async request
+        $('#participate').click(function(){
+            $.ajax({
+                type: "POST",
+                url: "{% url 'event' %}",
+                data: {'pk': '{{ event.pk }}',
+                       'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                dataType: "json",
+                // on success changes 
+                success: function(response) {
+                    $('#participate').prop('value', response.participatevalue)
+                    $('#participantcount').text(response.participantcount);
+                },
+                // on error nothing :(
+                error: function(rs, e) {
+                }
+            }); 
+        })
+        </script>
+        {% else %}
+        <a href="{% url 'signin' %}">Sign in</a> to participate.
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block tab1title %}About{% endblock %}
+{% block tab2title %}Our offer{% endblock %}
+{% block tab3title %}Who is going?{% endblock %}
+{% block tab4title %}Reference{% endblock %}
+
+
+
+{% block tab1header%}Information{% endblock %}
+{% block tab1 %}
+
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+    <table class="table table-sm">
+        <caption>About</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tr>
+            <th>Name</th>
+            <td>{{event.name}}</td>
+        </tr>
+        <tr>
+            <th>Place</th>
+            <td>
+                <a href="{% url 'cafe' %}?id={{event.place.pk}}">{{event.place.name}}</a>
+            </td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>{{event.price}}</td>
+        </tr>
+        <tr>
+            <th>Capacity</th>
+            <td>{{event.capacity}}</td>
+        </tr>
+        <tr>
+            <th>Participants</th>
+            <td id="participantcount">{{event.participants.all | length}}</td>
+        </tr>
+    </table>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
+{% endblock %}
+
+
+{% block tab2header %}Our menu{% endblock %}
+{% block tab2 %}
+
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+        <table class="table table-sm">
+            <caption>Coffees</caption>
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Coffee</th>
+                <th scope="col">Delete</th>
+            </thead>
+
+            {% for cofe in coffee %}
+            <tr>
+                <th>#{{forloop.counter}}</th>
+                <td>	
+	                <form method="get" action="/coffee/">
+                        <input name="id" type="hidden" value="{{ cofe.pk }}" required />
+                        <button class="btn btn-link" type="Submit">{{cofe.name}}</button>
+                    </form>
+                </td>
+                <td>
+                    {% if loggeduser == event.place.owner %}
+	                <form method="get" action="/deletecoffeeevent/">
+                        <input name="pk_coffee" type="hidden" value="{{ cofe.pk }}" required />
+	                    <input name="pk_event" type="hidden" value="{{ event.pk }}" required />
+                        <button type="Submit" class="btn btn-warning">Delete</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
+{% if loggeduser == event.place.owner %}
+<!-- Adding coffee to event -->
+<div class="row" style="margin-top: 20px">
+    <div class="col-lg text-center">
+	    <form method="get" action="/addcoffeeevent/">
+            <input name="pk" type="hidden" value="{{ event.pk }}" required />
+            
+            <table align="center">
+                <tr>
+                    <td align="center">
+                        <select class="form-control" id="sel1" name="coffee" style="max-width: 200px; min-width: 200px">
+			                <option value=""></option>
+	    	                {% for cof in all_coffee %}
+	            	        <option value="{{ cof.pk }}">{{ cof.name }}</option>
+	    	                {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <button type="Submit" class="btn btn-success btn-align">Add coffee to event</button>
+                    </td>
+                </tr>
+	        </table>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+
+{% block tab3header %}Who is going?{% endblock %}
+{% block tab3 %}
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+    <table class="table table-sm">
+        <caption>Users</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        {% for p in event.participants.all %}
+        <tr>
+            <th>#{{forloop.counter}}</th>
+            <td>
+                <a href="{% url 'profile' %}?user={{p.pk}}">{{p.first_name}} {{p.last_name}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
+{% endblock %}
+
+
+{% block tab4header %}Your references{% endblock %}
+{% block tab4 %}
+<div class="row">
+    <div class="col hcentralize align-center">
+        <ul>
+            {% for node in event_reactions %}
+                {% if not node.react %}
+                    {% include "snippets/reaction.html" with pk=event.pk %}
+                {% endif %}
+            {% endfor %}
+            {% if loggeduser %}
+            <form method="POST" action="react/">{% csrf_token %}
+                <input name="id" type="hidden" value="{{event.pk}}" required />
+                <div class="row">
+                    <div class="col-lg-6"><input name="text" placeholder="React" required /> </div>
+                    <div class="col-lg-6"><button class="btn" type="submit">Send</button></div>
+                </div>
+             </form>
+             {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+
+

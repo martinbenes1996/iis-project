@@ -1,0 +1,36 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<p align="center">{{error_message}}</p>
+
+{% if add == True %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addbean/" method="post">
+{% else %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/modifybean/" method="post">
+{% endif %}
+{% csrf_token %}
+    <h3 class="text-center">Add Bean</h3>
+    {{warning|safe}}
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
+    {% if add == False %}
+    <input name="beanid" type="hidden" value="{{ bean.pk }}" required />
+    {% endif %}
+    <table align="center">
+    <tr><td>Bean Name *: </td><td>
+    <input type="" class="form-control" name="name" value="{{bean_name}}" placeholder="Bean Name *" required></td></tr>
+    <tr><td>Origin *: </td><td>
+    <input type="" class="form-control" name="origin" value="{{bean_origin}}" placeholder="Origin *" required></td></tr>
+    <tr><td>Aroma *: </td><td>
+    <input type="" class="form-control" name="aroma" value="{{bean_aroma}}" placeholder="Aroma *" required></td></tr>
+    <tr><td>Acidity (0-10)*: </td><td>
+    <input type="" class="form-control" name="acidity" value="{{bean_acidity}}" placeholder="Acidity (0-10)*" required></td></tr>
+    </table>
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add bean</button>
+</form>
+
+{% if request_path == "/adm" %}
+<div class="row hcentralize">
+    <a href="/adm/?id={{loggeduser.pk}}"><button class="btn btn-lg btn-info" type="submit">Go Back</button></a>
+</div>
+{% endif %}
+{% endblock %}

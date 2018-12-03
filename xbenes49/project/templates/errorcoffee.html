@@ -1,0 +1,107 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<p align="center">{{error_message}}</p>
+
+{% if add == True %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addcoffee/" method="post">
+{% else %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/modifycoffee/" method="post">
+{% endif %}
+
+{% csrf_token %}
+    <h3 class="text-center">Add/Modify Coffee</h3>
+    {{warning|safe}}
+    {% if add == False %}
+    <input name="coffeeid" type="hidden" value="{{ coffee.pk }}" required />
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
+    {% endif %}
+    <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
+    <table align="center"><tr><td>Coffee Name *: </td><td>
+    <input type="" class="form-control" name="name" placeholder="Coffee Name *" value="{{ coffee_name }}" required></td>
+    </tr><tr><td>Place of origin: </td><td>
+    <input type="" class="form-control" name="placeoforigin" placeholder="Place of origin" value="{{ coffee_placeoforigin }}"></td>
+    </tr><tr><td>Quality: </td><td>
+    <input type="" class="form-control" name="quality" value="{{ coffee_quality }}" placeholder="Quality (awful-average-great)"></td>
+    </tr><tr><td>Taste description: </td><td>
+    <input type="" class="form-control" placeholder="Taste description" value="{{ coffee_taste }}" name="taste"></td>
+    </tr></table>
+    <table align="center">
+    	<tr><td>
+    	Preparation:</td><td>
+    	<select name="preparation">
+		<option value="None">None</option>
+	    {% for prep in preparations %}
+	        {% if prep == preparation %}
+	            <option value="{{ prep.pk }}" selected="selected">{{ prep.name }}</option>
+		{% else %}
+		    <option value="{{ prep.pk }}">{{ prep.name }}</option>
+		{% endif %}
+	    {% endfor %}
+    	</select></td>
+    	</tr><tr>
+	
+	<td>
+    	Bean (%):</td><td>
+    	<select name="bean">
+		<option value="None">None</option>
+	    {% for bean in beans %}
+	    	{% if bean == beanset1 %}
+	            <option value="{{ bean.pk }}" selected="selected">{{ bean.name }}</option>
+		{% else %}
+		    <option value="{{ bean.pk }}">{{ bean.name }}</option>
+		{% endif %}
+	    {% endfor %}
+    	</select>
+        {% if beanperc1 != None %}
+            <input type="" class="form-control" name="beanperc" placeholder="percentage of said bean" value="{{ beanperc1 }}">
+	{% else %}
+	    <input type="" class="form-control" name="beanperc" placeholder="percentage of said bean">
+	{% endif %}
+        </td></tr><tr>
+	<td>
+    	Bean (%):</td><td>
+    	<select name="bean2">
+		<option value="None">None</option>
+	    {% for bean in beans %}
+	    	{% if bean == beanset2 %}
+	            <option value="{{ bean.pk }}" selected="selected">{{ bean.name }}</option>
+		{% else %}
+		    <option value="{{ bean.pk }}">{{ bean.name }}</option>
+		{% endif %}
+	    {% endfor %}
+    	</select>
+        {% if beanperc2 != None %}
+            <input type="" class="form-control" name="beanperc2" placeholder="percentage of said bean" value="{{ beanperc2 }}">
+	{% else %}
+	    <input type="" class="form-control" name="beanperc2" placeholder="percentage of said bean">
+	{% endif %}
+        </td></tr><tr>
+	<td>
+    	Bean (%):</td><td>
+    	<select name="bean3">
+		<option value="None">None</option>
+	    {% for bean in beans %}
+	    	{% if bean == beanset3 %}
+	            <option value="{{ bean.pk }}" selected="selected">{{ bean.name }}</option>
+		{% else %}
+		    <option value="{{ bean.pk }}">{{ bean.name }}</option>
+		{% endif %}
+	    {% endfor %}
+    	</select>
+        {% if beanperc3 != None %}
+            <input type="" class="form-control" name="beanperc3" placeholder="percentage of said bean" value="{{ beanperc3 }}">
+	{% else %}
+	    <input type="" class="form-control" name="beanperc3" placeholder="percentage of said bean">
+	{% endif %}
+        </td>
+
+    </tr>
+    </table>
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add/Modify coffee</button>
+</form>
+
+<div class="row hcentralize">
+    <a href="/cafe/?id={{cafe.pk}}#Tab2"><button class="btn btn-lg btn-info" type="submit">Go Back</button></a>
+</div>
+{% endblock %}

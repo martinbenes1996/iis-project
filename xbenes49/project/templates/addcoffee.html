@@ -1,0 +1,63 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addcoffee/" method="post">{% csrf_token %}
+    <h3 class="text-center">Add Coffee</h3>
+    {{warning|safe}}
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
+    <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
+    <input type="" class="form-control" name="name" placeholder="Coffee Name *" required>
+    <input type="" class="form-control" name="placeoforigin" placeholder="Place of origin">
+    <input type="" class="form-control" name="quality" placeholder="Quality (awful-average-great)">
+    <input type="" class="form-control" name="taste" placeholder="Taste description">
+    <table>
+    	<tr><td>
+    	Preparation:</td><td>
+    	<select name="preparation">
+		<option value="None">None</option>
+	    {% for prep in preparations %}
+	        <option value="{{ prep.pk }}">{{ prep.name }}</option>
+	    {% endfor %}
+    	</select></td>
+    	</tr><tr>
+	
+	<td>
+    	Bean (%):</td><td>
+    	<select name="bean">
+	        <option value="None">None</option>
+	    {% for bean in beans %}
+	    	<option value="{{ bean.pk }}">{{ bean.name }}</option>
+	    {% endfor %}
+    	</select>
+        <input type="" class="form-control" name="beanperc" placeholder="percentage of said bean">
+        </td></tr><tr>
+	<td>
+    	Bean (%):</td><td>
+    	<select name="bean2">
+	        <option value="None">None</option>
+	    {% for bean in beans %}
+	    	<option value="{{ bean.pk }}">{{ bean.name }}</option>
+	    {% endfor %}
+    	</select>
+        <input type="" class="form-control" name="beanperc2" placeholder="percentage of said bean">
+        </td></tr><tr>
+	<td>
+    	Bean (%):</td><td>
+    	<select name="bean3">
+	        <option value="None">None</option>
+	    {% for bean in beans %}
+	    	<option value="{{ bean.pk }}">{{ bean.name }}</option>
+	    {% endfor %}
+    	</select>
+        <input type="" class="form-control" name="beanperc3" placeholder="percentage of said bean">
+        </td>
+
+    </tr>
+    </table>
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add new coffee</button>
+</form>
+
+<div class="row hcentralize">
+    <a href="/cafe/?id={{cafe.pk}}#Tab2"><button class="btn btn-lg btn-info" type="submit">Go Back</button></a>
+</div>
+{% endblock %}

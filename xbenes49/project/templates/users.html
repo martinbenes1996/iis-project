@@ -1,0 +1,26 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<table>
+    <tr>
+        <th>Jméno</th>
+        <th>E-mail</th>
+        <th>Odstranit</th>
+    </tr>
+    
+    {% for a in users_list %}
+    <tr>
+        <th><a href="{% url 'profile'%}?user={{a.pk}}">{{a.first_name}} {{a.last_name}}</a></th>
+        <th>{{a.email}}</th>
+        <th>
+            {% include 'snippets/postprofile.html' with linkuser=a %}
+            
+        </th>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="row hcentralize">
+    <a href="{% url '' %}"><button class="btn btn-lg btn-info" type="submit">Go Home</button></a>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "page.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+	    <div class="hcentralize vcentralize">
+            <h1>
+	    	{% block header %}
+	    	{% endblock %}
+            </h1>
+        </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+        <div class="hcentralize vcentralize">
+            <h4>
+            {% block pagetype %}
+            {% endblock %}
+            </h4>
+        </div>
+        </div>
+    </div>
+    
+    {% block score %}
+    {% endblock %}
+
+    <div class="row hcentralize">
+        <ul class="nav nav-tabs" id="mytabs">
+            <li class="active"><a data-toggle="tab" href="#Tab1">{% block tab1title %}TAB1{% endblock %}</a></li>
+            <li><a data-toggle="tab" href="#Tab2">{% block tab2title %}TAB2{% endblock %}</a></li>
+            <li><a data-toggle="tab" href="#Tab3">{% block tab3title %}TAB3{% endblock %}</a></li>
+            <li><a data-toggle="tab" href="#Tab4">{% block tab4title %}TAB4{% endblock %}</a></li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="tab-content">
+            <div id="Tab1" class="tab-pane fade in active">
+                <div class="row" style="margin-top: 20px">
+                    <div class="col text-center">
+                        <h4>{% block tab1header %}Tab1{% endblock %}</h4>
+                    </div>
+                </div>
+                {% block tab1 %}
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                {% endblock %}
+            </div>
+            <div id="Tab2" class="tab-pane fade">
+                <div class="row" style="margin-top: 20px">
+                    <div class="col text-center">
+                        <h4>{% block tab2header %}Tab2{% endblock %}</h4>
+                    </div>
+                </div>
+                {% block tab2 %}
+                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                {% endblock %}
+            </div>
+            <div id="Tab3" class="tab-pane fade">
+                <div class="row" style="margin-top: 20px">
+                    <div class="col text-center">
+                        <h4>{% block tab3header %}Tab3{% endblock %}</h4>
+                    </div>
+                </div>
+                {% block tab3 %}
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+                {% endblock %}
+            </div>
+            <div id="Tab4" class="tab-pane fade">
+                <div class="row" style="margin-top: 20px">
+                    <div class="col text-center">
+                        <h4>{% block tab4header %}Tab4{% endblock %}</h4>
+                    </div>
+                </div>
+                {% block tab4 %}
+                <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#mytabs a').click(function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+              
+        // store the currently selected tab in the hash value
+        $("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
+            var id = $(e.target).attr("href").substr(1);
+            window.location.hash = id;
+        });
+              
+        // on load of the page: switch to the currently selected tab
+        var hash = window.location.hash;
+        $('#mytabs a[href="' + hash + '"]').tab('show');
+    </script>
+
+
+    {% block menu %}
+    {% endblock %}
+    {% block data %}
+    {% endblock %}
+{% endblock %}
+

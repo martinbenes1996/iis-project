@@ -1,0 +1,65 @@
+{% load static %}
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
+        <link rel = "stylesheet" type = "text/css" href = "{% static 'kavarna/styles.css' %}">
+
+    </head>
+
+    <body class="backgrounder">
+        {% block background %}
+        {% endblock %}
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    {% block homelink %}
+                        <div class="col pull-left" style="margin-top: 0;">
+                            <a href="{% url '' %}">Home</a>
+                        </div>
+                    {% endblock %}
+                    <div class="col pull-right" style="margin-top: 0;">
+                            
+                            {% if loggeduser %}
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle" type="button" data-toggle="dropdown">
+                                {{ loggeduser.first_name }} {{ loggeduser.last_name }}
+                                <span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="{% url 'profile' %}?user={{ loggeduser.pk }}">Profile</a></li>
+                                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                                </ul>
+                            </div>
+                            {% else %}
+                            <a href="{% url 'signin' %}">
+                                <button class="btn btn-warning" type="button">
+                                Sign in
+                                </button>
+                            </a>
+                            {% endif %}
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="container-fluid">
+            
+
+            {% block maincontent %}
+            {% endblock %}
+        </div>
+        <div class="container-fluid" style="padding-top: 50px">
+            
+                <!-- content -->
+                {% block content2 %}
+                {% endblock %}
+                <!-- end of content -->
+        
+    
+    </body>
+</html>

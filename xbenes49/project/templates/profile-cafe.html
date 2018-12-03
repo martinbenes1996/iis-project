@@ -1,0 +1,58 @@
+{% extends "profile.html" %}
+
+{% block profile-content %}
+<div class="row hcentralize">
+    <div class="col-lg-6">
+        <h2>Kavárny</h2>
+        <table>
+            <!--<tr>
+                <th>Jméno</th>
+                <th>Odstranit</th>
+            </tr>-->
+            {% for a in user_cafes_list %}
+            <tr>
+                <th>
+		    <form method="get" action="/cafe">
+                	<input name="id" type="hidden" value={{a.pk}} required />
+                	<button class="btn btn-link" type="Submit">{{a.name}}</button>
+            	    </form>
+		</th>
+		{% if user_profile == loggeduser %}
+                <th>
+                    <form method="get" action="{% url 'deletecafe' %}">{% csrf_token %}
+                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
+			<input name="request_path" type="hidden" value="/profile_cafe" required />
+                        <button type="Submit">Delete</button>
+                    </form>
+		</th>
+		<th>
+		    <form method="get" action="{% url 'modifycafe' %}">{% csrf_token %}
+                        <input name="pk" type="hidden" value="{{ a.pk }}" required />
+			<input name="request_path" type="hidden" value="/profile_cafe" required />
+                        <button type="Submit">Modify</button>
+                    </form>
+		</th>
+		{% endif %}
+             </tr>
+             {% endfor %}
+         </table>
+    </div>
+</div>
+
+<br>
+{% if user_profile == loggeduser %}
+<div class="row hcentralize">
+    <div class="col-lg-3">
+        <!--<h3>Založit Kavárnu</h3>
+        <form action="{% url 'addcafe' %}" method="post">{% csrf_token %}
+	    <input name="pk" type="hidden" value="{{ user_profile.pk }}" required />
+            <button class="btn btn-info" type="submit">Založit Kavárnu</button>
+        </form>-->
+	<div class="row hcentralize">
+    	    <a href="{% url 'addcafe' %}"><button class="btn btn-lg btn-warning" type="submit">Add café</button></a>
+	</div>
+    </div>
+
+</div>
+{% endif %}
+{% endblock %}

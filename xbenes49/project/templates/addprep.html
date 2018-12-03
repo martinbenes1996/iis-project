@@ -1,0 +1,18 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addprep/" method="post">{% csrf_token %}
+    <h3 class="text-center">Add Preparation</h3>
+    {{warning|safe}}
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
+    <input type="" class="form-control" name="name" placeholder="Preparation Name *" required>
+    <input type="" class="form-control" name="description" placeholder="Description *" required>
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add new preparation</button>
+</form>
+
+{% if request_path == "/adm" %}
+<div class="row hcentralize">
+    <a href="/adm/?id={{loggeduser.pk}}"><button class="btn btn-lg btn-info" type="submit">Go Back</button></a>
+</div>
+{% endif %}
+{% endblock %}

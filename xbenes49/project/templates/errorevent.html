@@ -1,0 +1,33 @@
+{% extends "titlepage.html" %}
+
+{% block content %}
+<p align="center">{{error_message}}</p>
+
+{% if add == True %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/addevent/" method="post">
+{% else %}
+<form id="RegisterForm" data-toggle="validator" role="form" class="form-signin" action="/modifyevent/" method="post">
+{% endif %}
+{% csrf_token %}
+    <h3 class="text-center">Add/Modify Event</h3>
+    {{warning|safe}}
+    <input name="request_path" type="hidden" value="{{request_path}}" required />
+    {% if add == False %}
+    <input name="eventid" type="hidden" value="{{ event.pk }}" required />
+    {% endif %}
+    <input name="cafeid" type="hidden" value="{{ cafe.pk }}" required />
+    <table align="center">
+    <tr><td>Event Name *: </td><td>
+    <input type="" class="form-control" name="name" value="{{event_name}}" placeholder="Event Name *" required></td>
+    <tr><td>Price *: </td><td>
+    <input type="" class="form-control" name="price" value="{{event_price}}" placeholder="Price *"></td>
+    <tr><td>Capacity *: </td><td>
+    <input type="" class="form-control" name="capacity" value="{{event_capacity}}" placeholder="Capacity *"></td>
+    </tr></table>
+    <button id="RegisterFormSubmit" class="btn btn-lg btn-warning btn-block" type="submit">Add/Modify event</button>
+</form>
+
+<div class="row hcentralize">
+    <a href="/cafe/?id={{cafe.pk}}#Tab3"><button class="btn btn-lg btn-info" type="submit">Go Back</button></a>
+</div>
+{% endblock %}
